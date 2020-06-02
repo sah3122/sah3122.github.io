@@ -1,0 +1,966 @@
+
+<!doctype html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next muse use-motion" lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/assets/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/assets/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/assets/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="TDD,Clean Code,Java," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="천천히 걷는 방법" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="TDD, CleanCode, Refactoring 4주차 정리">
+<meta name="keywords" content="TDD, Clean Code, Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TDD, CleanCode, Refactoring 4주차 정리">
+<meta property="og:url" content="http://localhost:4000/dev/2020/04/18/tdd-clean-code-4w/">
+<meta property="og:site_name" content="천천히 걷는 방법">
+<meta property="og:description" content="TDD, CleanCode, Refactoring 4주차 정리">
+<meta property="og:locale" content="ko">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TDD, CleanCode, Refactoring 4주차 정리">
+<meta name="twitter:description" content="TDD, CleanCode, Refactoring 4주차 정리">
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '작성자'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://localhost:4000/"/>
+
+
+
+
+
+  <title>TDD, CleanCode, Refactoring 4주차 정리 | 천천히 걷는 방법</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="ko">
+
+  
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">천천히 걷는 방법</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">적당히 잘하는 개발자가 되기 위한 기록 저장소</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            홈
+          </a>
+        </li>
+      
+        
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            아카이브
+          </a>
+        </li>
+      
+        
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            태그
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+<div id="posts" class="posts-expand">
+  
+  
+
+  
+
+  
+  
+  
+
+  <article class="post post-type- " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://localhost:4000/dev/2020/04/18/tdd-clean-code-4w/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="DongChul Lee">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="assets/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="천천히 걷는 방법">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+          
+          
+            TDD, CleanCode, Refactoring 4주차 정리
+          
+        </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">작성일</span>
+              
+              <time title="" itemprop="dateCreated datePublished" datetime="2020-04-18T00:00:00+09:00">
+                2020-04-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/category/#/dev" itemprop="url" rel="index">
+                    <span itemprop="name">dev</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            
+                <div class="post-description">
+                    TDD, CleanCode, Refactoring 4주차 정리
+                </div>
+            
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <blockquote>
+  <p>TDD, CleanCode, Refactoring 4주차 정리</p>
+</blockquote>
+
+<h1 id="4주차">4주차</h1>
+<ul>
+  <li>점진적 리팩토링
+    <ul>
+      <li>기존의 테스트가 깨지지 않는 선에서 리팩토링 하기</li>
+      <li>컴파일 에러가 발생하면 안된다.</li>
+    </ul>
+  </li>
+  <li>일반적 상황
+    <ul>
+      <li>메소드에 인자가 추가되었다.</li>
+      <li>인스턴스 변수 타입이 변경되었다.
+        <ul>
+          <li>-&gt; 컴파일 에러가 발생 , 에러 해결</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>위 방식 대로 리팩토링 하면 긍정적인 측면 보다. 부정적인 측면이 생길 수 있다.</p>
+  </li>
+  <li>우리가 연습해야할 리팩토링은 ?
+    <ul>
+      <li>메소드에 인자가 추가 되는 경우
+        <ul>
+          <li>메소드를 그대로 복사하여 메소드 이름을 임시로 변경</li>
+          <li>임시 메소드를 하나씩 실제 사용한 메소드와 변경</li>
+          <li>더이상 이전 메소드가 존재하지 않으면, 이전 메소드를 제거 후 이름 변경</li>
+        </ul>
+      </li>
+      <li>인스턴스 변수의 타입이 변경되는 경우
+        <ul>
+          <li>새로운 인스턴스 변수 추가</li>
+          <li>String to Integer로 변경 시 일시적으로 두개 타입을 도시에 사용</li>
+          <li>두개 변수에 동시에 데이터를 넣고 리팩토링</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>점진적 리팩토링 - TDD 에 대한 감이 생길때 시작
+    <ul>
+      <li>1단계 - 메소드를 다른 클래스로 이동</li>
+      <li>2단계 - 메소드에 인자 타입이나, 반환 타입이 변경 시</li>
+      <li>3단계 - 인스턴스 변수 타입이 변경되는 경우
+        <ul>
+          <li>데이터의 중복을 만든다. (임시 변수를 만들고, 메소드에 인자가 추가되는 경우와 같이 점차 변경해나간다.)</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>리팩토링은 시간 날때마다 진행하는것이다.</p>
+  </li>
+  <li>객체지향 설계 및 구현 접근 방식은 ?
+    <ul>
+      <li>Bottom Up 설계 및 구현
+        <ul>
+          <li>구현에 초점을 맞추어 일단 구현 후 지속적 리팩토링을 통해 역할,책임,협력을 찾아 나간다.</li>
+        </ul>
+      </li>
+      <li>Top Down 구현 및 설계
+        <ul>
+          <li>책임에 초점을 맞추어 전체적인 설계 후 구현</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>책임 주도 설계
+    <ul>
+      <li>책임을 수행할 적절한 객체를 찾아 책임을 할당하는 방식으로 협력을 설계
+        <ul>
+          <li>클래스를 먼저 설계하는것이 아니다.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>책임이란 ?
+    <ul>
+      <li>책임이란 객체가 유지해야할 정보와 수행해야할 행동</li>
+      <li>즉 객체가 <code class="highlighter-rouge">무엇을 알고있는가</code> 와 <code class="highlighter-rouge">무엇을 할 수 있는가</code>로 구성된다.</li>
+    </ul>
+  </li>
+  <li>역할을 다른것으로 교체할 수있는 책임의 집합이다.</li>
+  <li>테스트 하기 쉬운 코드가 유연한 코드는 아니지만 연습하다 보면 유연한 코드가 될 수 있다.</li>
+  <li>유연한 설계를 지향한다면 컴파일타임 의존성을 런타임 의존성으로 대체한다.
+    <ul>
+      <li>의존성을 주입 한다.</li>
+    </ul>
+  </li>
+  <li>런타임 의존성으로 대체하다보면 테스트하기 쉬운 설계가 가능해진다.</li>
+  <li>
+    <p>테스트하기 쉬운 설계를 지향하다보면 유연한 설계가 가능해지는 경험을 종종 할 수 있다.</p>
+  </li>
+  <li>책임 주도 설계가 진정한 대안인가 ?
+    <ul>
+      <li>책임 주도 설계에 익숙해지기 위해선, 부단한 노력과 시간이 필요.</li>
+      <li>책임 관점에서 사고하기 위해선 부단한 노력과 학습이 필요하다.</li>
+      <li>빠르게 구현 후 지속적 리팩토링</li>
+      <li>TDD 사이클을 반복해 설계의 품질을 높힌다.
+        <ul>
+          <li>리팩토링 시 객체지향 설계 체조원친, 클린코드 설계 원칙을 지키면서..</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            
+            <a href="/tag/#/TDD" rel="tag"># TDD</a>
+          
+            
+            <a href="/tag/#/Clean%20Code" rel="tag"># Clean Code</a>
+          
+            
+            <a href="/tag/#/Java" rel="tag"># Java</a>
+          
+        </div>
+      
+
+      
+      
+      
+      
+      
+
+      
+      
+        <div class="post-nav" id="post-nav-id">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/dev/2020/04/25/tdd-clean-code-5w/" rel="next" title="TDD, CleanCode, Refactoring 5주차 정리">
+                <i class="fa fa-chevron-left"></i> TDD, CleanCode, Refactoring 5주차 정리
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/dev/2020/04/11/tdd-clean-code-3w/" rel="prev" title="TDD, CleanCode, Refactoring 3주차 정리">
+                TDD, CleanCode, Refactoring 3주차 정리 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+      
+
+      
+    </footer>
+  </article>
+
+  <div class="post-spread">
+    
+  </div>
+</div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        
+        
+        
+
+
+
+
+
+
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            목차
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            흝어보기
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/assets/images/avatar.gif"
+               alt="DongChul Lee" />
+          <p class="site-author-name" itemprop="name">DongChul Lee</p>
+           
+              <p class="site-description motion-element" itemprop="description">사내 공유, 개인의 경험을 기록하는 블로그입니다.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">포스트</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">카테고리</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">태그</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+        
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              
+              
+              <span class="links-of-author-item">
+                <a href="https://github.com/sah3122" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+
+
+
+
+
+
+
+            
+              <div class="post-toc-content">
+    <ol class=nav>
+      <li class="nav-item nav-level-1"> <a class="nav-link" href="#4주차"> <span class="nav-number">1</span> <span class="nav-text">4주차</span> </a> </li>
+    </ol>
+  </div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DongChul Lee</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://jekyllrb.com">Jekyll</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/simpleyyt/jekyll-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+   
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/assets/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/assets/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/assets/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/assets/js/src/post-details.js?v=5.1.1"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/assets/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+    
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/assets/js/src/js.cookie.js?v=5.1.1"></script>
+  <script type="text/javascript" src="/assets/js/src/scroll-cookie.js?v=5.1.1"></script>
+
+
+  
+
+</body>
+</html>
+

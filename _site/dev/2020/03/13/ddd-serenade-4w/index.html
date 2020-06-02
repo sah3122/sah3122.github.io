@@ -1,0 +1,1007 @@
+
+<!doctype html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next muse use-motion" lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/assets/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/assets/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/assets/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="DDD,NEXTSTEP," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="천천히 걷는 방법" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="NextStep DDD 세레나데 강의 정리">
+<meta name="keywords" content="DDD, NEXTSTEP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DDD 세레나데 4주차 강의 정리">
+<meta property="og:url" content="http://localhost:4000/dev/2020/03/13/ddd-serenade-4w/">
+<meta property="og:site_name" content="천천히 걷는 방법">
+<meta property="og:description" content="NextStep DDD 세레나데 강의 정리">
+<meta property="og:locale" content="ko">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="DDD 세레나데 4주차 강의 정리">
+<meta name="twitter:description" content="NextStep DDD 세레나데 강의 정리">
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '작성자'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://localhost:4000/"/>
+
+
+
+
+
+  <title>DDD 세레나데 4주차 강의 정리 | 천천히 걷는 방법</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="ko">
+
+  
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">천천히 걷는 방법</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">적당히 잘하는 개발자가 되기 위한 기록 저장소</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            홈
+          </a>
+        </li>
+      
+        
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            아카이브
+          </a>
+        </li>
+      
+        
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            태그
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+<div id="posts" class="posts-expand">
+  
+  
+
+  
+
+  
+  
+  
+
+  <article class="post post-type- " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://localhost:4000/dev/2020/03/13/ddd-serenade-4w/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="DongChul Lee">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="assets/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="천천히 걷는 방법">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+          
+          
+            DDD 세레나데 4주차 강의 정리
+          
+        </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">작성일</span>
+              
+              <time title="" itemprop="dateCreated datePublished" datetime="2020-03-13T00:00:00+09:00">
+                2020-03-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/category/#/dev" itemprop="url" rel="index">
+                    <span itemprop="name">dev</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            
+                <div class="post-description">
+                    NextStep DDD 세레나데 강의 정리
+                </div>
+            
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <blockquote>
+  <p>DDD 세레나데 4주차</p>
+</blockquote>
+
+<h2 id="3주차-복습">3주차 복습</h2>
+<ul>
+  <li>전술적 설계 - ddd lite , building block
+    <ul>
+      <li>특정 디자인 패턴이 필요하다면 building block에 포함되는 것이다.</li>
+    </ul>
+  </li>
+  <li>좋은 객체는 불변한 객체
+    <ul>
+      <li>도메인 주도 설계 빌딩 블록중 불변인 것들을 vo 라고 부른다.</li>
+      <li>vo는 equals와 hashcode를 재정의 하는것을 권장한다.</li>
+      <li>생성자 보다는 정적 팩토리 메소드를 사용해라.</li>
+    </ul>
+  </li>
+  <li>Entity
+    <ul>
+      <li>내부에 상태값이 변하는 객체들은 entity로 만들 수 있다.</li>
+      <li>entity는 식별자를 갖는다.</li>
+      <li>도메인 모델에 set 메서드 넣지 않기</li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="aggregate">Aggregate</h1>
+<ul>
+  <li>한 애그리거트에 속한 객체는 다른 애그리거트에 속하지 않는다.</li>
+  <li>
+    <p>공통적으로 사용하는 애그리거트는 baseAggregate과 같이 trade-off할 수 있다.</p>
+  </li>
+  <li>수많은 aggregate중 root 로 만드는 방법은 외부에서 바라보는지를 확인 하면 된다.</li>
+  <li>애그리거트 루트는 일관성이 깨지지 않도록 해야한다.
+    <ul>
+      <li>생성자로 엔티티를 만들때 모든 속성을 가지고 있어야 한다.</li>
+    </ul>
+  </li>
+  <li>
+    <p>클라이언트는 애그리거트의 내부 구현이 어떻게 되어 있는지 몰라야 한다.</p>
+  </li>
+  <li>Aggregate 참조
+    <ul>
+      <li>subentity를 외부에 노출시키면 안된다.</li>
+      <li>
+        <p>Root entity를 기준으로 repository를 제공해줘야 한다.</p>
+      </li>
+      <li>두개의 aggregate가 필요하다면 domain service가 도출되어야 한다.</li>
+      <li>하나의  aggregate에서도 domain service가 발생할 수 있다.</li>
+    </ul>
+  </li>
+  <li>Factory
+    <ul>
+      <li>데이터를 가지고 있는 객체가 일을 하도록 메시지를 던져야 한다.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="4주차">4주차</h2>
+<ul>
+  <li>계층형 아키텍처
+    <ul>
+      <li>표현영역
+        <ul>
+          <li>httprequest, response, session을 관리</li>
+        </ul>
+      </li>
+      <li>응용 서비스
+        <ul>
+          <li>로직을 직접 수행하기 보다는 도메인 모델에 로직 수행을 위임.</li>
+          <li>도메인 영역에서 발생시킨 이벤트를 처리.</li>
+        </ul>
+      </li>
+      <li>도메인 서비스
+        <ul>
+          <li>로직에 대한 버전 관리를 해야할 필요가 있는 경우 도메인 서비스가 될 수 있다.</li>
+          <li>두개 이상의 aggregate를 사용하면 반드시 도메인 서비스가 되어야 한다.
+            <ul>
+              <li>같은 aggregate라도 두개 이상을 사용한다면 도메인 서비스.</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>메서드 파라미터와 값 리턴
+        <ul>
+          <li>응용 서비스에 데이터로 전달할 파라미터가 두개 이상이면 데이터전달을 위한 별도 클래스를 사용하는것이 편리.</li>
+          <li>응용 서비스는 표현 영역에서 필요한 데이터만 리턴하는 것이 기능 실행 로직의 응집도를 높이는 확실한 방법.</li>
+        </ul>
+      </li>
+      <li>값 검증
+        <ul>
+          <li>값 검증은 표현영역과 응용 서비스 두 곳에서 모두 수행 할 수 있다.</li>
+          <li>표현 영역에서 필수 값과 값의 형식을 검사하면 실질적으로 응용 서비스는 아이디 중복 여부와 같은 논리적 오류만 검사하면 된다.</li>
+        </ul>
+      </li>
+      <li>인터페이스는 어느 시점에 생성하는것이 적절한가
+        <ul>
+          <li>외부와 연동할 가능성이 크거나 연동하고 있는 것은 인터페이스를 만드는 것이 좋다.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>DTO
+    <ul>
+      <li>DTO는 프로세스 간에 데이터를 전달하는 객체가 아니고 구조체 라고 보는것이 맞다.</li>
+      <li>value object는 dto가 아니다.</li>
+      <li>value object는 어플리케이션 내부의 요구사항으로 만들어지고 dto는 어플리케이션 외부의 요구사항을 반영한다.</li>
+      <li>dto에서 entity를 만드는것은 괜찮으나 entity 에서 dto를 만드는것은 불가하다.</li>
+      <li>domain model everywhere</li>
+      <li>pure domain model
+        <ul>
+          <li>항상 dto를 만드는 것은 실용적이지 않다.
+            <ul>
+              <li>-&gt; vo로 해결 가능한 것은 vo로 해결 해도 된다.</li>
+              <li>vo는 영역과 관계없이 사용가능하기 때문이다.</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>의존 역전 원칙
+    <ul>
+      <li>고수준 모듈의 의존 문제
+        <ul>
+          <li>저수준 모듈의 변경에 따라 고수준 모듈의 변경이 불가피 해진다.</li>
+        </ul>
+      </li>
+      <li>DIP 주의 사항
+        <ul>
+          <li>추상화 한 인터페이스는 저수준 모듈이 아닌 고수준 모듈에 위치 해야 한다.</li>
+          <li>실제 구현은 infrastructure에서 구현(저수준)</li>
+        </ul>
+      </li>
+      <li>육각형, 양파, 클린 아키텍처
+        <ul>
+          <li>공통된 목적은 내부에 있는 domain layerr를 외부로 부터 숨기고 지키는것이다.</li>
+          <li>내부는 외부를 모르고 외부는 내부를 몰라야 한다.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>anti corruption layer
+    <ul>
+      <li>외부로부터 내부 도메인 레이어를 지키기 위한 계층</li>
+    </ul>
+  </li>
+  <li>주 생성자 -&gt; 모든 상태를 가지고 있는 생성자</li>
+  <li>부 생성자 -&gt; 부생성자가 주 생성자를 호출하는 방법</li>
+  <li>최상단 패키지는 Bounded Context로 나누고 Aggregate은 domain package에서 나누는 방</li>
+  <li>menu product가 price를 가지도록</li>
+  <li>infra - product 와 관련된 클래스를 만들고 productservice를 주입 받아 price를 얻는다 ? -&gt; anti corruption layer 만든다</li>
+</ul>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            
+            <a href="/tag/#/DDD" rel="tag"># DDD</a>
+          
+            
+            <a href="/tag/#/NEXTSTEP" rel="tag"># NEXTSTEP</a>
+          
+        </div>
+      
+
+      
+      
+      
+      
+      
+
+      
+      
+        <div class="post-nav" id="post-nav-id">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/dev/2020/03/18/java-interface-and-implement/" rel="next" title="인터페이스와 구현에 대한 정리">
+                <i class="fa fa-chevron-left"></i> 인터페이스와 구현에 대한 정리
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/dev/2020/02/21/ddd-serenade-3w/" rel="prev" title="DDD 세레나데 3주차 강의 정리">
+                DDD 세레나데 3주차 강의 정리 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+      
+
+      
+    </footer>
+  </article>
+
+  <div class="post-spread">
+    
+  </div>
+</div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        
+        
+        
+
+
+
+
+
+
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            목차
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            흝어보기
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/assets/images/avatar.gif"
+               alt="DongChul Lee" />
+          <p class="site-author-name" itemprop="name">DongChul Lee</p>
+           
+              <p class="site-description motion-element" itemprop="description">사내 공유, 개인의 경험을 기록하는 블로그입니다.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">포스트</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">카테고리</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">태그</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+        
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              
+              
+              <span class="links-of-author-item">
+                <a href="https://github.com/sah3122" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+
+
+
+
+
+
+
+            
+              <div class="post-toc-content">
+    <ol class=nav>
+      <li class="nav-item nav-level-1"> <a class="nav-link" href="#aggregate"> <span class="nav-number">1</span> <span class="nav-text">Aggregate</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-2"> <a class="nav-link" href="#4주차"> <span class="nav-number">1.1</span> <span class="nav-text">4주차</span> </a> </li> </ol> </li>
+    </ol>
+  </div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DongChul Lee</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://jekyllrb.com">Jekyll</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/simpleyyt/jekyll-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+   
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/assets/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/assets/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/assets/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/assets/js/src/post-details.js?v=5.1.1"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/assets/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+    
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/assets/js/src/js.cookie.js?v=5.1.1"></script>
+  <script type="text/javascript" src="/assets/js/src/scroll-cookie.js?v=5.1.1"></script>
+
+
+  
+
+</body>
+</html>
+

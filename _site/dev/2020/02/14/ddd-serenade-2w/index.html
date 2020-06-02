@@ -1,0 +1,975 @@
+
+<!doctype html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next muse use-motion" lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/assets/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/assets/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/assets/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="DDD,NEXTSTEP," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="천천히 걷는 방법" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="NextStep DDD 세레나데 강의 정리">
+<meta name="keywords" content="DDD, NEXTSTEP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DDD 세레나데 2주차 강의 정리">
+<meta property="og:url" content="http://localhost:4000/dev/2020/02/14/ddd-serenade-2w/">
+<meta property="og:site_name" content="천천히 걷는 방법">
+<meta property="og:description" content="NextStep DDD 세레나데 강의 정리">
+<meta property="og:locale" content="ko">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="DDD 세레나데 2주차 강의 정리">
+<meta name="twitter:description" content="NextStep DDD 세레나데 강의 정리">
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '작성자'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://localhost:4000/"/>
+
+
+
+
+
+  <title>DDD 세레나데 2주차 강의 정리 | 천천히 걷는 방법</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="ko">
+
+  
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">천천히 걷는 방법</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">적당히 잘하는 개발자가 되기 위한 기록 저장소</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            홈
+          </a>
+        </li>
+      
+        
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            아카이브
+          </a>
+        </li>
+      
+        
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            태그
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+<div id="posts" class="posts-expand">
+  
+  
+
+  
+
+  
+  
+  
+
+  <article class="post post-type- " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://localhost:4000/dev/2020/02/14/ddd-serenade-2w/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="DongChul Lee">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="assets/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="천천히 걷는 방법">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+          
+          
+            DDD 세레나데 2주차 강의 정리
+          
+        </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">작성일</span>
+              
+              <time title="" itemprop="dateCreated datePublished" datetime="2020-02-14T00:00:00+09:00">
+                2020-02-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/category/#/dev" itemprop="url" rel="index">
+                    <span itemprop="name">dev</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            
+                <div class="post-description">
+                    NextStep DDD 세레나데 강의 정리
+                </div>
+            
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <blockquote>
+  <p>DDD 세레나데 2주차</p>
+</blockquote>
+
+<h3 id="전략적-설계">전략적 설계</h3>
+<p>유비쿼터스 언어 - 개발자와 도메인 전문가가 공통적으로 이해 할수 있는 영역의 언어.</p>
+<ul>
+  <li>모든 상황(회의, 코드, 도메인…)에서 사용하는 언어 (언제, 어디에서나)</li>
+  <li>기획자나 개발자는 모두 동일하게 이해할 수 있는 언어를 사용해야 한다.</li>
+  <li>용어사전을 정의 하고 항상 유지 해야 한다.
+    <ul>
+      <li>용어 사전은 죽은 문서가 될 가능성이 많다.</li>
+    </ul>
+  </li>
+  <li>유비쿼터스 언어를 가장 잘 검증해주는 곳은 코드레벨 이다.
+    <ul>
+      <li>개발자의 입장에선 코드레벨에 유비쿼터스 언어가 존재하는것은 좋다.</li>
+      <li>기획자와 디자이너도 볼 수 있도록 용어가 추가 될 시 용어 사전을 업데이트 해야한다.</li>
+    </ul>
+  </li>
+  <li>용어 사전이란 유비쿼터스 언어를 정리 해둔 사전이다.
+    <ul>
+      <li>프로젝트에 참여하는 모두가 알고 관리 해야한다.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>효과적인 모델링</p>
+<ul>
+  <li>RouteService 는 RouteSecification 만족하는 plan을 찾는다.
+    <ul>
+      <li>개발자는 RouteService 에 RouteSecification 전달하면 plan return 이라고 해석이 된다. <br />
+Ex ) 환불은 환불정책을 통해서 환불금액이 결정된다.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>한팀, 한 언어</p>
+<ul>
+  <li>사업팀도 모델링을 이해하지 못한다면 모델링이 잘못된 것이다.</li>
+</ul>
+
+<p>Bounded Context (문맥 경계)</p>
+<ul>
+  <li>도메인 별로 용어사전이 다르기때문에 동일한 용어를 다른 도메인에서 사용하면 안된다.</li>
+  <li>모델은 특정한 문장(문맥)에서 완전한 의미를 가지게 된다.</li>
+  <li>동일한 단어가 발생하면 Bounded Context 나누기 가장 좋은 상태이다</li>
+  <li>Ex) 피자가게있는 피자, 쓰레기통에 있는 피자
+    <ul>
+      <li>피자라는 언어를 사용하지만 문맥에 따라서 피자의 의미가 다르다.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>좋은 Bounded Context</p>
+<ul>
+  <li>하나의 Bounded Context는 하나의 팀만 관리 해야 한다.
+    <ul>
+      <li>의견 마찰 및 도메인 영역의 마찰을 줄이기 위해.</li>
+      <li>하나의 팀이 여러 Bounded Context는 관리 할 수 있다.</li>
+    </ul>
+  </li>
+  <li>각각의 Bounded Context는 각각의 개발 환경을 가질 수 있다.
+    <ul>
+      <li>명확히 구분되는 경계를 그엇기 때문이다.</li>
+      <li>MSA로 가는 기초.</li>
+      <li>어떻게 경계를 나눌것인지를 먼저 생각 해야 한다.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Context Map</p>
+<ul>
+  <li>컨텍스트 맵은 상호 교류하는 시스템의 목록 제공 및 의사소통의 촉매 역할을 한다.</li>
+  <li>Upstream : 데이터 제공. (Api, Event)</li>
+  <li>DownStream : 데이터 수신.</li>
+</ul>
+
+<p>프로젝트와 조직 관계</p>
+<ul>
+  <li>파트너십 : 두 context가 하나의 트랜잭션으로 묶여있다.</li>
+  <li>공유 커널 : 상호 의존하는 공유 모델을 관리한다.</li>
+  <li>고객 - 공급자(costomer - surpplier) : 업스트림(서버 : 공급자) : 다운스트림(클라이언트 : 고객)으로 단방향 의존한다.</li>
+  <li>순응주의자(Ex_Open API) : 업스트림(서버)가 모든것을 제어한다.</li>
+  <li>오픈 호스트 서비스 : REST/API, RPC, Socket</li>
+  <li>분리된 방법 : 의존 없음</li>
+  <li>큰 진흙공 : 안티 패턴</li>
+</ul>
+
+<p>DDD vs OOP</p>
+<ul>
+  <li>Context 마다 서로 유비쿼터스 언어를 다른 도메인으로 인식한다.</li>
+  <li>OOP는 상속이나 재활용성을 위해서 공통된 데이터를 공유하는 것을 중요시</li>
+  <li>DDD는 도메인 분리를 중시</li>
+</ul>
+
+<p>DDD가 성공할 수 있는 전제 조건</p>
+<ul>
+  <li>DDD는 현업의 절대적인 도움이 필요하다.</li>
+  <li>이해관계자의 스폰서십이 적극 필요.</li>
+</ul>
+
+<p>이벤트 스토밍</p>
+<ul>
+  <li>정의
+    <ul>
+      <li>도메인 전문가와 개발자를 학습 과정에 참여시키기 위한 빠른 설계기술</li>
+      <li>비즈니스 및 비즈니스 프로세스에 중점을 둔다.
+        <ul>
+          <li>클래스와 데이터베이스가 아닌 이벤트와 비즈니스 프로세스에 중점을 둔다.</li>
+        </ul>
+      </li>
+      <li>코드를 없애고 모든 사람을 동일한 수준으로 만드는 시각적 접근</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Aggregate</p>
+<ul>
+  <li>이벤트 스토밍 중 같은 단어가 중복적으로 발생하면 집합으로 만든다.</li>
+  <li>Aggreate 하나의 하나의 엔티티를 가지는것이 좋지만 항상 지켜야 하는것은 아니다.</li>
+</ul>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            
+            <a href="/tag/#/DDD" rel="tag"># DDD</a>
+          
+            
+            <a href="/tag/#/NEXTSTEP" rel="tag"># NEXTSTEP</a>
+          
+        </div>
+      
+
+      
+      
+      
+      
+      
+
+      
+      
+        <div class="post-nav" id="post-nav-id">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/dev/2020/02/21/ddd-serenade-3w/" rel="next" title="DDD 세레나데 3주차 강의 정리">
+                <i class="fa fa-chevron-left"></i> DDD 세레나데 3주차 강의 정리
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/dev/2020/01/24/jpa-replication-issue/" rel="prev" title="Spring JPA DB Master / Slave 적용시 주의할 점">
+                Spring JPA DB Master / Slave 적용시 주의할 점 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+      
+
+      
+    </footer>
+  </article>
+
+  <div class="post-spread">
+    
+  </div>
+</div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        
+        
+        
+
+
+
+
+
+
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            목차
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            흝어보기
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/assets/images/avatar.gif"
+               alt="DongChul Lee" />
+          <p class="site-author-name" itemprop="name">DongChul Lee</p>
+           
+              <p class="site-description motion-element" itemprop="description">사내 공유, 개인의 경험을 기록하는 블로그입니다.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">포스트</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">카테고리</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">태그</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+        
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              
+              
+              <span class="links-of-author-item">
+                <a href="https://github.com/sah3122" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+
+
+
+
+
+
+
+            
+              <div class="post-toc-content">
+    <ol class=nav>
+      <li class="nav-item nav-level-3"> <a class="nav-link" href="#전략적-설계"> <span class="nav-number">1</span> <span class="nav-text">전략적 설계</span> </a> </li>
+    </ol>
+  </div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DongChul Lee</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://jekyllrb.com">Jekyll</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/simpleyyt/jekyll-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+   
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/assets/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/assets/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/assets/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/assets/js/src/post-details.js?v=5.1.1"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/assets/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+    
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/assets/js/src/js.cookie.js?v=5.1.1"></script>
+  <script type="text/javascript" src="/assets/js/src/scroll-cookie.js?v=5.1.1"></script>
+
+
+  
+
+</body>
+</html>
+

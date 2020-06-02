@@ -1,0 +1,1113 @@
+
+<!doctype html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next muse use-motion" lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/assets/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/assets/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/assets/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="천천히 걷는 방법" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Java Enum Class 정리">
+<meta name="keywords" content="Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java Enum Class 정리">
+<meta property="og:url" content="http://localhost:4000/dev/2020/05/03/java-enum/">
+<meta property="og:site_name" content="천천히 걷는 방법">
+<meta property="og:description" content="Java Enum Class 정리">
+<meta property="og:locale" content="ko">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java Enum Class 정리">
+<meta name="twitter:description" content="Java Enum Class 정리">
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '작성자'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://localhost:4000/"/>
+
+
+
+
+
+  <title>Java Enum Class 정리 | 천천히 걷는 방법</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="ko">
+
+  
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">천천히 걷는 방법</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">적당히 잘하는 개발자가 되기 위한 기록 저장소</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            홈
+          </a>
+        </li>
+      
+        
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            아카이브
+          </a>
+        </li>
+      
+        
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            태그
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+<div id="posts" class="posts-expand">
+  
+  
+
+  
+
+  
+  
+  
+
+  <article class="post post-type- " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://localhost:4000/dev/2020/05/03/java-enum/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="DongChul Lee">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="assets/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="천천히 걷는 방법">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+          
+          
+            Java Enum Class 정리
+          
+        </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">작성일</span>
+              
+              <time title="" itemprop="dateCreated datePublished" datetime="2020-05-03T00:00:00+09:00">
+                2020-05-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/category/#/dev" itemprop="url" rel="index">
+                    <span itemprop="name">dev</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            
+                <div class="post-description">
+                    Java Enum Class 정리
+                </div>
+            
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <blockquote>
+  <p>Enum 사용법에 대하여 정리 및 사내 공유를 위해 작성</p>
+</blockquote>
+
+<ul>
+  <li>
+    <p>해당 글의 용어 및 내용은 <a href="https://woowabros.github.io/tools/2017/07/10/java-enum-uses.html">Java Enum 활용기 - 우아한형제들 기술 블로그</a>를 많이 참고 하였습니다.</p>
+  </li>
+  <li>Enum이란 ?
+    <blockquote>
+      <p>Enumeration은 프로그래밍언어에서 <strong>상수의 그룹</strong>을 나타낼 때 사용한다.
+Enum은 컴파일 당시 우리가 모든 가능한 값을 알고있는 경우 사용된다. 항상 enum안의 상수는 타입이 정해져 있어야 되는 것은 아니다.<br />
+Java 1.5버전 부터, enum은 <strong>enum 데이터 타입</strong>이라고 표시되었다. 자바 enum은 C/C++ enum보다 더 강력한 기능을 제공한다. 자바에서 변수, 메소드 그리고 생성자를 추가할 수 있다. enum의 주된 목적은 우리만의 데이터 타입을 가지기 위해서이다. (Enumberated Data Type)<br />
+참고 <a href="https://velog.io/@pop8682/Enum-27k067ns4a">자바의 enum</a></p>
+    </blockquote>
+  </li>
+  <li>
+    <p>위 정의를 보더라도 <code class="highlighter-rouge">Enum은 상수의 그룹</code>을 나타내기 위하여 사용한다. 라고 선언 되어 있습니다. <br />
+과연 상수만을 위하여 Enum을 쓰는것 보다 Enum을 더욱 강력히 사용할 수 없을까? 라는 생각을 가지고 이 글을 보시면 더욱 좋을것 같습니다.</p>
+  </li>
+  <li>들어가기 앞서 <code class="highlighter-rouge">객체는 상태와 행위를 가진다.</code> 라는 개념에 대해 알고 계시는것이 좋을 것 같습니다.</li>
+</ul>
+
+<h3 id="enum---상수의-집합-">Enum - 상수의 집합 ?</h3>
+
+<ul>
+  <li>사칙연산을 위한 프로그램을 만든다 할때 연산자를 아래와 같은 Enum으로 구분하여 사용할 수 있을것 같습니다.</li>
+  <li><code class="highlighter-rouge">OperatorType</code>은 사칙연산을 위한 연산자를 가지고 있고 여러 클래스에 선언되어 사용하지 않고 연산자를 Enum으로 관리하여 응집도를 높였다고 볼수 있겠네요.
+    <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="n">OperatorType</span> <span class="o">{</span>
+  <span class="n">PLUS_OPERATOR</span><span class="o">(</span><span class="s">"+"</span><span class="o">),</span>
+  <span class="n">MINUS_OPERATOR</span><span class="o">(</span><span class="s">"-"</span><span class="o">),</span>
+  <span class="n">MULTIPLY_OPERATOR</span><span class="o">(</span><span class="s">"*"</span><span class="o">),</span>
+  <span class="n">DIVIDE_OPERATOR</span><span class="o">(</span><span class="s">"/"</span><span class="o">);</span>
+
+  <span class="kd">private</span> <span class="n">String</span> <span class="n">operator</span><span class="o">;</span>
+
+  <span class="n">OperatorType</span><span class="o">(</span><span class="n">String</span> <span class="n">operator</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">this</span><span class="o">.</span><span class="na">operator</span> <span class="o">=</span> <span class="n">operator</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isEqual</span><span class="o">(</span><span class="n">String</span> <span class="n">operator</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">operator</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">operator</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div>    </div>
+  </li>
+  <li><code class="highlighter-rouge">OperatorType</code>은 과연 상태와 행위를 가지는 객체 인가요 ?
+    <ul>
+      <li>코드를 보시고 상태만 가지고 있다. 라고 생각이 든다면 정답입니다.</li>
+    </ul>
+  </li>
+  <li>과연 행위는 어디에 있을까 ?
+    <ul>
+      <li>어디선가 아래와 같은 코드를 가지고 있는 클래스를 만들어서 사용해야 할것 입니다.</li>
+    </ul>
+  </li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">double</span> <span class="nf">calculate</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">validateOperator</span><span class="o">();</span>
+    <span class="n">String</span> <span class="n">operator</span> <span class="o">=</span> <span class="n">findOperator</span><span class="o">();</span> <span class="c1">// +, -, %, *</span>
+
+    <span class="k">if</span> <span class="o">(</span><span class="n">PLUS_OPERATOR</span><span class="o">.</span><span class="na">isEqual</span><span class="o">(</span><span class="n">operator</span><span class="o">))</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nf">plus</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="k">if</span> <span class="o">(</span><span class="n">MINUS_OPERATOR</span><span class="o">.</span><span class="na">isEqual</span><span class="o">(</span><span class="n">operator</span><span class="o">))</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nf">minus</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="k">if</span> <span class="o">(</span><span class="n">MULTIPLY_OPERATOR</span><span class="o">.</span><span class="na">isEqual</span><span class="o">(</span><span class="n">operator</span><span class="o">))</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nf">multiply</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="k">if</span> <span class="o">(</span><span class="n">DIVIDE_OPERATOR</span><span class="o">.</span><span class="na">isEqual</span><span class="o">(</span><span class="n">operator</span><span class="o">))</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nf">divide</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="k">throw</span> <span class="k">new</span> <span class="nf">IllegalArgumentException</span><span class="o">(</span><span class="s">"사칙연산 기호가 아닙니다."</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+<ul>
+  <li>다시 처음 이야기한 객체의 정의에 대해서 생각해봅시다.
+    <ul>
+      <li><code class="highlighter-rouge">객체는 상태와, 행위를 가진다.</code></li>
+      <li><code class="highlighter-rouge">OperatorType</code>은 행위를 가지고 있지 않으니 위 코드에 포함된 행위를 <code class="highlighter-rouge">OperatorType</code> 으로 옮겨 보겠습니다.</li>
+    </ul>
+  </li>
+  <li>위 코드에서의 문제점은 무엇일까요 ?
+    <ul>
+      <li>곰곰히 생각을 해봅시다 : )</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="enum---상태와-행위를-한곳에">Enum - 상태와 행위를 한곳에</h3>
+
+<ul>
+  <li>상태와 행위를 한곳에 모아둔 <code class="highlighter-rouge">OperatorType</code>을 먼저 보겠습니다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26<br/>27<br/>28<br/>29<br/>30<br/>31<br/>32<br/>33<br/>34<br/>35<br/>36<br/>37<br/>38<br/>39<br/>40<br/>41<br/>42<br/>43<br/>44<br/>45<br/>46<br/>47<br/>48<br/>49<br/>50<br/>51<br/>52<br/>53<br/>54<br/>55<br/>56<br/>57</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="n">OperatorType</span> <span class="o">{</span>
+    <span class="n">PLUS_OPERATOR</span><span class="o">(</span><span class="s">"+"</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">double</span> <span class="nf">calculate</span><span class="o">(</span><span class="kt">double</span> <span class="n">sum</span><span class="o">,</span> <span class="kt">double</span> <span class="n">nextNumber</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">nextNumber</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">},</span>
+    <span class="n">MINUS_OPERATOR</span><span class="o">(</span><span class="s">"-"</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">double</span> <span class="nf">calculate</span><span class="o">(</span><span class="kt">double</span> <span class="n">sum</span><span class="o">,</span> <span class="kt">double</span> <span class="n">nextNumber</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">sum</span> <span class="o">-</span> <span class="n">nextNumber</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">},</span>
+    <span class="n">MULTIPLY_OPERATOR</span><span class="o">(</span><span class="s">"*"</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">double</span> <span class="nf">calculate</span><span class="o">(</span><span class="kt">double</span> <span class="n">sum</span><span class="o">,</span> <span class="kt">double</span> <span class="n">nextNumber</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">sum</span> <span class="o">*</span> <span class="n">nextNumber</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">},</span>
+    <span class="n">DIVIDE_OPERATOR</span><span class="o">(</span><span class="s">"/"</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">double</span> <span class="nf">calculate</span><span class="o">(</span><span class="kt">double</span> <span class="n">sum</span><span class="o">,</span> <span class="kt">double</span> <span class="n">nextNumber</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">nextNumber</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">throw</span> <span class="k">new</span> <span class="nf">IllegalArgumentException</span><span class="o">(</span><span class="s">"0 으로 나눌수 없습니다."</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="k">return</span> <span class="n">sum</span> <span class="o">/</span> <span class="n">nextNumber</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">};</span>
+
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">operator</span><span class="o">;</span>
+
+    <span class="n">OperatorType</span><span class="o">(</span><span class="n">String</span> <span class="n">operator</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">operator</span> <span class="o">=</span> <span class="n">operator</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">OperatorType</span> <span class="nf">createOperator</span><span class="o">(</span><span class="n">String</span> <span class="n">operator</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">operator</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">PLUS_OPERATOR</span><span class="o">.</span><span class="na">operator</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">PLUS_OPERATOR</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="k">if</span><span class="o">(</span><span class="n">operator</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">MINUS_OPERATOR</span><span class="o">.</span><span class="na">operator</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">MINUS_OPERATOR</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="k">if</span><span class="o">(</span><span class="n">operator</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">MULTIPLY_OPERATOR</span><span class="o">.</span><span class="na">operator</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">MULTIPLY_OPERATOR</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="k">if</span><span class="o">(</span><span class="n">operator</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">DIVIDE_OPERATOR</span><span class="o">.</span><span class="na">operator</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">DIVIDE_OPERATOR</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="k">throw</span> <span class="k">new</span> <span class="nf">IllegalArgumentException</span><span class="o">(</span><span class="s">"사칙연산 기호가 아닙니다."</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">abstract</span> <span class="kt">double</span> <span class="nf">calculate</span><span class="o">(</span><span class="kt">double</span> <span class="n">sum</span><span class="o">,</span> <span class="kt">double</span> <span class="n">nextNumber</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>이제 <code class="highlighter-rouge">OperatorType</code> 내부에 선언되어있는 객체들은  <code class="highlighter-rouge">calculate</code>라는 행위를 가지게 되었습니다. <br />
+이로 인해서 처음에 이야기 했던 객체의 정의를 만족 하게 되었네요 !</li>
+  <li>이전에 행위를 구현했던 코드는 어떻게 변했을까요 ?
+    <blockquote>
+      <p>참고
+Java7 부터 Enum 상수에 추상 메소드를 구현할 수 있습니다.</p>
+    </blockquote>
+  </li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">double</span> <span class="nf">calculate</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">validateOperator</span><span class="o">();</span>
+    <span class="n">String</span> <span class="n">operator</span> <span class="o">=</span> <span class="n">findOperator</span><span class="o">();</span> <span class="c1">// +, -, %, *</span>
+    <span class="n">OperatorType</span> <span class="n">operatorType</span> <span class="o">=</span> <span class="n">createOperator</span><span class="o">(</span><span class="n">operator</span><span class="o">);</span>
+
+    <span class="k">return</span> <span class="n">operatorType</span><span class="o">.</span><span class="na">calculate</span><span class="o">(</span><span class="n">sum</span><span class="o">,</span> <span class="n">nextNumber</span><span class="o">());</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>이전엔 Operator 별로 분기를 타며 계산을 하던 메소드가 실제 <code class="highlighter-rouge">계산 하라 </code> 라는 메시지를 OperatorType에 던지는 단순하고 깔끔한 메소드로 변경 되었습니다.</li>
+  <li>여기까지만 보더라도 연산자를 가지고 있는 <code class="highlighter-rouge">OperatorType</code>은 자신이 가지고 있는 책임인 <code class="highlighter-rouge">계산한다</code> 라는것을 완벽하게 이행 함으로서 외부에선 모든 사칙연산에 관한 계산을 <code class="highlighter-rouge">OperatorType</code>을 사용할 수 있게 되었습니다.</li>
+  <li>이전에 상태와 행위를 한곳에서 관리 하지 않은 코드를 생각해보시면, <code class="highlighter-rouge">계산 하라</code>라는 메시지를 누구에게도 던지지 않고 전혀 의미 없는 클래스에서 행위를 구현하여, 다른 클래스에서의 중복이 발생할 가능성이 컸습니다.</li>
+  <li>아직 남아 있는 문제점.</li>
+  <li>보시다 시피 Enum 내부 정적 메소드에 파라미터로 전달 받은 Operator에 맞는 상수를 찾아 전달 하고 있습니다. <br />
+위와 같은 분기문이 나열되어 있는 것이 좋은 패턴일까요 ?</li>
+</ul>
+
+<h3 id="enum-리팩토링---분기문을-없애보자">Enum 리팩토링 - 분기문을 없애보자.</h3>
+
+<ul>
+  <li>분기문을 없애면서 저희는 Java 8 이상을 사용하는 개발자들로  추상메소드를 사용한 방식보다 Lambda를 사용한 <code class="highlighter-rouge">OperatorType</code>으로 리팩토링 해보겠습니다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26<br/>27<br/>28<br/>29<br/>30<br/>31<br/>32<br/>33<br/>34</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="n">OperatorType</span> <span class="o">{</span>
+    <span class="n">PLUS_OPERATOR</span><span class="o">(</span><span class="s">"+"</span><span class="o">,</span> <span class="o">(</span><span class="n">sum</span><span class="o">,</span> <span class="n">nextNumber</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">nextNumber</span><span class="o">),</span>
+    <span class="n">MINUS_OPERATOR</span><span class="o">(</span><span class="s">"-"</span><span class="o">,</span> <span class="o">(</span><span class="n">sum</span><span class="o">,</span> <span class="n">nextNumber</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">sum</span> <span class="o">-</span> <span class="n">nextNumber</span><span class="o">),</span>
+    <span class="n">MULTIPLY_OPERATOR</span><span class="o">(</span><span class="s">"*"</span><span class="o">,</span> <span class="o">(</span><span class="n">sum</span><span class="o">,</span> <span class="n">nextNumber</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">sum</span> <span class="o">*</span> <span class="n">nextNumber</span><span class="o">),</span>
+    <span class="n">DIVIDE_OPERATOR</span><span class="o">(</span><span class="s">"/"</span><span class="o">,</span> <span class="o">(</span><span class="n">sum</span><span class="o">,</span> <span class="n">nextNumber</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">nextNumber</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">IllegalArgumentException</span><span class="o">(</span><span class="s">"0 으로 나눌수 없습니다."</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">sum</span> <span class="o">/</span> <span class="n">nextNumber</span><span class="o">;</span>
+    <span class="o">});</span>
+
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">operator</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">Calculation</span> <span class="n">calculation</span><span class="o">;</span>
+
+    <span class="n">OperatorType</span><span class="o">(</span><span class="n">String</span> <span class="n">operator</span><span class="o">,</span> <span class="n">Calculation</span> <span class="n">calculation</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">operator</span> <span class="o">=</span> <span class="n">operator</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">calculation</span> <span class="o">=</span> <span class="n">calculation</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">OperatorType</span> <span class="nf">findOperator</span><span class="o">(</span><span class="n">String</span> <span class="n">operator</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">operator</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">IllegalArgumentException</span><span class="o">(</span><span class="s">"연산자는 null 이 될 수 없습니다."</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="n">values</span><span class="o">()).</span><span class="na">stream</span><span class="o">()</span>
+                <span class="o">.</span><span class="na">filter</span><span class="o">(</span><span class="n">operatorType</span> <span class="o">-&gt;</span> <span class="n">operatorType</span><span class="o">.</span><span class="na">operator</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">operator</span><span class="o">))</span>
+                <span class="o">.</span><span class="na">findFirst</span><span class="o">()</span>
+                <span class="o">.</span><span class="na">orElseThrow</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="k">new</span> <span class="n">IllegalArgumentException</span><span class="o">(</span><span class="s">"사칙연산 기호가 아닙니다."</span><span class="o">));</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">double</span> <span class="nf">calculate</span><span class="o">(</span><span class="kt">double</span> <span class="n">sum</span><span class="o">,</span> <span class="kt">double</span> <span class="n">nextNumber</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">calculation</span><span class="o">.</span><span class="na">calculate</span><span class="o">(</span><span class="n">sum</span><span class="o">,</span> <span class="n">nextNumber</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4</pre></td><td class="code"><pre class="highlight"><code><span class="nd">@FunctionalInterface</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Calculation</span> <span class="o">{</span>
+    <span class="kt">double</span> <span class="nf">calculate</span><span class="o">(</span><span class="kt">double</span> <span class="n">sum</span><span class="o">,</span> <span class="kt">double</span> <span class="n">nextNumber</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>뭔가 더욱 깔끔하게 리팩토링된것이 느껴진다면 성공입니다 : )</li>
+  <li>추상메소드를 사용한 방식 대신 Lambda로 calculate를 구현 하였습니다.
+    <ul>
+      <li>Lambda를 사용하기 위하여 @FunctionalInterface를 만들었습니다.
+        <ul>
+          <li>@FunctionalInterface는 메소드 1개를 가진 인터페이스 입니다.</li>
+        </ul>
+      </li>
+      <li>Java가 제공하는 함수형 인터페이스도 사용할 수 있습니다. 
+  Function&lt;T, R&gt; 은 매개변수 1개를 지원하고 2개는 BiFunction을 사용하셔도 됩니다.</li>
+    </ul>
+  </li>
+  <li>분기문이 없어진 것을 확인 할 수 있습니다.
+    <ul>
+      <li>Stream 을 사용하여 분기문을 제거하고 코드의 가독성을 높혀 다른 개발자들이 보더라도 어떤 기능을 하는지 쉽게 알수 있게 되었습니다. : )</li>
+    </ul>
+  </li>
+  <li>이처럼 리팩토링을 하게 되어 얻을수 있는 가장 큰 이점은 재사용성과 확장성을 얻을 수 있게 되었다는 것 입니다.</li>
+  <li>
+    <p>다른 클래스에서 사칙연산을 하기 위해선 <code class="highlighter-rouge">OperatorType</code>만 사용하면 될 것이고 새로운 연산자가 추가 되더라도 <br />
+복잡한 분기문들을 제거 하였기 때문에 상수 정의만 해준다면 어디서든 정상적으로 동작하겠죠 :)</p>
+  </li>
+  <li>예제를 사칙연산으로 들었지만 Enum을 사용하는 어느 곳이라도 비슷하게 적용할 수 있을것이라 생각하여 공유드렸습니다.</li>
+</ul>
+
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            
+            <a href="/tag/#/Java" rel="tag"># Java</a>
+          
+        </div>
+      
+
+      
+      
+      
+      
+      
+
+      
+      
+        <div class="post-nav" id="post-nav-id">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/dev/2020/05/10/java-this-and-super/" rel="next" title="This 와 Super에 대한 오해">
+                <i class="fa fa-chevron-left"></i> This 와 Super에 대한 오해
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/dev/2020/04/25/tdd-clean-code-5w/" rel="prev" title="TDD, CleanCode, Refactoring 5주차 정리">
+                TDD, CleanCode, Refactoring 5주차 정리 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+      
+
+      
+    </footer>
+  </article>
+
+  <div class="post-spread">
+    
+  </div>
+</div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        
+        
+        
+
+
+
+
+
+
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            목차
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            흝어보기
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/assets/images/avatar.gif"
+               alt="DongChul Lee" />
+          <p class="site-author-name" itemprop="name">DongChul Lee</p>
+           
+              <p class="site-description motion-element" itemprop="description">사내 공유, 개인의 경험을 기록하는 블로그입니다.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">포스트</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">카테고리</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">태그</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+        
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              
+              
+              <span class="links-of-author-item">
+                <a href="https://github.com/sah3122" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+
+
+
+
+
+
+
+            
+              <div class="post-toc-content">
+    <ol class=nav>
+      <li class="nav-item nav-level-3"> <a class="nav-link" href="#enum---상수의-집합-"> <span class="nav-number">1</span> <span class="nav-text">Enum - 상수의 집합 ?</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#enum---상태와-행위를-한곳에"> <span class="nav-number">2</span> <span class="nav-text">Enum - 상태와 행위를 한곳에</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#enum-리팩토링---분기문을-없애보자"> <span class="nav-number">3</span> <span class="nav-text">Enum 리팩토링 - 분기문을 없애보자.</span> </a> </li>
+    </ol>
+  </div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DongChul Lee</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://jekyllrb.com">Jekyll</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/simpleyyt/jekyll-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+   
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/assets/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/assets/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/assets/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/assets/js/src/post-details.js?v=5.1.1"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/assets/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+    
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/assets/js/src/js.cookie.js?v=5.1.1"></script>
+  <script type="text/javascript" src="/assets/js/src/scroll-cookie.js?v=5.1.1"></script>
+
+
+  
+
+</body>
+</html>
+

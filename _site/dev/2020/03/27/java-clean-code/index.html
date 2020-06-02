@@ -1,0 +1,1087 @@
+
+<!doctype html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next muse use-motion" lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/assets/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/assets/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/assets/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="DDD,Java,Clean Code," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="천천히 걷는 방법" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Clean Code를 작성하는 방법 공유">
+<meta name="keywords" content="DDD, Java, Clean Code">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java Clean Code 작성법">
+<meta property="og:url" content="http://localhost:4000/dev/2020/03/27/java-clean-code/">
+<meta property="og:site_name" content="천천히 걷는 방법">
+<meta property="og:description" content="Clean Code를 작성하는 방법 공유">
+<meta property="og:locale" content="ko">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java Clean Code 작성법">
+<meta name="twitter:description" content="Clean Code를 작성하는 방법 공유">
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '작성자'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://localhost:4000/"/>
+
+
+
+
+
+  <title>Java Clean Code 작성법 | 천천히 걷는 방법</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="ko">
+
+  
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">천천히 걷는 방법</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">적당히 잘하는 개발자가 되기 위한 기록 저장소</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            홈
+          </a>
+        </li>
+      
+        
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            아카이브
+          </a>
+        </li>
+      
+        
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            태그
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+<div id="posts" class="posts-expand">
+  
+  
+
+  
+
+  
+  
+  
+
+  <article class="post post-type- " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://localhost:4000/dev/2020/03/27/java-clean-code/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="DongChul Lee">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="assets/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="천천히 걷는 방법">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+          
+          
+            Java Clean Code 작성법
+          
+        </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">작성일</span>
+              
+              <time title="" itemprop="dateCreated datePublished" datetime="2020-03-27T00:00:00+09:00">
+                2020-03-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/category/#/dev" itemprop="url" rel="index">
+                    <span itemprop="name">dev</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            
+                <div class="post-description">
+                    Clean Code를 작성하는 방법 공유
+                </div>
+            
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <blockquote>
+  <p>해당 포스트는 DDD 세레나데의 강의를 정리하며 작성하였습니다.</p>
+</blockquote>
+
+<h1 id="java-code-작성-팁">Java Code 작성 팁</h1>
+
+<ul>
+  <li>불변객체(Value Object)를 사용하자.
+    <ul>
+      <li>불변객체란 ?<br />
+  위키 백과 - 컴퓨터 과학에서 가치 객체는 동일성을 기반으로하지 않는 단순 개체를 나타내는 작은 객체입니다. <br />
+  즉, 두 객체가 동일한 값을 가질 때 동일하며 반드시 동일한 객체 일 필요는 없습니다. 가치 개체의 예는 금액 또는 날짜 범위를 나타내는 개체입니다.</li>
+      <li>동일한 값을 가질때 동일한 객체임을 보장해주며 객체의 상태를 변경할 될 수 없는 객체이다.</li>
+      <li>의미를 명확하게 표현하거나 두 개 이상의 데이터가 개념적으로 하나인 경우 밸류 타입을 이용</li>
+      <li>시스템이 성숙함에 따라 데이터 값을 객체로 대체</li>
+      <li>밸류 객체의 값을 변경하는 방법은 새로운 밸류 객체를 할당하는 것뿐이다.</li>
+      <li>정말 String으로 우편 번호를 표현할 수 있는가?</li>
+      <li>항상 equals() 메서드를 오버라이드할 것을 권고한다.
+        <blockquote>
+          <p>equals를 재정의하려거든 hashCode도 재정의하라 - Effective Java</p>
+        </blockquote>
+      </li>
+    </ul>
+  </li>
+  <li>일급 컬렉션을 사용하자.
+    <ul>
+      <li>참고 <a href="https://jojoldu.tistory.com/412">일급 컬렉션 (First Class Collection)의 소개와 써야할 이유</a></li>
+      <li>일급 컬렉션 이란 ?
+        <blockquote>
+          <p>콜렉션을 포함한 클래스는 반드시 다른 멤버 변수가 없어야 한다.
+각 콜렉션은 그 자체로 포장돼 있으므로 이제 콜렉션과 관련된 동작은 근거지가 마련된셈이다.
+필터가 이 새 클래스의 일부가 됨을 알 수 있다.
+필터는 또한 스스로 함수 객체가 될 수 있다.
+또한 새 클래스는 두 그룹을 같이 묶는다든가 그룹의 각 원소에 규칙을 적용하는 등의 동작을 처리할 수 있다.</p>
+        </blockquote>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">LottoNumbers</span> <span class="o">{</span>
+	  <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Integer</span> <span class="n">LOTTO_NUMBER_SIZE</span> <span class="o">=</span> <span class="mi">6</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">numbers</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">LottoNumbers</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">numbers</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">validNumber</span><span class="o">(</span><span class="n">numbers</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">numbers</span> <span class="o">=</span> <span class="n">numbers</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">validNumber</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">numbers</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">numbers</span><span class="o">)</span> <span class="o">||</span> <span class="n">number</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">!=</span> <span class="n">LOTTO_NUMBER_SIZE</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">IllegalArgumentException</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">Integer</span> <span class="nf">totalValue</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">numbers</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+                <span class="o">.</span><span class="na">mapToInt</span><span class="o">(</span><span class="nl">Integer:</span><span class="o">:</span><span class="n">intValue</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">sum</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+<ul>
+  <li>항상 방어적 복사를 생각하자.
+    <ul>
+      <li>Java 에서는 값을 참조하는 방법이 크게 두가지가 존재
+        <ul>
+          <li>Call by Reference</li>
+          <li>Call by Value</li>
+        </ul>
+      </li>
+      <li>일반적으로 객체간의 값 복사는 Call by Reference 방식으로 통하여 값이 복사 된다.
+  이 방식으로 값을 복사 하면 위에서 말한 일급 컬렉션이 불변하지 않게 되는 문제점이 있다. 그래서 항상 방어적 복사(DeepCopy)를 생각하는 방식	을 권장한다.</li>
+    </ul>
+  </li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15</pre></td><td class="code"><pre class="highlight"><code><span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">lottoNumbers</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
+<span class="n">lottoNumbers</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mi">4</span><span class="o">);</span>
+<span class="n">lottoNumbers</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mi">5</span><span class="o">);</span>
+<span class="n">lottoNumbers</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mi">6</span><span class="o">);</span>
+<span class="n">lottoNumbers</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mi">8</span><span class="o">);</span>
+<span class="n">lottoNumbers</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mi">13</span><span class="o">);</span>
+<span class="n">lottoNumbers</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mi">45</span><span class="o">);</span>
+
+<span class="n">Numbers</span> <span class="n">numbers</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Numbers</span><span class="o">(</span><span class="n">lottoNumbers</span><span class="o">);</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">numbers</span><span class="o">.</span><span class="na">totalValue</span><span class="o">());</span>
+<span class="c1">// 81</span>
+
+<span class="n">lottoNumbers</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">numbers</span><span class="o">.</span><span class="na">totalValue</span><span class="o">());</span>
+<span class="c1">// 83</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Numbers</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Integer</span> <span class="n">LOTTO_NUMBER_SIZE</span> <span class="o">=</span> <span class="mi">6</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">numbers</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">Numbers</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">numbers</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">validNumber</span><span class="o">(</span><span class="n">numbers</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">numbers</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;(</span><span class="n">numbers</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">numbers</span> <span class="o">=</span> <span class="n">Collections</span><span class="o">.</span><span class="na">unmodifiableList</span><span class="o">(</span><span class="n">numbers</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">validNumber</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">numbers</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">numbers</span><span class="o">)</span> <span class="o">||</span> <span class="n">numbers</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">==</span> <span class="n">LOTTO_NUMBER_SIZE</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">IllegalArgumentException</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">Integer</span> <span class="nf">totalValue</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">numbers</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+                <span class="o">.</span><span class="na">mapToInt</span><span class="o">(</span><span class="nl">Integer:</span><span class="o">:</span><span class="n">intValue</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">sum</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+<ul>
+  <li>setter 보다 의미있는 이름의 메소드를 사용해보자.
+    <ul>
+      <li>객체에 getter 메서드와 setter 메서드를 무조건 추가하는 것은 좋지 않은 버릇</li>
+      <li>특히 setter 메서드는 객체의 핵심 개념이나 의도를 코드에서 사라지게 한다.</li>
+      <li>setter 메서드의 또 다른 문제는 객체를 생성할 때 완전한 상태가 아닐 수도 있다는 것이다.</li>
+      <li>도메인 객체가 불완전한 상태로 사용되는 것을 막으려면 생성 시점에 필요한 것을 전달해 주어야 한다.</li>
+    </ul>
+  </li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2</pre></td><td class="code"><pre class="highlight"><code><span class="n">changeShippingInfo</span><span class="o">()</span> <span class="n">vs</span> <span class="nf">setShippingInfo</span><span class="o">()</span>
+<span class="n">completePayment</span><span class="o">()</span> <span class="n">vs</span> <span class="nf">setOrderState</span><span class="o">()</span>
+</code></pre></td></tr></tbody></table></div></div>
+<ul>
+  <li>주/부 생성자를 활용해보자.
+    <ul>
+      <li>주 생성자
+        <ul>
+          <li>모든 상태를 가진 완전한 객체를 생성하는 생성자</li>
+        </ul>
+      </li>
+      <li>부 생성자
+        <ul>
+          <li>상태가 완전하지 않은 객체를 생성하는 생성자</li>
+        </ul>
+      </li>
+      <li>객체를 생성할 때 상태가 완전하지 않은 객체를 생성하는 경우가 있다.
+  이런 객체들을 생성할 때 마다 객체의 상태를 검사하는 로직을 남발하는 경우가 존재한다. 
+  해당 로직들을 주 생성자에 위임하여 항상 동일한 로직을 타도록 설정 할 수 있다.</li>
+    </ul>
+  </li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26<br/>27<br/>28<br/>29<br/>30<br/>31<br/>32<br/>33<br/>34<br/>35<br/>36<br/>37<br/>38<br/>39</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Menu</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">BigDecimal</span> <span class="n">price</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">Long</span> <span class="n">menuGroupId</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">MenuProduct</span><span class="o">&gt;</span> <span class="n">menuProducts</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">Menu</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">,</span> <span class="n">BigDecimal</span> <span class="n">price</span><span class="o">,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">MenuProduct</span><span class="o">&gt;</span> <span class="n">menuProducts</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">(</span><span class="n">name</span><span class="o">,</span> <span class="n">price</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="n">menuProducts</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nf">Menu</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">,</span> <span class="n">BigDecimal</span> <span class="n">price</span><span class="o">,</span> <span class="n">Long</span> <span class="n">menuGroupId</span><span class="o">,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">MenuProduct</span><span class="o">&gt;</span> <span class="n">menuProducts</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">validName</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+        <span class="n">validPrice</span><span class="o">(</span><span class="n">price</span><span class="o">);</span>
+        <span class="n">validMenuProducts</span><span class="o">(</span><span class="n">menuProducts</span><span class="o">);</span>
+
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">price</span> <span class="o">=</span> <span class="n">price</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">menuGroupId</span> <span class="o">=</span> <span class="n">menuGroupId</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">menuProducts</span> <span class="o">=</span> <span class="n">menuProducts</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">validMenuProducts</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">MenuProduct</span><span class="o">&gt;</span> <span class="n">menuProducts</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">menuProducts</span><span class="o">)</span> <span class="o">||</span> <span class="n">menuProducts</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">IllegalArgumentException</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">validPrice</span><span class="o">(</span><span class="n">BigDecimal</span> <span class="n">price</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">price</span><span class="o">)</span> <span class="o">||</span> <span class="n">price</span><span class="o">.</span><span class="na">compareTo</span><span class="o">(</span><span class="n">BigDecimal</span><span class="o">.</span><span class="na">ZERO</span><span class="o">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">IllegalArgumentException</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">validName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">Objects</span><span class="o">.</span><span class="na">isNull</span><span class="o">(</span><span class="n">name</span><span class="o">)</span> <span class="o">||</span> <span class="n">StringUtils</span><span class="o">.</span><span class="na">isEmptyOrWhitespace</span><span class="o">(</span><span class="n">name</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">IllegalArgumentException</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+<ul>
+  <li>생성자 보다는 정적 팩토리 메소드를 사용하자.
+    <ul>
+      <li><a href="https://johngrib.github.io/wiki/static-factory-method-pattern/">정적 팩토리 메서드(static factory method) - 기계인간 John Grib</a></li>
+    </ul>
+  </li>
+  <li>Package By Feature, Not Layer
+    <ul>
+      <li>패키지를 생성하는 전략 크게 두가지로 나뉘어 생성이 가능하다.
+        <ol>
+          <li>Package by Layer
+            <ul>
+              <li>Spring에서 일반적으로 사용하는 Controller / Service / Repository 등의 패키지를 최상단 패키지로 설정하여 프로젝트를 구성하는 방식</li>
+            </ul>
+          </li>
+          <li>Package by Feature
+            <ul>
+              <li>도메인 중심으로 패키지를 생성하는 방식.
+                <ul>
+                  <li>각 도메인이 최 상단 패키지가 되어 하위에 api / application / infrastructure / domain 등을 가지게 된다.</li>
+                  <li>정답은 없다.</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ol>
+      </li>
+      <li>프로젝트의 규모가 커질수록 Package By Layer 의 구조는 복잡성이 증가하게 된다.</li>
+      <li>
+        <p>반면 Feature중심의 패키지 구조로 되어 있으면 연관성이 있는 패키지들이 새롭게 추가 되기 때문에 기존 패키지에 영향을 미치지 않게 되며
+  필요한 기능들이 군집해 있기 때문에 다른 패키지들간의 영향을 줄일수 있게 된다.</p>
+      </li>
+      <li>참고 자료를 보시는것이 더욱 좋습니다 : )</li>
+      <li>http://www.javapractices.com/topic/TopicAction.do?Id=205</li>
+      <li>https://medium.com/@ssowonny/package-by-feature-in-clean-architecture-projects-e14d25e3905e</li>
+    </ul>
+  </li>
+</ul>
+
+<p>#JAVA/Code</p>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            
+            <a href="/tag/#/DDD" rel="tag"># DDD</a>
+          
+            
+            <a href="/tag/#/Java" rel="tag"># Java</a>
+          
+            
+            <a href="/tag/#/Clean%20Code" rel="tag"># Clean Code</a>
+          
+        </div>
+      
+
+      
+      
+      
+      
+      
+
+      
+      
+        <div class="post-nav" id="post-nav-id">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/dev/2020/03/29/tdd-clean-code-1w/" rel="next" title="TDD, CleanCode, Refactoring 1주차 정리">
+                <i class="fa fa-chevron-left"></i> TDD, CleanCode, Refactoring 1주차 정리
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/dev/2020/03/20/ddd-serenade-5w/" rel="prev" title="DDD 세레나데 5주차 강의 정리">
+                DDD 세레나데 5주차 강의 정리 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+      
+
+      
+    </footer>
+  </article>
+
+  <div class="post-spread">
+    
+  </div>
+</div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        
+        
+        
+
+
+
+
+
+
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            목차
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            흝어보기
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/assets/images/avatar.gif"
+               alt="DongChul Lee" />
+          <p class="site-author-name" itemprop="name">DongChul Lee</p>
+           
+              <p class="site-description motion-element" itemprop="description">사내 공유, 개인의 경험을 기록하는 블로그입니다.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">포스트</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">카테고리</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">태그</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+        
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              
+              
+              <span class="links-of-author-item">
+                <a href="https://github.com/sah3122" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+
+
+
+
+
+
+
+            
+              <div class="post-toc-content">
+    <ol class=nav>
+      <li class="nav-item nav-level-1"> <a class="nav-link" href="#java-code-작성-팁"> <span class="nav-number">1</span> <span class="nav-text">Java Code 작성 팁</span> </a> </li>
+    </ol>
+  </div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DongChul Lee</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://jekyllrb.com">Jekyll</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/simpleyyt/jekyll-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+   
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/assets/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/assets/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/assets/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/assets/js/src/post-details.js?v=5.1.1"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/assets/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+    
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/assets/js/src/js.cookie.js?v=5.1.1"></script>
+  <script type="text/javascript" src="/assets/js/src/scroll-cookie.js?v=5.1.1"></script>
+
+
+  
+
+</body>
+</html>
+
