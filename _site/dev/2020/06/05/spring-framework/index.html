@@ -1,0 +1,1134 @@
+
+<!doctype html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next muse use-motion" lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/assets/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/assets/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/assets/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java,Spring," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="천천히 걷는 방법" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="백기선님 강의 스프링프레임워크 핵심 기술 정리 노트">
+<meta name="keywords" content="Java, Spring">
+<meta property="og:type" content="article">
+<meta property="og:title" content="스프링 프레임워크 핵심 정리">
+<meta property="og:url" content="http://localhost:4000/dev/2020/06/05/spring-framework/">
+<meta property="og:site_name" content="천천히 걷는 방법">
+<meta property="og:description" content="백기선님 강의 스프링프레임워크 핵심 기술 정리 노트">
+<meta property="og:locale" content="ko">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="스프링 프레임워크 핵심 정리">
+<meta name="twitter:description" content="백기선님 강의 스프링프레임워크 핵심 기술 정리 노트">
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '작성자'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://localhost:4000/"/>
+
+
+
+
+
+  <title>스프링 프레임워크 핵심 정리 | 천천히 걷는 방법</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="ko">
+
+  
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">천천히 걷는 방법</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">적당히 잘하는 개발자가 되기 위한 기록 저장소</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            홈
+          </a>
+        </li>
+      
+        
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            아카이브
+          </a>
+        </li>
+      
+        
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            태그
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+<div id="posts" class="posts-expand">
+  
+  
+
+  
+
+  
+  
+  
+
+  <article class="post post-type- " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://localhost:4000/dev/2020/06/05/spring-framework/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="DongChul Lee">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="assets/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="천천히 걷는 방법">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+          
+          
+            스프링 프레임워크 핵심 정리
+          
+        </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">작성일</span>
+              
+              <time title="" itemprop="dateCreated datePublished" datetime="2020-06-05T00:00:00+09:00">
+                2020-06-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/category/#/dev" itemprop="url" rel="index">
+                    <span itemprop="name">dev</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            
+                <div class="post-description">
+                    백기선님 강의 스프링프레임워크 핵심 기술 정리 노트
+                </div>
+            
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <blockquote>
+  <p>백기선님 강의 스프링프레임워크 핵심 기술 정리 노트
+작성중인 문서입니다.</p>
+</blockquote>
+
+<h1 id="ioc-컨테이너">IoC 컨테이너</h1>
+
+<h2 id="스프링-ioc-컨테이너와-빈">스프링 IoC 컨테이너와 빈</h2>
+<p>Inverse of Controll : 의존 관계 주입(Dependency Injection)이라고 하며 어떤 객체가 사용하는 의존객체를 직접 생성하지 않고<br />
+외부로부터 주입 받아 사용하는 방법<br />
+의존 관계 주입에 대한 장점을 더 알아보시려면 Open Close Principal에 대하여 공부해보시는 것을 추천 드립니다.</p>
+
+<ul>
+  <li>스프링 IoC 컨테이너
+    <ul>
+      <li>BeanFactory : 스프링 빈 컨테이너에 접근하기 위한 최상위 인터페이스</li>
+      <li>애플리케이션 컴포넌트의 중앙 저장소</li>
+      <li>빈 설정소스로 부터 빈 정의, 빈을 구성하고 제공하는 역할을 한다.</li>
+    </ul>
+  </li>
+  <li>Bean이란 ?
+    <ul>
+      <li>스프링 IoC 컨테이너가 관리하는 객체</li>
+      <li>장점
+        <ul>
+          <li>의존성 관리</li>
+          <li>스코프
+            <ul>
+              <li>싱글톤 : 흔히 알고 있는 싱글톤 패턴과 같이 하나만 생성</li>
+              <li>프로포토 타입 : 빈이 생성될 때 마다 매번 다른 객체를 생성하는 방법
+                <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5</pre></td><td class="code"><pre class="highlight"><code><span class="nd">@Component</span>
+<span class="nd">@Scope</span><span class="o">(</span><span class="n">ConfigurableBeanFactory</span><span class="o">.</span><span class="na">SCOPE_PROTOTYPE</span><span class="o">)</span>
+
+<span class="nd">@Bean</span>
+<span class="nd">@Scope</span><span class="o">(</span><span class="n">ConfigurableBeanFactory</span><span class="o">.</span><span class="na">SCOPE_PROTOTYPE</span><span class="o">)</span>
+</code></pre></td></tr></tbody></table></div>                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>ApplicationContext
+    <ul>
+      <li>BeanFactory를 상속받고, 스프링에서 제공하는 다양한 기능을 사용할 수 있는 인터페이스
+        <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">ApplicationContext</span> <span class="kd">extends</span> <span class="n">EnvironmentCapable</span><span class="o">,</span> <span class="n">ListableBeanFactory</span><span class="o">,</span> <span class="n">HierarchicalBeanFactory</span><span class="o">,</span>
+    <span class="n">MessageSource</span><span class="o">,</span> <span class="n">ApplicationEventPublisher</span><span class="o">,</span> <span class="n">ResourcePatternResolver</span>
+</code></pre></td></tr></tbody></table></div>        </div>
+      </li>
+      <li>메시지 소스 처리 (i18n)</li>
+      <li>이벤트 발생 기능</li>
+      <li>리소스 로딩 기능</li>
+      <li>…</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="applicationcontext와-다양한-빈-설정-방법">ApplicationContext와 다양한 빈 설정 방법</h2>
+
+<ul>
+  <li>스프링 IOC 컨테이너의 역할
+    <ul>
+      <li>빈 인스턴스 생성</li>
+      <li>의존 관계 설정</li>
+      <li>빈 제공</li>
+    </ul>
+  </li>
+  <li>ApplicationContext
+    <ul>
+      <li>ClassPathXmlApplicationContext : Class Path에 정의되어 있는 파일을 읽어 빈을 생성</li>
+      <li>AnnotationConfigApplicationContext : Annotation 기반 빈 생성</li>
+    </ul>
+  </li>
+  <li>빈 설정
+    <ul>
+      <li>빈 명세서</li>
+      <li>빈에 대한 정의를 담고 있다.
+        <ul>
+          <li>이름</li>
+          <li>클래스</li>
+          <li>스코프</li>
+          <li>생성자 (Constructor)</li>
+          <li>프로퍼트 (Setter)</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>컴포넌트 스캔
+    <ul>
+      <li>설정 방법
+        <ul>
+          <li>XML - context:component-scan</li>
+          <li>java - @ComponentScan</li>
+        </ul>
+      </li>
+      <li>특정 패키지 이하의 모든 클래스 중 @Component 애노테이션을 사용한 클래스를 빈으로 등록</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="autowire">@Autowire</h2>
+<p>필요한 의존 객체의 <strong>타입</strong>에 해당하는 빈을 찾아 주입한다.</p>
+
+<ul>
+  <li>@Autowired
+    <ul>
+      <li>required : 기본값이 true 이기 때문에 어플리케이션 구동 시 주입할 빈을 찾지 못하면 어플리케이션이 실행되지 않는다.</li>
+    </ul>
+  </li>
+</ul>
+
+<blockquote>
+  <p>현재는 @Autowired를 통한 빈 주입방식 보다는 생성자를 사용한 빈 주입 방식을 사용해야한다.</p>
+</blockquote>
+
+<ul>
+  <li>사용 할 수 있는 위치
+    <ul>
+      <li>생성자 (스프링 4.3 부터는 생략 가능)</li>
+      <li>세터, 필드</li>
+    </ul>
+  </li>
+  <li>경우의 수
+    <ul>
+      <li>해당 타입의 빈이 없는 경우 - 실패</li>
+      <li>해당 타입의 빈이 한 개인 경우</li>
+      <li>해당 타입의 빈이 여러 개인 경우
+        <ul>
+          <li>빈 이름으로 시도
+            <ul>
+              <li>같은 이름의 빈을 찾으면 해당 빈 사용
+                <ul>
+                  <li>같은 이름을 못 찾으면 실패</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li>@Primary</li>
+          <li>해당 타입의 빈을 모두 주입</li>
+          <li>@Qualifier (빈 이름으로 주입)</li>
+        </ul>
+      </li>
+      <li>동작 원리
+        <ul>
+          <li>BeanPostProcessor
+            <ul>
+              <li>빈 인스턴스를 수정할 수 있는 라이프 사이클 인터페이스</li>
+              <li>postProcessAfterInitialization, postProcessBeforeInitialization 인터페이스를 제공한다.</li>
+            </ul>
+          </li>
+          <li>AutowiredAnnotationBeanPostProcessor
+            <ul>
+              <li>BeanPostProcessor를 구현한 클래스 이며 스프링이 제공하는 @Autowired와 @Value 애노테이션 그리고 JSR-330의 @Inject 애노테이션을 지원하는 애노테이션 처리기.</li>
+              <li><code class="highlighter-rouge">that autowires annotated fields, setter methods, and arbitrary config methods</code></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="component와-컴포넌트-스캔">@Component와 컴포넌트 스캔</h2>
+<ul>
+  <li>컴포넌트 스캔의 주요 기능
+    <ul>
+      <li>스캔 위치 설정</li>
+      <li>필터 : 어떤 애노테이션들을 스캔할지 또는 하지 않을지</li>
+    </ul>
+  </li>
+  <li>@Component 종류
+    <ul>
+      <li>@Repository</li>
+      <li>@Service</li>
+      <li>@Controller</li>
+      <li>@Configuration
+        <blockquote>
+          <p>tmi : Repository나 Service같은 애노테이션 이름은 에릭 에반스의 DDD에서 유래되었다고 적혀있다.</p>
+        </blockquote>
+      </li>
+    </ul>
+  </li>
+  <li>동작원리
+    <ul>
+      <li>@ComponentScan은 스캔할 패키지와 애노테이션에 대한 정보</li>
+      <li>실제 스캐닝은 ConfigurationClassPostProcessor라는 BeanFactoryPostProcessor에 의해 처리 됨.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="빈-스코프">빈 스코프</h2>
+<ul>
+  <li>Scope
+    <ul>
+      <li>Singleton - 기본</li>
+      <li>ProtoType - 모든 요청에서 새로운 Bean을 생성한다.
+        <ul>
+          <li>Request</li>
+          <li>Sesseion</li>
+          <li>WebSocket</li>
+          <li>…</li>
+        </ul>
+      </li>
+      <li><a href="https://docs.spring.io/spring/docs/3.0.0.M3/reference/html/ch04s04.html">https://docs.spring.io/spring/docs/3.0.0.M3/reference/html/ch04s04.html</a></li>
+    </ul>
+  </li>
+  <li>프로토 타입 빈이 싱글톤 빈을 참조 하면 ?
+    <ul>
+      <li>정상 실행</li>
+    </ul>
+  </li>
+  <li>싱글톤 빈이 프로토 타입 빈을 참조하면 ?
+    <ul>
+      <li>프로토 타입 빈이 업데이티 되지 않는다.</li>
+      <li>업데이트 하려면
+        <ul>
+          <li>scoped-proxy</li>
+          <li>Object-Provider</li>
+          <li>Provider (표준)</li>
+        </ul>
+      </li>
+      <li><a href="https://www.baeldung.com/spring-inject-prototype-bean-into-singleton">https://www.baeldung.com/spring-inject-prototype-bean-into-singleton</a></li>
+    </ul>
+  </li>
+  <li>싱글톤 객체 사용시 주의할 점
+    <ul>
+      <li>상태값 공유</li>
+      <li>ApplicationContext 초기 구동시 인스턴스 생성</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="environment-1부---profile">Environment 1부 - Profile</h2>
+<p>프로파일과 프로퍼티를 다루는 인터페이스</p>
+
+<ul>
+  <li><code class="highlighter-rouge">ApplicationContext extends EnvironmentCapable</code>
+    <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code>  <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">EnvironmentCapable</span> <span class="o">{</span>
+      <span class="n">Environment</span> <span class="nf">getEnvironment</span><span class="o">();</span>
+  <span class="o">}</span>
+</code></pre></td></tr></tbody></table></div>    </div>
+  </li>
+  <li>프로파일
+    <ul>
+      <li>빈들의 그룹</li>
+      <li>Environment의 역할은 활성화 할 프로파일 확인 및 설정</li>
+    </ul>
+  </li>
+  <li>프로파일 유즈케이스
+    <ul>
+      <li>테스트 환경에서는 A라는 빈 사용, 배포 환경에서는 B라는 빈을 사용하고 싶다.</li>
+      <li>서비스 환경에만 등록 하기 위한 빈 설정</li>
+    </ul>
+  </li>
+  <li>프로파일 정의하기
+    <ul>
+      <li>Class
+        <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5</pre></td><td class="code"><pre class="highlight"><code><span class="nd">@Configuration</span> 
+<span class="nd">@Profile</span><span class="o">(</span><span class="err">“</span><span class="n">test</span><span class="err">”</span><span class="o">)</span>
+
+<span class="nd">@Component</span> 
+<span class="nd">@Profile</span><span class="o">(</span><span class="err">“</span><span class="n">test</span><span class="err">”</span><span class="o">)</span>
+</code></pre></td></tr></tbody></table></div>        </div>
+      </li>
+      <li>Method
+        <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2</pre></td><td class="code"><pre class="highlight"><code><span class="nd">@Bean</span> 
+<span class="nd">@Profile</span><span class="o">(</span><span class="err">“</span><span class="n">test</span><span class="err">”</span><span class="o">)</span>
+</code></pre></td></tr></tbody></table></div>        </div>
+      </li>
+    </ul>
+  </li>
+  <li>프로파일 설정하기
+    <ul>
+      <li>-Dspring.profiles.avtive=”test,A,B,…”</li>
+      <li>@ActiveProfiles(“test”)</li>
+    </ul>
+  </li>
+  <li>프로파일 표현식
+    <ul>
+      <li><code class="highlighter-rouge">!, &amp;, |</code> 와 같은 표현식으로 여러가지 경우를 계산할 수 있다.</li>
+    </ul>
+  </li>
+</ul>
+
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            
+            <a href="/tag/#/Java" rel="tag"># Java</a>
+          
+            
+            <a href="/tag/#/Spring" rel="tag"># Spring</a>
+          
+        </div>
+      
+
+      
+      
+      
+      
+      
+
+      
+      
+        <div class="post-nav" id="post-nav-id">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/dev/2020/06/02/test-code/" rel="prev" title="테스트 코드를 작성하는 다양한 방법">
+                테스트 코드를 작성하는 다양한 방법 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+      
+
+      
+    </footer>
+  </article>
+
+  <div class="post-spread">
+    
+  </div>
+</div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        
+        
+        
+
+
+
+
+
+
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            목차
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            흝어보기
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/assets/images/avatar.gif"
+               alt="DongChul Lee" />
+          <p class="site-author-name" itemprop="name">DongChul Lee</p>
+           
+              <p class="site-description motion-element" itemprop="description">사내 공유, 개인의 경험을 기록하는 블로그입니다.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">포스트</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">카테고리</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">태그</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+        
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              
+              
+              <span class="links-of-author-item">
+                <a href="https://github.com/sah3122" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+
+
+
+
+
+
+
+            
+              <div class="post-toc-content">
+    <ol class=nav>
+      <li class="nav-item nav-level-1"> <a class="nav-link" href="#ioc-컨테이너"> <span class="nav-number">1</span> <span class="nav-text">IoC 컨테이너</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-2"> <a class="nav-link" href="#스프링-ioc-컨테이너와-빈"> <span class="nav-number">1.1</span> <span class="nav-text">스프링 IoC 컨테이너와 빈</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#applicationcontext와-다양한-빈-설정-방법"> <span class="nav-number">1.2</span> <span class="nav-text">ApplicationContext와 다양한 빈 설정 방법</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#autowire"> <span class="nav-number">1.3</span> <span class="nav-text">@Autowire</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#component와-컴포넌트-스캔"> <span class="nav-number">1.4</span> <span class="nav-text">@Component와 컴포넌트 스캔</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#빈-스코프"> <span class="nav-number">1.5</span> <span class="nav-text">빈 스코프</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#environment-1부---profile"> <span class="nav-number">1.6</span> <span class="nav-text">Environment 1부 - Profile</span> </a> </li> </ol> </li>
+    </ol>
+  </div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DongChul Lee</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://jekyllrb.com">Jekyll</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/simpleyyt/jekyll-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+   
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/assets/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/assets/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/assets/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/assets/js/src/post-details.js?v=5.1.1"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/assets/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+    
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/assets/js/src/js.cookie.js?v=5.1.1"></script>
+  <script type="text/javascript" src="/assets/js/src/scroll-cookie.js?v=5.1.1"></script>
+
+
+  
+
+</body>
+</html>
+
