@@ -150,7 +150,7 @@ Inverse of Controll : 의존 관계 주입(Dependency Injection)이라고 하며
 * 프로파일 유즈케이스
   * 테스트 환경에서는 A라는 빈 사용, 배포 환경에서는 B라는 빈을 사용하고 싶다.
   * 서비스 환경에만 등록 하기 위한 빈 설정
-* 프로파일 정의하기
+* 프로파일 정의하기 
   * Class
     ```java
     @Configuration 
@@ -170,4 +170,45 @@ Inverse of Controll : 의존 관계 주입(Dependency Injection)이라고 하며
 * 프로파일 표현식
   * `!, &, |` 와 같은 표현식으로 여러가지 경우를 계산할 수 있다. 
 
+## Environment 2부 - Property
+* 프로퍼티란 ?
+  * 다양한 방법으로 정의할 수 있는 설정값
+  * [Environment](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/env/Environment.html)의 역할은 프로퍼티 소스 설정 및 값 가져오기 
+* 프로퍼티 우선순위
+  * StandardServletEnvironment의 우선순위
+    * ServletConfig 매개변수
+    * ServletContext 매개변수
+    * JNDI (java:comp/env/)
+    * JVM 시스템 프로퍼티 (-Dkey=”value”)
+    * JVM 시스템 환경 변수 (운영 체제 환경 변수)
+* @PropertySource
+  * Environment를 통해 프로퍼티 추가하는 방법
+* 스프링 부트의 외부 설정 참고
+  * 기본 프로퍼티 소스 지원 (application.properties)
+  * 프로파일 까지 고려한 계층형 프로퍼티 우선순위 제공
 
+## MessageSource
+다양한 언어 지원기능을 제공하는 인터페이스
+
+* `ApplicationContext extends MessageSource`
+    ```java
+      public interface MessageSource {
+        @Nullable
+	      String getMessage(String code, @Nullable Object[] args, @Nullable String defaultMessage, Locale locale);
+        ...
+      }
+    ```
+* 스프링 부트를 사용한다면 별다른 설정 필요없이 message.properties를 사용할 수 있음.
+  * messages.properties
+  * messages_ko_kr.properties
+* Reloading 기능을 제공하는 MessageSource
+  ```java
+    @Bean
+    public MessageSource messageSource() {
+      var messageSource = new ReloadableResourceBundleMessageSource();
+      messageSource.setBasename("classpath:/messages");
+      messageSource.setDefaultEncoding("UTF-8");
+      messageSource.setCacheSeconds(3);
+      return messageSource;
+    }
+  ```  

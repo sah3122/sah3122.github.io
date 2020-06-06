@@ -1,7 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-06-05T19:00:46+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">스프링 프레임워크 핵심 정리</title><link href="http://localhost:4000/dev/2020/06/05/spring-framework/" rel="alternate" type="text/html" title="스프링 프레임워크 핵심 정리" /><published>2020-06-05T00:00:00+09:00</published><updated>2020-06-05T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/06/05/spring-framework</id><content type="html" xml:base="http://localhost:4000/dev/2020/06/05/spring-framework/">&lt;blockquote&gt;
-  &lt;p&gt;백기선님 강의 스프링프레임워크 핵심 기술 정리 노트
-작성중인 문서입니다.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-06-06T16:31:22+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">스프링 프레임워크 핵심 정리</title><link href="http://localhost:4000/dev/2020/06/05/spring-framework/" rel="alternate" type="text/html" title="스프링 프레임워크 핵심 정리" /><published>2020-06-05T00:00:00+09:00</published><updated>2020-06-05T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/06/05/spring-framework</id><content type="html" xml:base="http://localhost:4000/dev/2020/06/05/spring-framework/">&lt;blockquote&gt;
+  &lt;p&gt;백기선님 강의 스프링프레임워크 핵심 기술 정리 노트&lt;/p&gt;
 &lt;/blockquote&gt;
+
+&lt;p&gt;작성중인 문서입니다.&lt;/p&gt;
 
 &lt;h1 id=&quot;ioc-컨테이너&quot;&gt;IoC 컨테이너&lt;/h1&gt;
 
@@ -281,7 +282,72 @@
       &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;!, &amp;amp;, |&lt;/code&gt; 와 같은 표현식으로 여러가지 경우를 계산할 수 있다.&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="Java" /><category term="Spring" /><summary type="html">백기선님 강의 스프링프레임워크 핵심 기술 정리 노트 작성중인 문서입니다.</summary></entry><entry><title type="html">테스트 코드를 작성하는 다양한 방법</title><link href="http://localhost:4000/dev/2020/06/02/test-code/" rel="alternate" type="text/html" title="테스트 코드를 작성하는 다양한 방법" /><published>2020-06-02T00:00:00+09:00</published><updated>2020-06-02T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/06/02/test-code</id><content type="html" xml:base="http://localhost:4000/dev/2020/06/02/test-code/">&lt;blockquote&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;environment-2부---property&quot;&gt;Environment 2부 - Property&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;프로퍼티란 ?
+    &lt;ul&gt;
+      &lt;li&gt;다양한 방법으로 정의할 수 있는 설정값&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/env/Environment.html&quot;&gt;Environment&lt;/a&gt;의 역할은 프로퍼티 소스 설정 및 값 가져오기&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;프로퍼티 우선순위
+    &lt;ul&gt;
+      &lt;li&gt;StandardServletEnvironment의 우선순위
+        &lt;ul&gt;
+          &lt;li&gt;ServletConfig 매개변수&lt;/li&gt;
+          &lt;li&gt;ServletContext 매개변수&lt;/li&gt;
+          &lt;li&gt;JNDI (java:comp/env/)&lt;/li&gt;
+          &lt;li&gt;JVM 시스템 프로퍼티 (-Dkey=”value”)&lt;/li&gt;
+          &lt;li&gt;JVM 시스템 환경 변수 (운영 체제 환경 변수)&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;@PropertySource
+    &lt;ul&gt;
+      &lt;li&gt;Environment를 통해 프로퍼티 추가하는 방법&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;스프링 부트의 외부 설정 참고
+    &lt;ul&gt;
+      &lt;li&gt;기본 프로퍼티 소스 지원 (application.properties)&lt;/li&gt;
+      &lt;li&gt;프로파일 까지 고려한 계층형 프로퍼티 우선순위 제공&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;messagesource&quot;&gt;MessageSource&lt;/h2&gt;
+&lt;p&gt;다양한 언어 지원기능을 제공하는 인터페이스&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ApplicationContext extends MessageSource&lt;/code&gt;
+    &lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MessageSource&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;nd&quot;&gt;@Nullable&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getMessage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;code&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nd&quot;&gt;@Nullable&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nd&quot;&gt;@Nullable&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;defaultMessage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Locale&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;locale&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+      &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;스프링 부트를 사용한다면 별다른 설정 필요없이 message.properties를 사용할 수 있음.
+    &lt;ul&gt;
+      &lt;li&gt;messages.properties&lt;/li&gt;
+      &lt;li&gt;messages_ko_kr.properties&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Reloading 기능을 제공하는 MessageSource
+    &lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;nd&quot;&gt;@Bean&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MessageSource&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;messageSource&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;messageSource&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ReloadableResourceBundleMessageSource&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;messageSource&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setBasename&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;classpath:/messages&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;messageSource&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setDefaultEncoding&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;UTF-8&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;messageSource&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setCacheSeconds&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;messageSource&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="Java" /><category term="Spring" /><summary type="html">백기선님 강의 스프링프레임워크 핵심 기술 정리 노트</summary></entry><entry><title type="html">테스트 코드를 작성하는 다양한 방법</title><link href="http://localhost:4000/dev/2020/06/02/test-code/" rel="alternate" type="text/html" title="테스트 코드를 작성하는 다양한 방법" /><published>2020-06-02T00:00:00+09:00</published><updated>2020-06-02T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/06/02/test-code</id><content type="html" xml:base="http://localhost:4000/dev/2020/06/02/test-code/">&lt;blockquote&gt;
   &lt;p&gt;테스트 코드를 작성하는 다양한 방법&lt;/p&gt;
 &lt;/blockquote&gt;
 
