@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-06-06T16:31:22+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">스프링 프레임워크 핵심 정리</title><link href="http://localhost:4000/dev/2020/06/05/spring-framework/" rel="alternate" type="text/html" title="스프링 프레임워크 핵심 정리" /><published>2020-06-05T00:00:00+09:00</published><updated>2020-06-05T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/06/05/spring-framework</id><content type="html" xml:base="http://localhost:4000/dev/2020/06/05/spring-framework/">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-06-07T21:02:20+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">스프링 프레임워크 핵심 정리</title><link href="http://localhost:4000/dev/2020/06/05/spring-framework/" rel="alternate" type="text/html" title="스프링 프레임워크 핵심 정리" /><published>2020-06-05T00:00:00+09:00</published><updated>2020-06-05T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/06/05/spring-framework</id><content type="html" xml:base="http://localhost:4000/dev/2020/06/05/spring-framework/">&lt;blockquote&gt;
   &lt;p&gt;백기선님 강의 스프링프레임워크 핵심 기술 정리 노트&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -346,8 +346,46 @@
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;messageSource&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
   &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+    &lt;h2 id=&quot;applicationeventpublisher&quot;&gt;ApplicationEventPublisher&lt;/h2&gt;
+    &lt;p&gt;이벤트 프로그래밍에 필요한 인터페이스 제공 &lt;a href=&quot;https://johngrib.github.io/wiki/observer-pattern/&quot;&gt;옵저버패턴&lt;/a&gt; 구현체&lt;/p&gt;
   &lt;/li&gt;
-&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="Java" /><category term="Spring" /><summary type="html">백기선님 강의 스프링프레임워크 핵심 기술 정리 노트</summary></entry><entry><title type="html">테스트 코드를 작성하는 다양한 방법</title><link href="http://localhost:4000/dev/2020/06/02/test-code/" rel="alternate" type="text/html" title="테스트 코드를 작성하는 다양한 방법" /><published>2020-06-02T00:00:00+09:00</published><updated>2020-06-02T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/06/02/test-code</id><content type="html" xml:base="http://localhost:4000/dev/2020/06/02/test-code/">&lt;blockquote&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ApplicationContext extends ApplicationEventPublisher&lt;/code&gt;
+    &lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;nd&quot;&gt;@FunctionalInterface&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ApplicationEventPublisher&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;default&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;publishEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ApplicationEvent&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;publishEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;publishEvent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Object&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;이벤트 만들기
+    &lt;ul&gt;
+      &lt;li&gt;ApplicationEvent 상속&lt;/li&gt;
+      &lt;li&gt;스프링 4.2 부터는 이 클래스를 상속받지 않아도 이벤트로 사용할 수 있다.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;이벤트 처리하는 방법
+    &lt;ul&gt;
+      &lt;li&gt;ApplicationListener&lt;이벤트&gt; 구현한 클래스 만들어서 빈으로 등록하기.&lt;/이벤트&gt;&lt;/li&gt;
+      &lt;li&gt;스프링 4.2 부터는 @EventListener를 사용해서 빈의 메소드에 사용할 수 있다.&lt;/li&gt;
+      &lt;li&gt;기본적으로는 synchronized.&lt;/li&gt;
+      &lt;li&gt;순서를 정하고 싶다면 @Order와 함께 사용.&lt;/li&gt;
+      &lt;li&gt;비동기적으로 실행하고 싶다면 @Async와 함께 사용.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;스프링이 제공하는 기본 이벤트
+    &lt;ul&gt;
+      &lt;li&gt;ContextRefreshedEvent: ApplicationContext를 초기화 했더나 리프래시 했을 때 발생.&lt;/li&gt;
+      &lt;li&gt;ContextStartedEvent: ApplicationContext를 start()하여 라이프사이클 빈들이 시작 신호를 받은 시점에 발생.&lt;/li&gt;
+      &lt;li&gt;ContextStoppedEvent: ApplicationContext를 stop()하여 라이프사이클 빈들이 정지 신호를 받은 시점에 발생.&lt;/li&gt;
+      &lt;li&gt;ContextClosedEvent: ApplicationContext를 close()하여 싱글톤 빈 소멸되는 시점에 발생.&lt;/li&gt;
+      &lt;li&gt;RequestHandledEvent: HTTP 요청을 처리했을 때 발생.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.baeldung.com/spring-events&quot;&gt;사용법&lt;/a&gt;&lt;/p&gt;</content><author><name>DongChul Lee</name></author><category term="Java" /><category term="Spring" /><summary type="html">백기선님 강의 스프링프레임워크 핵심 기술 정리 노트</summary></entry><entry><title type="html">테스트 코드를 작성하는 다양한 방법</title><link href="http://localhost:4000/dev/2020/06/02/test-code/" rel="alternate" type="text/html" title="테스트 코드를 작성하는 다양한 방법" /><published>2020-06-02T00:00:00+09:00</published><updated>2020-06-02T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/06/02/test-code</id><content type="html" xml:base="http://localhost:4000/dev/2020/06/02/test-code/">&lt;blockquote&gt;
   &lt;p&gt;테스트 코드를 작성하는 다양한 방법&lt;/p&gt;
 &lt;/blockquote&gt;
 
