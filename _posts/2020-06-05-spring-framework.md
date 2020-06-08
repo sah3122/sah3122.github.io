@@ -7,9 +7,9 @@ tags:
  - Java
  - Spring
 ---
-> 백기선님 강의 스프링프레임워크 핵심 기술 정리 노트
+> 백기선님 강의 스프링프레임워크 핵심 기술 정리 노트  
+강의 내용을 다시한번 복습하기 위하여 정리합니다.
 
-작성중인 문서입니다.
 
 # IoC 컨테이너
 
@@ -241,4 +241,403 @@ Inverse of Controll : 의존 관계 주입(Dependency Injection)이라고 하며
   * ContextClosedEvent: ApplicationContext를 close()하여 싱글톤 빈 소멸되는 시점에 발생.
   * RequestHandledEvent: HTTP 요청을 처리했을 때 발생.  
 
+```java
+  @Component
+  public class AppRunner implements ApplicationRunner {
+
+      @Autowired
+      ApplicationEventPublisher eventPublisher; // 이벤트를 넘겨주기 위한 객체
+
+      @Override
+      public void run(ApplicationArguments args) throws Exception {
+          eventPublisher.publishEvent(new MyEvent(this, 100));
+
+      }
+  }
+
+  @Component
+  public class MyEventHandler {
+    @EventListener  
+    @Async
+    public void handle(MyEvent myEvent) {
+        System.out.println(Thread.currentThread().toString());
+        System.out.println("event" + myEvent.getData());
+    }
+  }
+```
+
 [사용법](https://www.baeldung.com/spring-events)
+
+## ResourceLoader
+리소스를 읽어오는 기능을 제공하는 인터페이스
+* `ApplicationContext extedns ResoruceLoader`
+  ```java
+    public interface ResourceLoader {
+        String CLASSPATH_URL_PREFIX = "classpath:";
+
+        Resource getResource(String var1);
+
+        @Nullable
+        ClassLoader getClassLoader();
+    }
+  ```
+* 리소스 읽어오기
+  * 파일 시스템에서 읽어오기
+  * 클래스패스에서 읽어오기
+  * URL로 읽어오기
+  * 상대/절대 경로로 읽어오기
+  ```java
+  @Component
+  public class AppRunner implements ApplicationRunner {
+
+      @Autowired
+      ApplicationContext applicationContext;
+
+      @Override
+      public void run(ApplicationArguments args) throws Exception {
+          System.out.println(applicationContext.getClass());
+
+          Resource resource = applicationContext.getResource("classpath:test.txt");
+          System.out.println(resource.getClass());
+          System.out.println(resource.exists());
+          System.out.println(resource.getDescription());
+          System.out.println(Files.readString(Path.of(resource.getURI())));
+      }
+  }
+  ```
+
+## Resource 추상화
+* 특징
+  * java.net.URL을 추상화 한것
+  * 스프링 내부에서 많이 사용하는 인터페이스
+* 추상화 한 이유
+  * 클래스 패스 기준으로 리소스 읽어오는 기능 부재
+  * ServletContext를 기준으로 상대 경로를 읽어오는 기능 부재
+  * 새로운 핸들러를 등록하여 특별한 URL 접미사를 만들어 사용할 수 있지만 구현이 복잡하고 편의성 메소드가 부족하다.
+* [Resource](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/io/Resource.html)
+  * 상속 받은 인터페이스
+  * 주요 메소드
+    * getInputStream()
+    * exitst()
+    * isOpen()
+    * getDescription(): 전체 경로 포함한 파일 이름 또는 실제 URL
+* 구현체
+  * UrlResource : 기본으로 지원하는 프로토콜 http, https, ftp, file, jar
+  * ClassPathResource : 지원하는 접두어 classpath:
+  * FileSystemResource 
+  * ServletContextResource : 웹 어플리케이션 루트에서 상대 경로로 리소스를 찾는다.
+  * ...
+* 리소스 읽어오기
+  * Resource의 타입은 locaion 문자열과 ApplicationContext의 타입에 따라 결정 된다.
+    * ClassPathXmlApplicationContext -> ClassPathResource
+    * FileSystemXmlApplicationContext -> FileSystemResource
+    * WebApplicationContext -> ServletContextResource
+  * ApplicationContext의 타입에 상관없이 리소스 타입을 강제하려면 java.net.URL 접두어(+ classpath:)중 하나를 사용할 수 있다.
+    * classpath:me/whiteship/config.xml -> ClassPathResource
+    * file:///some/resource/path/config.xml -> FileSystemResourc
+
+## Validation 추상화
+애플리케이션에서 사용하는 객체 검증용 인터페이스
+
+* 특징
+  * 어떠한 계층과도 관계가 없다. -> 모든 계층(웹, 서비스, 데이터)에서 사용할 수 있다.
+  * 구현체 중 하나로, JSR-303(Bean Validation 1.0)과 JSR-349(Bean Validation 1.1)을 지원한다.
+* 인터페이스
+  * boolean support(Class clazz) : 어떤 타입의 객체를 검증할 때 사용할 것인지 결정
+  * void validate(Object obj, Errors e) : 실제 검증 로직을 이 안에서 구현
+    * 구현 시 ValidationUtils를 사용하며 편리
+* 스프링 부트 2.0.5 이상 버전을 사용할 때
+  * LocalValidatorFactoryBean 빈으로 자동 등록
+  * JSR-380(Bean Validation 2.0.1) 구현체로 hibernate-validator 사용.
+  * https://beanvalidation.org/
+
+```java
+public class Event {
+
+    Integer id;
+
+    @NotEmpty
+    String title;
+
+    @Min(value = 0)
+    Integer limit;
+
+    @Email
+    String email;
+}
+
+public class EventValidator implements Validator {
+
+    @Override
+    public boolean supports(Class<?> aClass) {
+        return Event.class.equals(aClass);
+    }
+
+    @Override
+    public void validate(Object o, Errors errors) {
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "title", "notempty", "Empty title is not allow"); // errorcode는 messagesource에서 가지고 온다.
+    }
+}
+```
+
+> 참고 : 스프링 부트 2.3 버전 부터 spring-boot-starter-web에서 validtaion이 분리됨.
+spring-boot-starter-validation을 추가해줘야 한다.
+
+## 데이터 바인딩 추상화 : PropertyEditor
+[DataBinder](https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/validation/DataBinder.html)
+
+* 기술적인 관점 
+  * 프로퍼티 값을 타겟 객체에 설정하는 기능
+* 사용자 관점
+  * 사용자 입력값을 애플리케이션 도메인 모델에 동적으로 변환해 넣어주는 기능
+  * 입력값 대부분은 "문자열"이지만 그 값을 객체가 가지고 있는, int, String, long, Boolean 심지어 사용자 도메인으로 변환하여 넣어준다.
+* PropertyEditor 
+  * 스프링 3.0 이전까지 DataBinder가 변환 작업시 사용하던 인터페이스
+  * thread - safe하지 않다.
+  * Object와 String 간의 변환만 할수 있어 사용범위가 제한적.
+
+```java
+public class EventPropertyEditor extends PropertyEditorSupport {
+  @Override
+  public String getAsText() {
+    return ((Event)getValue()).getTitle();
+  }
+  @Override
+  public void setAsText(String text) throws IllegalArgumentException {
+    int id = Integer.parseInt(text);
+    Event event = new Event();
+    event.setId(id);
+    setValue(event);
+  }
+}
+```
+
+## 데이터 바인딩 추상화 : Converter와 Formmater
+
+* [Converter](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/convert/converter/Converter.html)
+  * S 타입을 T 타입으로 변환할 수 있는 일반적인 변환기
+  * 상태값이 없다 -> Thread Safe하다
+  * ConverterRegistry에 등록하여 사용
+  ```java
+    @RestController
+    public class EventController {
+
+        @GetMapping("/event/{event}")
+        public String getEvent(@PathVariable Event event) {
+            return event.getId().toString();
+        }
+    }
+
+    @Component
+    public static class StringToEventConverter implements Converter<String, Event> {
+        @Override
+        public Event convert(String s) {
+            return new Event(Integer.parseInt(s));
+        }
+    }
+    @Configuration
+    public class WebConfig implements WebMvcConfigurer {
+        @Override
+        public void addFormatters(FormatterRegistry registry) {
+            registry.addConverter(new StringToEventConverter());
+        }
+        
+    }
+  ```
+* [Formatter](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/format/Formatter.html)
+  * PropertyEditor 대체제
+  * Object와 String 간의 변환을 담당한다.
+  * 문자열을 Locale에 따라 다국화하는 기능도 제공한다. (optional)
+  * FormatterRegistry에 등록해서 사용
+  ```java
+    //thread safe 하여 bean 등록 가능 및 다른 bean 주입 가능
+    //data binding 관련해서 사용할 경우 event formatter를 사용하는것을 추천.
+    @Component
+    public class EventFomatter implements Formatter<Event> {
+
+        @Autowired
+        MessageSource messageSource;
+
+        @Override
+        public Event parse(String s, Locale locale) throws ParseException {
+            return new Event(Integer.parseInt(s));
+        }
+
+        @Override
+        public String print(Event event, Locale locale) {
+            return event.getId().toString();
+        }
+    }
+
+    @Configuration
+    public class WebConfig implements WebMvcConfigurer {
+        @Override
+        public void addFormatters(FormatterRegistry registry) {
+            registry.addFormatter(new EventFomatter());
+        }
+    }
+  ```
+* [ConversionService](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/convert/ConversionService.html)
+  * 실제 변환 작업은 이 인터페이스를 통해서 thread-safe 하게 사용할 수 있음.
+  * 스프링 MVC, 빈 (value) 설정, SpEL에서 사용한다.
+  * DefaultFormattingConversionService
+    * FormatterRegistry
+    * ConversionService
+    * 여러 기본 컴버터와 포매터 등록 해 줌.
+* 스프링 부트
+  * 웹 애플리케이션인 경우에 DefaultFormattingConversionSerivce를 상속하여 만든 WebConversionService를 빈으로 등록해 준다.  
+    `public class WebConversionService extends DefaultFormattingConversionService`
+  * Formatter와 Converter 빈을 찾아 자동으로 등록해 준다.
+
+```java
+@Component
+public class AppRunner implements ApplicationRunner {
+
+    @Autowired
+    ConversionService conversionService;
+
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        System.out.println(conversionService); // 등록된 converter를 확인 하는 방법.
+        System.out.println(conversionService.getClass().toString());
+    }
+}
+```
+
+## SpEL(Spring Expression Language)
+* [SpEL](https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#expressions) 이란 ?
+  * 객체 그래프를 조회 및 조작하는 기능 제공
+  * 메소드 호출 지원, 문자열 템플릿 기능도 제공
+  * SpEL은 모든 스프링 프로젝트 전반에서 사용하기 위한 EL로 만들어졌다.
+  * 스프링 3.0 부터 지원
+* SpEL 구성
+  * ExpressionParser parser = new SpelExpressionParser()
+  * StandardEvaluationContext context = new StandardEvaluationContext(bean)
+  * Expression expression = parser.parseExpression("SpEL 표현식")
+  * String value = expression.getValue(context, String class)
+
+* 문법
+  * #{"표현식"}
+  * ${"프로퍼티"}
+  * 표현식은 프로퍼티를 가질 수 있지만 반대는 안된다.
+    * #{${my.data} + 1}
+  * [레퍼런스](https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#expressions-language-ref)
+* 사용처
+  * @Value 애노테이션 [참고](https://www.baeldung.com/spring-value-annotation)
+  * @ConditionalOnExpression 애노테이션
+  * Spring Security
+    * Method Security, @PreAuthorize, @PostAuthorize, @PreFilter, @PostFilter
+    * XML 인터셉터 URL 설정
+    * ...
+  * 스프링 데이터
+    * @Query 애노테이션
+  * ...  
+```java
+    @Value("#{1 + 1}")
+    int value;
+
+    @Value("#{'hello ' + 'world'}")
+    String greeting;
+
+    @Value("#{1 eq 1}")
+    boolean trueOrFalse;
+
+    @Value("${my.value}")
+    int myValue;
+
+    @Value("#{${my.value} eq 100}")
+    boolean isMyValue100;
+
+    @Value("#{sample.data}")
+    int sampleData;
+```
+
+## 스프링 AOP
+Aspect - Oriented Programming (AOP)는 OOP를 보완하는 수단으로, 흩어진 Aspect를 모듈화 할 수 있는 프로그래밍 기법
+
+* AOP 주요 개념
+  * Aspect : 흩어진 관심사
+  * Target : Ascpect를 적용하는 매체 (class, method)
+  * Advice : 실직적인 부가 기능을 실행하는 구현체
+  * Join Point와 Pointcut : advice를 실행할 위치, 포지션, 실행 전후 처리 등을 설정하는 기능
+* AOP 구현체
+  * 자바
+    * AspectJ
+    * 스프링 AOP
+* AOP 적용 방법
+  * 컴파일
+  * 로드 타임
+  * 런타임
+
+## 프록시 기반 AOP
+
+* 스프링 AOP 특징
+  * **프록시 기반의 AOP**구현체
+  * **스프링 빈에만 AOP를 적용**할 수 있다.
+  * 모든 AOP기능을 제공하는 것이 목적이 아니라, 스프링 IoC와 연동하여 엔터프라이즈 애플리케이션에서 가장 흔한 문제에 대한 해결책을 제공하는것이 목적.
+* [프록시 패턴](https://jdm.kr/blog/235)
+  * 기존 코드의 변경없이 접근제어 또는 부가 기능을 추가할 수 있는 대리자 패턴
+* 문제점
+  * 매번 프록시 클래스를 작성해야 하는가 ?
+  * 여러 클래스, 여러 메소드에 적용하려면 ?
+* 스프링 AOP
+  * 스프링 IoC컨테이너가 제공하는 기반 시설과 Dynamic 프록시를 사용하여 여러 복잡한 문제 해결
+  * 동적 프록시 : 동적으로 프록시 객체를 생성하는 방법
+    * 자바가 제공하는 방법은 인터페이스 기반 프록시 생성
+    * CGlib는 클래스 기반 프록시도 지원
+  * 스프링 IoC : 기존 빈을 대체하는 동적 프록시 빈을 만들어 등록 시켜준다.
+    * 클라이언트 코드의 변경이 없다.
+    * `public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport implements SmartInstantiationAwareBeanPostProcessor, BeanFactoryAware`
+
+## @AOP
+애노테이션 기반의 스프링 @AOP
+
+* Aspect 정의
+  * @Aspect
+  * 빈으로 등록해야 하니깐 @Component 추가
+* 포인트 컷 정의
+  * @Pointcut(표현식)
+  * 주요 표현식
+    * execution
+    * @annotaion
+    * bean
+  * 포인트 컷 조합
+    * `&&, ||, !`
+* 어드바이스 정의
+  * @Before
+  * @AfterReturning
+  * @AfterThrowing
+  * @Around
+
+```java
+    //Annotation 사용시 Retentionpolicy를 class 이상으로 적용해야 한다.Class파일까지 남아있어야 하기 때문에
+    // 기본값 class
+    @Retention(RetentionPolicy.CLASS)
+    @Target(ElementType.METHOD)
+    @Documented
+    public @interface PerfLogging {}
+
+    @PerfLogging
+    public void createEvent() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("createEvent");
+    }
+
+    @Around("@annotation(PerfLogging)")
+    public Object logPerf(ProceedingJoinPoint pjp) throws Throwable{
+        long begin = System.currentTimeMillis();
+        Object proceed = pjp.proceed();
+        System.out.println(System.currentTimeMillis() - begin);
+        return proceed;
+    }
+
+    @Before("bean(simpleEventService)")
+    public void hello() {
+        System.out.println("Hello");
+    }
+```
