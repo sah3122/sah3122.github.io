@@ -1,4 +1,66 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-06-08T16:48:47+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">스프링 프레임워크 핵심 정리</title><link href="http://localhost:4000/dev/2020/06/05/spring-framework/" rel="alternate" type="text/html" title="스프링 프레임워크 핵심 정리" /><published>2020-06-05T00:00:00+09:00</published><updated>2020-06-05T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/06/05/spring-framework</id><content type="html" xml:base="http://localhost:4000/dev/2020/06/05/spring-framework/">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-06-10T18:51:17+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">스프링 부트 정리</title><link href="http://localhost:4000/dev/2020/06/09/spring-boot/" rel="alternate" type="text/html" title="스프링 부트 정리" /><published>2020-06-09T00:00:00+09:00</published><updated>2020-06-09T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/06/09/spring-boot</id><content type="html" xml:base="http://localhost:4000/dev/2020/06/09/spring-boot/">&lt;blockquote&gt;
+  &lt;p&gt;백기선님 강의 스프링 부트 개념과 활용 정리 노트
+강의 내용을 다시한번 복습하기 위하여 정리합니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;작성중인 문서입니다.&lt;/p&gt;
+
+&lt;p&gt;스프링 부트란 독립적이며, 프로덕션 레벨의 스프링 기반 어플리케이션을 간편하게 만들수 있게 도와주는 툴입니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;스프링-부트-원리&quot;&gt;스프링 부트 원리&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;의존성 관리 이해
+    &lt;ul&gt;
+      &lt;li&gt;스프링 부트에서는 자동으로 의존성을 관리 해준다.&lt;/li&gt;
+      &lt;li&gt;일반적으로 spring-boot-stater-parent에 정의되어 있는 라이브러리는 버전을 명시하지 않아도 현재 사용하는 스프링 부트 버전에 맞게 자동으로 버전을 찾아 적용한다.&lt;/li&gt;
+      &lt;li&gt;parent에 등록되지 않은 라이브러리를 사용할 때는 버전을 명시해줘야 한다.&lt;/li&gt;
+      &lt;li&gt;특정 버전을 사용하고 싶을땐 버전을 명시한게 우선순위를 가지게 된다.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;의존성 관리 응용
+    &lt;ul&gt;
+      &lt;li&gt;의존성 추가
+        &lt;ul&gt;
+          &lt;li&gt;스프링 부트가 관리 해주지않는 라이브러리는 버전을 명시해주는것이 좋다.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;의존성 변경
+        &lt;ul&gt;
+          &lt;li&gt;스프링 부트가 관리해주는 버전도 변경 할 수 있다.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;자동 설정 이해
+    &lt;ul&gt;
+      &lt;li&gt;@EnableAutoConfiguration (@SpringBootApplication 안에 포함되어 있다.)&lt;/li&gt;
+      &lt;li&gt;Spring Bean은 사실 두 단계로 나눠서 생성된다.
+        &lt;ul&gt;
+          &lt;li&gt;1단계 : @ComponentScan&lt;/li&gt;
+          &lt;li&gt;2단계 : @EnableAutoConfiguration&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;@ComponentScan
+        &lt;ul&gt;
+          &lt;li&gt;@Component&lt;/li&gt;
+          &lt;li&gt;@Configuration @Repository @Service @Controller @RestController&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;EnableAutoConfiguration
+        &lt;ul&gt;
+          &lt;li&gt;spring.factories
+            &lt;ul&gt;
+              &lt;li&gt;org.springframework.boot.autoconfigure.EnableAutoConfiguration&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;@Configuration&lt;/li&gt;
+          &lt;li&gt;@ConditionalOnXxxYyyZzz&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="Java" /><category term="Spring" /><summary type="html">백기선님 강의 스프링 부트 개념과 활용 정리 노트 강의 내용을 다시한번 복습하기 위하여 정리합니다.</summary></entry><entry><title type="html">스프링 프레임워크 핵심 정리</title><link href="http://localhost:4000/dev/2020/06/05/spring-framework/" rel="alternate" type="text/html" title="스프링 프레임워크 핵심 정리" /><published>2020-06-05T00:00:00+09:00</published><updated>2020-06-05T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/06/05/spring-framework</id><content type="html" xml:base="http://localhost:4000/dev/2020/06/05/spring-framework/">&lt;blockquote&gt;
   &lt;p&gt;백기선님 강의 스프링프레임워크 핵심 기술 정리 노트&lt;br /&gt;
 강의 내용을 다시한번 복습하기 위하여 정리합니다.&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1932,62 +1994,4 @@ Java7 부터 Enum 상수에 추상 메소드를 구현할 수 있습니다.&lt;/
   &lt;/li&gt;
   &lt;li&gt;클래스 기반 함수를 모으로 메소드 레벨에서 함수형 프로그래밍에 맞게 설계 ?&lt;/li&gt;
   &lt;li&gt;람다를 쓰는게 중요한게 아니고 변경 가능성이 높은 부분을 인터페이스로 추출 할 수 있는지가 중요하다.&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="TDD" /><category term="Clean Code" /><category term="Java" /><summary type="html">TDD, CleanCode, Refactoring 3주차 정리</summary></entry><entry><title type="html">TDD, CleanCode, Refactoring 2주차 정리</title><link href="http://localhost:4000/dev/2020/04/04/tdd-clean-code-2w/" rel="alternate" type="text/html" title="TDD, CleanCode, Refactoring 2주차 정리" /><published>2020-04-04T00:00:00+09:00</published><updated>2020-04-04T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/04/04/tdd-clean-code-2w</id><content type="html" xml:base="http://localhost:4000/dev/2020/04/04/tdd-clean-code-2w/">&lt;blockquote&gt;
-  &lt;p&gt;TDD, CleanCode, Refactoring 2주차 정리&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&quot;코드-컨벤션을-지켜라&quot;&gt;코드 컨벤션을 지켜라&lt;/h3&gt;
-&lt;p&gt;다른 개발자와 협업이나 미래의 나를 위해서라도.&lt;/p&gt;
-
-&lt;p&gt;공백 라인을 의미있게 사용해라.&lt;br /&gt;
-공백 라인이 메소드의 기능을 나누게 되는 기준이 된다. &lt;br /&gt;
-추후 리펙토링 시 메소드 기준으로 기능이 나뉜다는것을 알고 공백기준으로 메소드 리펙토링이 가능하다.&lt;/p&gt;
-
-&lt;h3 id=&quot;네이밍&quot;&gt;네이밍&lt;/h3&gt;
-&lt;p&gt;객체지향 생활 체조 규칙 5 : 축약하지 말라.&lt;br /&gt;
-적당한 길이의 이름을 찾는데 집중해라.&lt;/p&gt;
-
-&lt;p&gt;인스턴스 변수의 중복을 줄이고, 개수를 최소화 해라.&lt;br /&gt;
-데이터를 꺼내려고 하지않고 메시지를 던져라&lt;br /&gt;
-비지니스 로직과 ui로직의 분리.&lt;br /&gt;
-테스트 가능한 코드와 불가능한 코드가 섞여 있으면 분리를 해야 한다.&lt;br /&gt;
-어느 부분을 테스트 할 것인가 ?&lt;br /&gt;
-경계값을 기준으로 테스트해야 한다.&lt;br /&gt;
-Test Fixture를 위해서 생성자를 추가하는것이 옳은 일인가 ? &lt;br /&gt;
-도메인이 DTO역할을 하는 경우라면 생성자를 추가하는것이 허용된다. &lt;br /&gt;
-해당 경우에는 허용하는 것으로 .. &lt;br /&gt;
-역할이 여러개이면 클래스 분리.&lt;br /&gt;
-private메소드가 많아지면 테스트를 해야 하는것인가 ? &lt;br /&gt;
-Private 메소드가 중요한 비지니스 역할을 한다면 새로운 클래스로 분리 되어야 한다. &lt;br /&gt;
-분리 된다면 다른 클래스에서 접근 가능한 메소드가 되기때문에 테스트가 가능하다.&lt;/p&gt;
-
-&lt;h3 id=&quot;tdd&quot;&gt;TDD&lt;/h3&gt;
-&lt;p&gt;이번주 부터는 메소드 분리가 아닌 클래스 분리를 연습 하자&lt;br /&gt;
-모든 원시값과 문자열을 포장한다. &lt;br /&gt;
-일급 콜렉션을 쓴다.&lt;br /&gt;
-생성자를 중복해 정의할 때는 정적 팩토리 메소드를 사용한다.&lt;/p&gt;
-
-&lt;p&gt;tdd는 리팩토링이 가장 중요하다.&lt;br /&gt;
-테스트와 production code를 추가할 때 마다 리팩토링을 해야한다.&lt;br /&gt;
-한번에 리팩토링을 하지 않고 테스트 케이스가 추가 될 때 마다 리팩토링을 하는 연습을 해야 한다.&lt;br /&gt;
-todo리스트를 제대로 만드는것이 tdd를 잘하는 방법이다.&lt;br /&gt;
-설게를 안하는것이 아니고 초반에 대략적인 설계가 필요하다.&lt;br /&gt;
-초반 설계시 테스트 가능한 부분과 힘든 부분까지 설계를 한다면 설계를 잘한 것이다.&lt;/p&gt;
-
-&lt;p&gt;tdd 시작시 인풋과 아웃풋을 결정해야 한다.&lt;br /&gt;
-Getter 를 쓰는순간 없애려고 노력해라 (상태를 가진 데이터를 꺼내는것보다 객체에 메시지를 보내서 일을 시켜라)&lt;/p&gt;
-
-&lt;p&gt;접근 제어자를 잘 사용해서 클래스 및 메소드의 접근 범위를 한정하는것도 도메인을 지키는 방법이다.   특히 default 접근 제어자는 도메인을 지키는 좋은 방법중 하나이다.&lt;/p&gt;
-
-&lt;p&gt;토이 프로젝트에선 최대한 조건을 강제해라&lt;br /&gt;
-인덴트 1, 인스턴스 변수 2개 등의 극한의 조건을 걸어라.&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;h3 id=&quot;qa&quot;&gt;Q&amp;amp;A&lt;/h3&gt;
-&lt;p&gt;Void method 는 검증하는것만으로도 의미가 존재 하는지 ?&lt;br /&gt;
--&amp;gt; 존재한다.&lt;br /&gt;
-Void method 내부에서도 인풋과 아웃풋이 있는 부분을 분리할 수 있을것이다. 그부분을 메소드로 분리해서 테스트 가능하다.&lt;/p&gt;
-
-&lt;h3 id=&quot;유효성-검사&quot;&gt;유효성 검사&lt;/h3&gt;
-&lt;p&gt;도메인은 반드시 유효성 검사를 해야 하는것이 맞다. &lt;br /&gt;
-그렇다고 controller나 다른 레이어에서 유효성검사를 안해도 된다는것은 아니다.&lt;/p&gt;</content><author><name>DongChul Lee</name></author><category term="TDD" /><category term="Clean Code" /><category term="Java" /><summary type="html">TDD, CleanCode, Refactoring 2주차 정리</summary></entry></feed>
+&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="TDD" /><category term="Clean Code" /><category term="Java" /><summary type="html">TDD, CleanCode, Refactoring 3주차 정리</summary></entry></feed>
