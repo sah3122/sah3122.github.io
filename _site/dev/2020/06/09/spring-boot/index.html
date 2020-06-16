@@ -560,6 +560,88 @@
   </li>
 </ul>
 
+<h2 id="스프링-부트-활용">스프링 부트 활용</h2>
+<ul>
+  <li>스프링 부트 활용 소개
+    <ul>
+      <li>스프링 부트 핵심 기능
+        <ul>
+          <li>SpringApplication</li>
+          <li>외부 설정</li>
+          <li>프로파일</li>
+          <li>로깅</li>
+          <li>테스트</li>
+          <li>Spring-Dev-Tools</li>
+        </ul>
+      </li>
+      <li>각종 기술 연동
+        <ul>
+          <li>스프링 웹 MVC</li>
+          <li>스프링 데이터</li>
+          <li>스프링 시큐리티</li>
+          <li>REST API 클라이언트</li>
+          <li>…</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>SpringApplication
+    <ul>
+      <li>기본 로그 레벨 : INFO</li>
+      <li>FailureAnalyzer</li>
+      <li>배너
+        <ul>
+          <li>
+            <table>
+              <tbody>
+                <tr>
+                  <td>banner.txt</td>
+                  <td>gif</td>
+                  <td>jpg</td>
+                </tr>
+              </tbody>
+            </table>
+          </li>
+          <li>classpath 또는 spring.banner.location</li>
+          <li>${spring-booot.version} 등의 변수를 사용할 수 있음</li>
+          <li>Banner 클래스를 구현 후 SpringApplication.setBanner() 등으로 설정 가능</li>
+        </ul>
+      </li>
+      <li>SpringApplicationBuilder로 빌터 패턴 사용 가능.
+        <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4</pre></td><td class="code"><pre class="highlight"><code>  <span class="c1">//SpringApplication.run(SpringBootGetStartApplication.class, args);</span>
+  <span class="k">new</span> <span class="nf">SpringApplicationBuilder</span><span class="o">()</span>
+          <span class="o">.</span><span class="na">sources</span><span class="o">(</span><span class="n">SpringBootGetStartApplication</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+          <span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">args</span><span class="o">);</span>
+</code></pre></td></tr></tbody></table></div>        </div>
+      </li>
+      <li>ApplicationEvent 등록
+        <ul>
+          <li>ApplicationContext를 만들기 전에 사용하는 리스너는 Bean을 등록할 수 없다.
+            <ul>
+              <li>SpringApplication.addListeners()</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>WebApplication Type 설정</li>
+      <li>애플리케이션 아규먼트 사용하기
+        <ul>
+          <li>-D는 JVM 옵션</li>
+          <li>–Application Arguments</li>
+          <li>ApplicationArguments를 빈으로 등록해주니깐 가져다 사용하면 된다.</li>
+        </ul>
+      </li>
+      <li>애플리케이션 실행한 뒤 뭔가 다른 작업을 하고 싶을 경우
+        <ul>
+          <li>ApplicationRunner(추천) 또는 CommandLineRunner</li>
+          <li>순서 지정 기능 @Order</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+
 
       
     </div>
@@ -787,7 +869,7 @@
             
               <div class="post-toc-content">
     <ol class=nav>
-      <li class="nav-item nav-level-2"> <a class="nav-link" href="#스프링-부트-원리"> <span class="nav-number">1</span> <span class="nav-text">스프링 부트 원리</span> </a> </li>
+      <li class="nav-item nav-level-2"> <a class="nav-link" href="#스프링-부트-원리"> <span class="nav-number">1</span> <span class="nav-text">스프링 부트 원리</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#스프링-부트-활용"> <span class="nav-number">2</span> <span class="nav-text">스프링 부트 활용</span> </a> </li>
     </ol>
   </div>
             

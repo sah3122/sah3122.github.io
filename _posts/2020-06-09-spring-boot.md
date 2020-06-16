@@ -88,3 +88,46 @@ tags:
       * 애플리케이션 클래스와 라이브러리 위치 구분
       * org.springframework.boot.loader.jar.JarFile을 사용해서 내장 JAR 를 읽는다.
       * org.springframework.boot.loader.Launcher를 사용해서 실행한다.
+
+## 스프링 부트 활용
+  * 스프링 부트 활용 소개
+    * 스프링 부트 핵심 기능
+      * SpringApplication
+      * 외부 설정
+      * 프로파일
+      * 로깅
+      * 테스트
+      * Spring-Dev-Tools
+    * 각종 기술 연동
+      * 스프링 웹 MVC
+      * 스프링 데이터
+      * 스프링 시큐리티
+      * REST API 클라이언트
+      * ...
+  * SpringApplication
+    * 기본 로그 레벨 : INFO
+    * FailureAnalyzer
+    * 배너
+      * banner.txt | gif | jpg
+      * classpath 또는 spring.banner.location
+      * ${spring-booot.version} 등의 변수를 사용할 수 있음
+      * Banner 클래스를 구현 후 SpringApplication.setBanner() 등으로 설정 가능
+    * SpringApplicationBuilder로 빌터 패턴 사용 가능.
+      ```java
+        //SpringApplication.run(SpringBootGetStartApplication.class, args);
+        new SpringApplicationBuilder()
+                .sources(SpringBootGetStartApplication.class)
+                .run(args);
+      ```
+    * ApplicationEvent 등록
+      * ApplicationContext를 만들기 전에 사용하는 리스너는 Bean을 등록할 수 없다.
+        * SpringApplication.addListeners()
+    * WebApplication Type 설정
+    * 애플리케이션 아규먼트 사용하기
+      * -D는 JVM 옵션
+      * --Application Arguments
+      * ApplicationArguments를 빈으로 등록해주니깐 가져다 사용하면 된다.
+    * 애플리케이션 실행한 뒤 뭔가 다른 작업을 하고 싶을 경우
+      * ApplicationRunner(추천) 또는 CommandLineRunner
+      * 순서 지정 기능 @Order
+    
