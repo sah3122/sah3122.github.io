@@ -83,7 +83,7 @@
 <link href="/assets/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="TDD,Clean Code,Java," />
+  <meta name="keywords" content="Jekyll, NexT" />
 
 
 
@@ -111,17 +111,17 @@
 
 
 
-<meta name="description" content="TDD, CleanCode, Refactoring 2주차 정리">
-<meta name="keywords" content="TDD, Clean Code, Java">
-<meta property="og:type" content="article">
-<meta property="og:title" content="TDD, CleanCode, Refactoring 2주차 정리">
-<meta property="og:url" content="http://localhost:4000/dev/2020/04/04/tdd-clean-code-2w/">
+<meta name="description" content="사내 공유, 개인의 경험을 기록하는 블로그입니다.">
+<meta name="keywords" content="Jekyll, NexT">
+<meta property="og:type" content="website">
+<meta property="og:title" content="천천히 걷는 방법">
+<meta property="og:url" content="http://localhost:4000/page3/">
 <meta property="og:site_name" content="천천히 걷는 방법">
-<meta property="og:description" content="TDD, CleanCode, Refactoring 2주차 정리">
+<meta property="og:description" content="사내 공유, 개인의 경험을 기록하는 블로그입니다.">
 <meta property="og:locale" content="ko">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="TDD, CleanCode, Refactoring 2주차 정리">
-<meta name="twitter:description" content="TDD, CleanCode, Refactoring 2주차 정리">
+<meta name="twitter:title" content="천천히 걷는 방법">
+<meta name="twitter:description" content="사내 공유, 개인의 경험을 기록하는 블로그입니다.">
 
 
 <script type="text/javascript" id="hexo.configurations">
@@ -154,7 +154,7 @@
 
 
 
-  <title>TDD, CleanCode, Refactoring 2주차 정리 | 천천히 걷는 방법</title>
+  <title>천천히 걷는 방법</title>
   
 
 
@@ -179,7 +179,7 @@
   
   
 
-  <div class="container sidebar-position-left page-post-detail ">
+  <div class="container sidebar-position-left page-home ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -269,9 +269,12 @@
           <div id="content" class="content">
             
 
-<div id="posts" class="posts-expand">
+
+
+<section id="posts" class="posts-expand">
   
-  
+    
+    
 
   
 
@@ -280,7 +283,7 @@
   
 
   <article class="post post-type- " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://localhost:4000/dev/2020/04/04/tdd-clean-code-2w/">
+    <link itemprop="mainEntityOfPage" href="http://localhost:4000/dev/2020/01/24/jpa-replication-issue/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="DongChul Lee">
@@ -300,7 +303,12 @@
           <h1 class="post-title" itemprop="name headline">
           
           
-            TDD, CleanCode, Refactoring 2주차 정리
+            
+                
+                <a class="post-title-link" href="/dev/2020/01/24/jpa-replication-issue/" itemprop="url">
+                Spring JPA DB Master / Slave 적용시 주의할 점
+              </a>
+            
           
         </h1>
         
@@ -314,8 +322,8 @@
               
                 <span class="post-meta-item-text">작성일</span>
               
-              <time title="" itemprop="dateCreated datePublished" datetime="2020-04-04T00:00:00+09:00">
-                2020-04-04
+              <time title="" itemprop="dateCreated datePublished" datetime="2020-01-24T00:00:00+09:00">
+                2020-01-24
               </time>
             
 
@@ -361,12 +369,6 @@
           
 
           
-            
-                <div class="post-description">
-                    TDD, CleanCode, Refactoring 2주차 정리
-                </div>
-            
-          
 
         </div>
       </header>
@@ -379,159 +381,63 @@
 
       
         
-  
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  <blockquote>
-  <p>TDD, CleanCode, Refactoring 2주차 정리</p>
-</blockquote>
-
-<h3 id="코드-컨벤션을-지켜라">코드 컨벤션을 지켜라</h3>
-<p>다른 개발자와 협업이나 미래의 나를 위해서라도.</p>
-
-<p>공백 라인을 의미있게 사용해라.<br />
-공백 라인이 메소드의 기능을 나누게 되는 기준이 된다. <br />
-추후 리펙토링 시 메소드 기준으로 기능이 나뉜다는것을 알고 공백기준으로 메소드 리펙토링이 가능하다.</p>
-
-<h3 id="네이밍">네이밍</h3>
-<p>객체지향 생활 체조 규칙 5 : 축약하지 말라.<br />
-적당한 길이의 이름을 찾는데 집중해라.</p>
-
-<p>인스턴스 변수의 중복을 줄이고, 개수를 최소화 해라.<br />
-데이터를 꺼내려고 하지않고 메시지를 던져라<br />
-비지니스 로직과 ui로직의 분리.<br />
-테스트 가능한 코드와 불가능한 코드가 섞여 있으면 분리를 해야 한다.<br />
-어느 부분을 테스트 할 것인가 ?<br />
-경계값을 기준으로 테스트해야 한다.<br />
-Test Fixture를 위해서 생성자를 추가하는것이 옳은 일인가 ? <br />
-도메인이 DTO역할을 하는 경우라면 생성자를 추가하는것이 허용된다. <br />
-해당 경우에는 허용하는 것으로 .. <br />
-역할이 여러개이면 클래스 분리.<br />
-private메소드가 많아지면 테스트를 해야 하는것인가 ? <br />
-Private 메소드가 중요한 비지니스 역할을 한다면 새로운 클래스로 분리 되어야 한다. <br />
-분리 된다면 다른 클래스에서 접근 가능한 메소드가 되기때문에 테스트가 가능하다.</p>
-
-<h3 id="tdd">TDD</h3>
-<p>이번주 부터는 메소드 분리가 아닌 클래스 분리를 연습 하자<br />
-모든 원시값과 문자열을 포장한다. <br />
-일급 콜렉션을 쓴다.<br />
-생성자를 중복해 정의할 때는 정적 팩토리 메소드를 사용한다.</p>
-
-<p>tdd는 리팩토링이 가장 중요하다.<br />
-테스트와 production code를 추가할 때 마다 리팩토링을 해야한다.<br />
-한번에 리팩토링을 하지 않고 테스트 케이스가 추가 될 때 마다 리팩토링을 하는 연습을 해야 한다.<br />
-todo리스트를 제대로 만드는것이 tdd를 잘하는 방법이다.<br />
-설게를 안하는것이 아니고 초반에 대략적인 설계가 필요하다.<br />
-초반 설계시 테스트 가능한 부분과 힘든 부분까지 설계를 한다면 설계를 잘한 것이다.</p>
-
-<p>tdd 시작시 인풋과 아웃풋을 결정해야 한다.<br />
-Getter 를 쓰는순간 없애려고 노력해라 (상태를 가진 데이터를 꺼내는것보다 객체에 메시지를 보내서 일을 시켜라)</p>
-
-<p>접근 제어자를 잘 사용해서 클래스 및 메소드의 접근 범위를 한정하는것도 도메인을 지키는 방법이다.   특히 default 접근 제어자는 도메인을 지키는 좋은 방법중 하나이다.</p>
-
-<p>토이 프로젝트에선 최대한 조건을 강제해라<br />
-인덴트 1, 인스턴스 변수 2개 등의 극한의 조건을 걸어라.</p>
-
-<hr />
-<h3 id="qa">Q&amp;A</h3>
-<p>Void method 는 검증하는것만으로도 의미가 존재 하는지 ?<br />
--&gt; 존재한다.<br />
-Void method 내부에서도 인풋과 아웃풋이 있는 부분을 분리할 수 있을것이다. 그부분을 메소드로 분리해서 테스트 가능하다.</p>
-
-<h3 id="유효성-검사">유효성 검사</h3>
-<p>도메인은 반드시 유효성 검사를 해야 하는것이 맞다. <br />
-그렇다고 controller나 다른 레이어에서 유효성검사를 안해도 된다는것은 아니다.</p>
-
-
+          JPA환경 DB Replication 설정시 이슈 정리.
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/dev/2020/01/24/jpa-replication-issue/">
+              더 읽어보기 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
       
     </div>
 
     <div>
       
-        
-
-      
     </div>
 
     <div>
       
-        
-
-      
     </div>
 
     <div>
-      
-        
-
       
     </div>
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            
-            <a href="/tag/#/TDD" rel="tag"># TDD</a>
-          
-            
-            <a href="/tag/#/Clean%20Code" rel="tag"># Clean Code</a>
-          
-            
-            <a href="/tag/#/Java" rel="tag"># Java</a>
-          
-        </div>
+
       
 
       
-      
-      
-      
-      
 
       
-      
-        <div class="post-nav" id="post-nav-id">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/dev/2020/04/11/tdd-clean-code-3w/" rel="next" title="TDD, CleanCode, Refactoring 3주차 정리">
-                <i class="fa fa-chevron-left"></i> TDD, CleanCode, Refactoring 3주차 정리
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/dev/2020/04/02/checked-exception-unchecked-exception/" rel="prev" title="Checked Exception과 UnCheckedException의 차이">
-                Checked Exception과 UnCheckedException의 차이 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-      
-
+        
+        
+        
+        
+          <div class="post-eof"></div>
+        
       
     </footer>
   </article>
 
-  <div class="post-spread">
+  
+</section>
+
+
+  <nav class="pagination">
     
-  </div>
-</div>
+    
+    
+
+
+
+    <a class="extend prev" rel="prev" href="/page2"><i class="fa fa-angle-left"></i></a> <a class="page-number" href="/">1</a> <a class="page-number" href="/page2">2</a> <span class="page-number current">3</span>
+  </nav>
+
+
 
 
           </div>
@@ -539,10 +445,6 @@ Void method 내부에서도 인풋과 아웃풋이 있는 부분을 분리할 �
 
 
           
-  <div class="comments" id="comments">
-    
-  </div>
-
 
         </div>
         
@@ -560,30 +462,10 @@ Void method 내부에서도 인풋과 아웃풋이 있는 부분을 분리할 �
     <div class="sidebar-inner">
 
       
-        
-        
-        
-
-
-
-
-
-
 
       
 
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            목차
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            흝어보기
-          </li>
-        </ul>
-      
-
-      <section class="site-overview sidebar-panel">
+      <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/assets/images/avatar.gif"
@@ -667,34 +549,6 @@ Void method 내부에서도 인풋과 아웃풋이 있는 부분을 분리할 �
 
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-            
-            
-            
-
-
-
-
-
-
-
-
-            
-              <div class="post-toc-content">
-    <ol class=nav>
-      <li class="nav-item nav-level-3"> <a class="nav-link" href="#코드-컨벤션을-지켜라"> <span class="nav-number">1</span> <span class="nav-text">코드 컨벤션을 지켜라</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#네이밍"> <span class="nav-number">2</span> <span class="nav-text">네이밍</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#tdd"> <span class="nav-number">3</span> <span class="nav-text">TDD</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#qa"> <span class="nav-number">4</span> <span class="nav-text">Q&amp;A</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#유효성-검사"> <span class="nav-number">5</span> <span class="nav-text">유효성 검사</span> </a> </li>
-    </ol>
-  </div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       

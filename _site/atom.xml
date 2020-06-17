@@ -1,4 +1,91 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-06-16T18:38:40+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">스프링 부트 정리</title><link href="http://localhost:4000/dev/2020/06/09/spring-boot/" rel="alternate" type="text/html" title="스프링 부트 정리" /><published>2020-06-09T00:00:00+09:00</published><updated>2020-06-09T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/06/09/spring-boot</id><content type="html" xml:base="http://localhost:4000/dev/2020/06/09/spring-boot/">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-06-17T16:54:07+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">Azure API Management Service 활용법</title><link href="http://localhost:4000/dev/2020/06/17/azure-api-managerment-service/" rel="alternate" type="text/html" title="Azure API Management Service 활용법" /><published>2020-06-17T00:00:00+09:00</published><updated>2020-06-17T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/06/17/azure-api-managerment-service</id><content type="html" xml:base="http://localhost:4000/dev/2020/06/17/azure-api-managerment-service/">&lt;blockquote&gt;
+  &lt;p&gt;Azure API Management Service를 사용한 API 응답 캐싱&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Azure API Management Service 캐싱을 활용한 글로벌 서비스 성능 최적화 방법을 간단하게 공유드립니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;api-management-service란-&quot;&gt;API Management Service란 ?&lt;/h2&gt;
+&lt;p&gt;APIM(API Management)은 기존 백 엔드 서비스를 위해 일관된 최신 API 게이트웨이를 빠르게 만드는 방법입니다.
+API Management를 사용하여 조직은 외부, 파트너 및 내부의 개발자에게 API를 게시하여 데이터 및 서비스의 잠재성을 활용할 수 있습니다. 모든 곳의 비즈니스는 디지털 플랫폼으로 운영을 확장함으로써 새로운 채널을 생성하고, 새로운 고객을 찾고, 기존 고객과 더 깊은 관계를 구축하고자 합니다. API Management는 개발자 참여, 비즈니스 통찰력, 분석, 보안과 보호 등을 통해 성공적인 API 프로그램을 보장하는 핵심적인 역량을 제공합니다. Azure API Management를 통해 원하는 백 엔드를 사용하고 해당 백 엔드에 따라 모든 기능을 갖춘 API 프로그램을 시작할 수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;API 게이트웨이&lt;/strong&gt; 는 다음 작업을 수행하는 엔드포인트입니다.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;API 호출 수락 후 백 엔드로 라우팅합니다.&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;API 키, JWT 토큰, 인증서 및 기타 자격 증명을 확인합니다.&lt;/li&gt;
+  &lt;li&gt;사용 할당량 및 속도 제한을 적용합니다.&lt;/li&gt;
+  &lt;li&gt;코드 수정 없이 즉석에서 API를 변환합니다.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;설정된 위치에 백 엔드 응답을 캐시합니다.&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;분석용으로 호출 메타데이터를 기록합니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;공식 문서에 따르면 위와 같은 기능들을 제공하는 서비스라고 설명되어 있습니다. 
+위 기능을 포함하여 많은 기능들을 제공하니 공식 문서를 확인해주시길 바랍니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;API 호출 수락 후 백 엔드로 라우팅, 설정된 위치에 백 엔드 응답을 캐시&lt;/code&gt; 두가지 기능을 사용하여 기존에 사용되고 있던 API를 글로벌 환경에서 효율적으로 서비스 하기 위한 작업을 진행 하였습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;사용-배경&quot;&gt;사용 배경&lt;/h2&gt;
+&lt;p&gt;현재 사용하고 있는 API서버는 홍콩 리전에 배포되어 있으며 미국 버지니아 기준 간단한 GET 요청을 보낼 시 약 1초 정도의 응답시간이 소요되고 있었습니다. &lt;br /&gt;
+트래픽이 많은 서비스는 아니지만 페이지 접근 시 1초 이상의 응답시간이 걸리는 API를 개선하고 준비하고 있는 이벤트 서비스를 사용자 친화적으로 제공하기 위하여 응답시간을 줄이기 위한 작업을 시작하였습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;설정&quot;&gt;설정&lt;/h2&gt;
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;API Management 서비스를 생성합니다.&lt;br /&gt;
+이때 주의 할 점은 다수의 Location 설정을 위하여 프리미엄 이상의 서비스를 선택해야 합니다. 
+&lt;img src=&quot;/assets/images/post/azure-api-management-service/azure-api-management-service-1.png&quot; alt=&quot;서비스 생성&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;API 연동
+API Management 서비스가 활성화 되면 연동할 API의 정보를 추가해줘야 합니다.&lt;br /&gt;
+OpenAPI 등록서비스를 사용하여 추가할 수 있습니다.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/post/azure-api-management-service/azure-api-management-service-2.png&quot; alt=&quot;API 연동&quot; /&gt;
+OpenAPI Spec에 맞춘 json파일을 업로드 하여 API Gateway와 연동합니다.&lt;br /&gt;
+json파일은 Swagger2.0 기반 api 문서를 그대로 사용할 수 있게 되어있습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/post/azure-api-management-service/azure-api-management-service-3.png&quot; alt=&quot;API 결과&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;정상적으로 API연동을 마치면 위와 같이 API목록을 확인 할 수 있습니다.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;캐시 설정 및 지역 추가
+API 요청시 응답값을 캐싱하여 빠르게 응답을 전달해주기 위하여 적절한 캐시 설정이 필요합니다. 
+공식 문서에서 제공하고 있는 캐시 설정을 적용해보았습니다.&lt;br /&gt;
+&lt;a href=&quot;https://docs.microsoft.com/ko-kr/azure/api-management/api-management-howto-cache&quot;&gt;Azure API Management에서 캐싱을 추가하여 성능 향상 | Microsoft Docs&lt;/a&gt; 
+&lt;img src=&quot;/assets/images/post/azure-api-management-service/azure-api-management-service-4.png&quot; alt=&quot;캐싱 전략&quot; /&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;문서를 참고하여 미국 지역에 새로운 API GW를 추가를 끝으로 캐싱을 위한 설정은 끝이 납니다.&lt;br /&gt;
+&lt;a href=&quot;https://docs.microsoft.com/ko-kr/azure/api-management/api-management-howto-deploy-multi-region&quot;&gt;Azure API Management 서비스를 여러 Azure 지역에 배포 - Azure API Management | Microsoft Docs&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;테스트&quot;&gt;테스트&lt;/h2&gt;
+&lt;p&gt;API GW와 캐싱을 사용하여 어느 정도의 성능 향상이 있었는지 정리한 결과입니다. 
+테스트는 AWS EC2(버지니아)에서 진행하였습니다.&lt;/p&gt;
+
+&lt;h3 id=&quot;기존-api-요청-응답시간&quot;&gt;기존 API 요청 응답시간&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;0.961115&lt;/li&gt;
+  &lt;li&gt;0.929669&lt;/li&gt;
+  &lt;li&gt;0.920897&lt;/li&gt;
+  &lt;li&gt;0.912583&lt;/li&gt;
+  &lt;li&gt;0.921966&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;api-gw-요청-응답시간&quot;&gt;API GW 요청 응답시간&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;0.058033&lt;/li&gt;
+  &lt;li&gt;0.059246&lt;/li&gt;
+  &lt;li&gt;0.065591&lt;/li&gt;
+  &lt;li&gt;0.057714&lt;/li&gt;
+  &lt;li&gt;0.057355&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;결과와 같이 대략 15배 이상 응답시간이 단축된것을 확인할 수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;위 설정만으로 완전한 최적화가 이루어지지는 않겠지만 글로벌 서비스를 운영하는 경우 API GW를 사용한 캐싱은
+성능 최적화를 위하여 고려해볼 가치가 있는것 같습니다.&lt;/p&gt;</content><author><name>DongChul Lee</name></author><category term="azure" /><category term="cloud" /><summary type="html">Azure API Management Service를 사용한 API 응답 캐싱</summary></entry><entry><title type="html">스프링 부트 정리</title><link href="http://localhost:4000/dev/2020/06/09/spring-boot/" rel="alternate" type="text/html" title="스프링 부트 정리" /><published>2020-06-09T00:00:00+09:00</published><updated>2020-06-09T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/06/09/spring-boot</id><content type="html" xml:base="http://localhost:4000/dev/2020/06/09/spring-boot/">&lt;blockquote&gt;
   &lt;p&gt;백기선님 강의 스프링 부트 개념과 활용 정리 노트
 강의 내용을 다시한번 복습하기 위하여 정리합니다.&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -2023,159 +2110,4 @@ Java7 부터 Enum 상수에 추상 메소드를 구현할 수 있습니다.&lt;/
       &lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="TDD" /><category term="Clean Code" /><category term="Java" /><summary type="html">TDD, CleanCode, Refactoring 4주차 정리</summary></entry><entry><title type="html">TDD, CleanCode, Refactoring 3주차 정리</title><link href="http://localhost:4000/dev/2020/04/11/tdd-clean-code-3w/" rel="alternate" type="text/html" title="TDD, CleanCode, Refactoring 3주차 정리" /><published>2020-04-11T00:00:00+09:00</published><updated>2020-04-11T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/04/11/tdd-clean-code-3w</id><content type="html" xml:base="http://localhost:4000/dev/2020/04/11/tdd-clean-code-3w/">&lt;blockquote&gt;
-  &lt;p&gt;TDD, CleanCode, Refactoring 3주차 정리&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;tdd 사이클이 익숙해질때 까지 반복적으로 연습해야 한다.
-    &lt;ul&gt;
-      &lt;li&gt;가장 자신있는 언어로 반복 연습하는것을 추천.&lt;/li&gt;
-      &lt;li&gt;힘들고 지칠땐 주제를 바꿔서 해보는것이 좋다.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;시작하기&quot;&gt;시작하기&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;요구사항 분석을 통한 기능 목록 작성&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;객체설계를 통해 어느 부분 부터 구현할 지 생각하는것이 우선이다.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;기능목록
-    &lt;ul&gt;
-      &lt;li&gt;주제에 대해서 가장 일반적인 기능들을 다 적어보자.&lt;/li&gt;
-      &lt;li&gt;점차 작은 단위의 기능들도 정의&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;TDD로 구현할 기능 찾기
-    &lt;ul&gt;
-      &lt;li&gt;큰 부분을 작게 자르는 연습을 해야한다.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;인풋과 아웃풋이 있는 케이스가 테스트 하기 쉽다.&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;메서드 하나에 모든 로직이 들어가 있으면 객체지향적인 구조보다 절차지향적 구조로 변질되게 된다.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;리팩토링, 어디서 부터 시작할까 ?
-    &lt;ol&gt;
-      &lt;li&gt;첫밴쨰는 메소드 분리부터 시작. (Naming Rename도 해야한다.)
-        &lt;ol&gt;
-          &lt;li&gt;메소드가 한가지 일만 잘하도록 구현한다.
-            &lt;ul&gt;
-              &lt;li&gt;한가지 일만 하기 위해 메소드 라인을 제약하는것도 좋은 방법이다.&lt;/li&gt;
-            &lt;/ul&gt;
-          &lt;/li&gt;
-        &lt;/ol&gt;
-      &lt;/li&gt;
-      &lt;li&gt;Indent를 줄이자.
-        &lt;ol&gt;
-          &lt;li&gt;Else 예약어를 쓰지 않는다.&lt;/li&gt;
-        &lt;/ol&gt;
-      &lt;/li&gt;
-      &lt;li&gt;클래스를 분리하자.
-        &lt;ol&gt;
-          &lt;li&gt;원시값과 문자열을 포장&lt;/li&gt;
-          &lt;li&gt;일급 콜렉션을 사용한다.&lt;/li&gt;
-          &lt;li&gt;3개 이상의 인스턴스 변수를 가진 클래스를 쓰지 않기.&lt;/li&gt;
-          &lt;li&gt;메소드 인자수를 제한한다. 2개까지만 허용한다.
-            &lt;ol&gt;
-              &lt;li&gt;3개는 고민을 많이 하고, 4개는 절대 안된다.&lt;/li&gt;
-              &lt;li&gt;비슷한 속성을 가진 인자수를 클래스로 만들어 보자.
-                &lt;ol&gt;
-                  &lt;li&gt;속성과 라이프 사이클이 동일하면 쉽게 판단할 수 있다.&lt;/li&gt;
-                &lt;/ol&gt;
-              &lt;/li&gt;
-            &lt;/ol&gt;
-          &lt;/li&gt;
-        &lt;/ol&gt;
-      &lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-  &lt;li&gt;private method를 분리해서 단위테스트 해야하는 것이 아닌가 ? 라는 의구심
-    &lt;ul&gt;
-      &lt;li&gt;private method를 다른 클래스로 만들어 public으로 open하는게 더 나은 구조는 아닐까 생각해보자.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;새로운 클래스가 생성될때 테스트부터 만들어 보자.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;상속(is-a) 조합(has-a)
-    &lt;ul&gt;
-      &lt;li&gt;일급 collection을 구현할 때 접근 방법으로 상속과 조합 방법으로 구현 가능&lt;/li&gt;
-      &lt;li&gt;객체의 중복(Lotto와 WinningLotto)를 제거 할 때 상속과 조합 방법으로 구현 가능&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;상속은 의도하지 않은 인터페이스가 외부에 노출될 수 있다.&lt;br /&gt;
-반면 조합을 사용하면 외부에 오픈할 인터페이스를 정의할 수 있다.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;상속과 조합 중 어떤것이 좋을까 ?&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;상속 보단 객체 조합을 사용해라.&lt;/li&gt;
-      &lt;li&gt;코드의 재사용성 측면에선 상속이 유리. 유연성 측면에선 조합이 유리.
-        &lt;ul&gt;
-          &lt;li&gt;변화에 빠르게 대응하는 것이 점점 더 중요, 현재는 재사용성 보다 유연성이 훨씬 더 중요하다.&lt;/li&gt;
-          &lt;li&gt;확실하게 경험을 하는것이 좋다 !&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;생성자 대신 정적 팩토리 메소드 사용.
-    &lt;ul&gt;
-      &lt;li&gt;생성자의 수가 늘어날수록 클래스를 사용하기 위한 유연성은 높아진다.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;가변객체보단 불변 객체를 사용해라.&lt;/li&gt;
-  &lt;li&gt;불변 객체 만들기
-    &lt;ul&gt;
-      &lt;li&gt;객체의 상태를 변경하는 메소드를 제공하지 않는다.&lt;/li&gt;
-      &lt;li&gt;클래스를 확장 할 수 없도록 한다. (Public final class)&lt;/li&gt;
-      &lt;li&gt;모든 필드를 final로 선언한다.
-        &lt;ul&gt;
-          &lt;li&gt;내부에 collection이 있다면 collection도 불변인지 확인해야 한다.&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;모든 필드를 private으로 선언한다.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;immutable object 가 좋은것은 알겠는데, 인스턴스가 많이 생성되어 성능이 떨어지지 않을까 ?
-    &lt;ul&gt;
-      &lt;li&gt;캐싱을 적용해 인스턴스 생성을 최소화 할 수 있는 방법이 있는지 검토
-        &lt;ul&gt;
-          &lt;li&gt;캐싱은 일반적으로 Map(key - value) 형식을 가장 많이 사용된다.&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;성능외에도
-유지보수하기 좋은 코드, 읽기 좋은 코드, 유연한 코드, 버그 발생 가능성이 낮은 코드 와 같이 다양한 측면을 고려하면서  프로그래밍 하는습관을 가지자&lt;/p&gt;
-
-&lt;h3 id=&quot;경험해야할-학습-목표---사다리-타기&quot;&gt;경험해야할 학습 목표 - 사다리 타기&lt;/h3&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;* TDD, 객체 지향 프로그래밍 연습
-* 인터페이스를 추출하여 프로그래밍 하는 연습을 한다.
-* stream, lambda를 사용해 프로그래밍하는 것을 연습.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;경험할-객체-지향-생활-체조-원칙&quot;&gt;경험할 객체 지향 생활 체조 원칙&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;한줄에 점 하나만  찍는다.
-    &lt;ul&gt;
-      &lt;li&gt;Clean Code 가이드의 디미터 법칙을 지키는 것을 의미.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;모든 엔티티는 작게&lt;/li&gt;
-  &lt;li&gt;3개 이상의 인스턴스 변수를 가진 클래스를 쓰지 않는다.&lt;/li&gt;
-  &lt;li&gt;getter / setter / property를 쓰지 않는다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;함수형-프로그래밍&quot;&gt;함수형 프로그래밍&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;함수형 프로그래밍은 input과 output이 항상 존재 하기 때문에 test하기 쉽다.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;클래스 기반 함수를 모으로 메소드 레벨에서 함수형 프로그래밍에 맞게 설계 ?&lt;/li&gt;
-  &lt;li&gt;람다를 쓰는게 중요한게 아니고 변경 가능성이 높은 부분을 인터페이스로 추출 할 수 있는지가 중요하다.&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="TDD" /><category term="Clean Code" /><category term="Java" /><summary type="html">TDD, CleanCode, Refactoring 3주차 정리</summary></entry></feed>
+&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="TDD" /><category term="Clean Code" /><category term="Java" /><summary type="html">TDD, CleanCode, Refactoring 4주차 정리</summary></entry></feed>
