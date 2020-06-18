@@ -429,7 +429,13 @@
   </li>
   <li>자동 설정 이해
     <ul>
-      <li>@EnableAutoConfiguration (@SpringBootApplication 안에 포함되어 있다.)</li>
+      <li>@EnableAutoConfiguration (@SpringBootApplication 안에 포함되어 있다.)
+        <ul>
+          <li>autoconfiguration 으로 등록된 bean 은 component scan으로 등록하는 bean을 덮어 쓴다.</li>
+          <li>ConditionalOnMissingBean - 빈이 등록 되어 있지 않을때 빈 등록함.</li>
+          <li>component scan -&gt; autoConfiguration 순으로</li>
+        </ul>
+      </li>
       <li>Spring Bean은 사실 두 단계로 나눠서 생성된다.
         <ul>
           <li>1단계 : @ComponentScan</li>
@@ -451,6 +457,13 @@
           </li>
           <li>@Configuration</li>
           <li>@ConditionalOnXxxYyyZzz</li>
+        </ul>
+      </li>
+      <li>@SpringBootApplication 은 아래 3가지 애노테이션을 포함 하고 있다.
+        <ul>
+          <li>@SpringBootConfiguration</li>
+          <li>@EnableAutoConfiguration</li>
+          <li>@ComponentScan</li>
         </ul>
       </li>
     </ul>
@@ -508,7 +521,28 @@
           <li>HTTP는 사용못함 ?
             <ul>
               <li>기본적으로 http 커넥터는 1개라 https설정을 하게 되면 http를 사용하지 못한다.</li>
-              <li>Connector를 따로 등록 해 주어야 한다.</li>
+              <li>Connector를 따로 등록 해 주어야 한다.
+```java
+  /**
+                <ul>
+                  <li>https와 http를 사용하기 위해 connector 등록.
+  *
+  */
+  @Bean
+  public ServletWebServerFactory serverFactory() {
+  TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
+  tomcat.addAdditionalTomcatConnectors(createStandardConnector());
+  return tomcat;
+  }</li>
+                </ul>
+
+                <p>private Connector createStandardConnector() {
+      Connector connector = new Connector(“org.apache/.coyote.http11.Http11NioProtocol”);
+      connector.setPort(8080);
+      return createStandardConnector();
+  }
+```</p>
+              </li>
             </ul>
           </li>
         </ul>
@@ -591,17 +625,7 @@
       <li>FailureAnalyzer</li>
       <li>배너
         <ul>
-          <li>
-            <table>
-              <tbody>
-                <tr>
-                  <td>banner.txt</td>
-                  <td>gif</td>
-                  <td>jpg</td>
-                </tr>
-              </tbody>
-            </table>
-          </li>
+          <li><code class="highlighter-rouge">banner.txt | gif | jpg</code></li>
           <li>classpath 또는 spring.banner.location</li>
           <li>${spring-booot.version} 등의 변수를 사용할 수 있음</li>
           <li>Banner 클래스를 구현 후 SpringApplication.setBanner() 등으로 설정 가능</li>
@@ -618,12 +642,48 @@
         <ul>
           <li>ApplicationContext를 만들기 전에 사용하는 리스너는 Bean을 등록할 수 없다.
             <ul>
-              <li>SpringApplication.addListeners()</li>
+              <li>SpringApplication.addListeners()
+                <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19</pre></td><td class="code"><pre class="highlight"><code>  <span class="c1">// applicationStartingEvent 는 application context 생성 전에 발생하기 때문에 이렇게 등록 해줘야 한다,</span>
+  <span class="n">SpringApplication</span> <span class="n">app</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SpringApplication</span><span class="o">(</span><span class="n">SpringBootGetStartApplication</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+  <span class="n">app</span><span class="o">.</span><span class="na">addListeners</span><span class="o">(</span><span class="k">new</span> <span class="n">SampleListener</span><span class="o">());</span>
+
+  <span class="nd">@Component</span>
+  <span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleListener</span> <span class="kd">implements</span> <span class="n">ApplicationListener</span><span class="o">&lt;</span><span class="n">ApplicationStartedEvent</span><span class="o">&gt;</span> <span class="o">{</span>
+      <span class="nd">@Override</span>
+      <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onApplicationEvent</span><span class="o">(</span><span class="n">ApplicationStartedEvent</span> <span class="n">ApplicationStartedEvent</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Application is Startied"</span><span class="o">);</span>
+      <span class="o">}</span>
+  <span class="o">}</span>
+
+  <span class="nd">@Component</span>
+  <span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleListener</span> <span class="kd">implements</span> <span class="n">ApplicationListener</span><span class="o">&lt;</span><span class="n">ApplicationStartingEvent</span><span class="o">&gt;</span> 
+      <span class="nd">@Override</span>
+      <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onApplicationEvent</span><span class="o">(</span><span class="n">ApplicationStartingEvent</span> <span class="n">applicationStartingEvent</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Application is Starting"</span><span class="o">);</span>
+      <span class="o">}</span>
+  <span class="o">}</span>
+</code></pre></td></tr></tbody></table></div>                </div>
+              </li>
             </ul>
           </li>
         </ul>
       </li>
-      <li>WebApplication Type 설정</li>
+      <li>WebApplication Type 설정
+        <ul>
+          <li>WebApplicationType
+            <ul>
+              <li>NONE : 서블릿과 Webflux가 없을때</li>
+              <li>SERVLET : Servlet</li>
+              <li>REACTIVE : WebFlux
+                <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code><span class="n">SpringApplication</span> <span class="n">app</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SpringApplication</span><span class="o">(</span><span class="n">SpringBootGetStartApplication</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="n">app</span><span class="o">.</span><span class="na">setWebApplicationType</span><span class="o">(</span><span class="n">WebApplicationType</span><span class="o">.</span><span class="na">NONE</span><span class="o">);</span>
+<span class="n">app</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">args</span><span class="o">);</span>
+</code></pre></td></tr></tbody></table></div>                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
       <li>애플리케이션 아규먼트 사용하기
         <ul>
           <li>-D는 JVM 옵션</li>
@@ -639,8 +699,196 @@
       </li>
     </ul>
   </li>
-</ul>
+  <li>외부 설정
+    <ul>
+      <li>properties</li>
+      <li>yaml</li>
+      <li>환경 변수</li>
+      <li>커맨드 라인 아규먼트</li>
+      <li>프로퍼티 우선순위
+        <ol>
+          <li>유저 홈 디렉토리에 있는 spring-boot-dev-tools.properties</li>
+          <li>테스트에 있는 @TestPropertySource
+            <ul>
+              <li>@TestPropertySource(locations = “classpath:/test.properties”)</li>
+            </ul>
+          </li>
+          <li>@SpringBootTest 애노테이션의 properties 애트리뷰트
+            <ul>
+              <li>@SpringBootTest(properties = “dongchul.name=dong2”)</li>
+            </ul>
+          </li>
+          <li>커맨드 라인 아규먼트</li>
+          <li>SPRING_APPLICATION_JSON (환경 변수 또는 시스템 프로티) 에 들어있는 프로퍼티</li>
+          <li>ServletConfig 파라미터</li>
+          <li>ServletContext 파라미터</li>
+          <li>java:comp/env JNDI 애트리뷰트</li>
+          <li>System.getProperties() 자바 시스템 프로퍼티</li>
+          <li>OS 환경 변수</li>
+          <li>RandomValuePropertySource</li>
+          <li>JAR 밖에 있는 특정 프로파일용 application properties</li>
+          <li>JAR 안에 있는 특정 프로파일용 application properties</li>
+          <li>JAR 밖에 있는 application properties</li>
+          <li>JAR 안에 있는 application properties</li>
+          <li>@PropertySource</li>
+          <li>기본 프로퍼티 (SpringApplication.setDefaultProperties)</li>
+        </ol>
+      </li>
+      <li>application.properties 우선순위
+        <ol>
+          <li>file:./config/</li>
+          <li>file:./</li>
+          <li>classpath:/config/</li>
+          <li>classpath:/</li>
+        </ol>
+      </li>
+      <li>랜덤 값 설정하기
+        <ul>
+          <li>${random.*}</li>
+        </ul>
+      </li>
+      <li>플레이스 홀더
+        <ul>
+          <li>name = dongchul</li>
+          <li>fullName = ${name} lee</li>
+        </ul>
+      </li>
+      <li>타입 - 세이프 프로퍼티 @ConfigurationProperties
+        <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14</pre></td><td class="code"><pre class="highlight"><code>  <span class="nd">@Component</span>
+  <span class="nd">@ConfigurationProperties</span><span class="o">(</span><span class="s">"dongchul"</span><span class="o">)</span>
+  <span class="nd">@Validated</span> <span class="c1">// 프로퍼티 값을 검증 하기 위해 사용</span>
+  <span class="kd">public</span> <span class="kd">class</span> <span class="nc">DonghculProperties</span> <span class="o">{</span>
 
+      <span class="nd">@NotEmpty</span>
+      <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+
+      <span class="nd">@Size</span><span class="o">(</span><span class="n">min</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span><span class="n">max</span> <span class="o">=</span> <span class="mi">100</span><span class="o">)</span>
+      <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
+
+      <span class="kd">private</span> <span class="n">String</span> <span class="n">fullName</span><span class="o">;</span>
+      <span class="o">...</span>
+  <span class="o">}</span>
+</code></pre></td></tr></tbody></table></div>        </div>
+        <ul>
+          <li>여러 프로퍼티를 묶어서 읽어올 수 있음.</li>
+          <li>빈으로 등록해서 다른 빈에 주입 할 수 있음
+            <ul>
+              <li>@EnableConfigurtionProperties</li>
+              <li>@Component</li>
+              <li>@Bean</li>
+            </ul>
+          </li>
+          <li>융통성 있는 바인딩
+            <ul>
+              <li>context-path (kebab)</li>
+              <li>context_path (under score)</li>
+              <li>contextPath (camel)</li>
+              <li>CONTEXTPATH</li>
+            </ul>
+          </li>
+          <li>프로퍼티 타입 컨버전
+            <ul>
+              <li>@DurationUnit</li>
+            </ul>
+          </li>
+          <li>프로퍼티 값 검증
+            <ul>
+              <li>@Validated</li>
+              <li>JSR-303(@NotNull, …)</li>
+            </ul>
+          </li>
+          <li>메타 정보 생성</li>
+          <li>@Value
+            <ul>
+              <li>SpEL을 사용할수 있지만 위 기능들을 전부 사용하지 못한다.</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>프로파일
+    <ul>
+      <li>@Profile 애노테이션은 어디에서 사용하는가 ?
+        <ul>
+          <li>@Configuration</li>
+          <li>@Component</li>
+        </ul>
+      </li>
+      <li>어떤 프로파일을 활성화 할 것인가 ?
+        <ul>
+          <li>spring.profiles.active</li>
+        </ul>
+      </li>
+      <li>어떤 프로파일을 추가할 것인가 ?
+        <ul>
+          <li>spring.profiles.include</li>
+        </ul>
+      </li>
+      <li>프로파일용 프로퍼티
+        <ul>
+          <li>application-{profile}.properties / yml</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>로깅
+    <ul>
+      <li>로깅 퍼사드 vs 로거
+        <ul>
+          <li>Commons Logging, SLF4j</li>
+          <li>JUL, Log4J2, LogBack</li>
+        </ul>
+      </li>
+      <li>스프링 5에 로거 관련 변경 사항
+        <ul>
+          <li><a href="https://docs.spring.io/spring/docs/5.0.0.RC3/spring-framework-reference/overview.html#overview-logging">https://docs.spring.io/spring/docs/5.0.0.RC3/spring-framework-reference/overview.html#overview-logging</a></li>
+          <li>Spring-JCL
+            <ul>
+              <li>Commons Logging -&gt; SLF4j or Log4j2</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>스프링 부트 로깅
+        <ul>
+          <li>기본 포멧</li>
+          <li>–debug (일부 핵심 라이브러리만 디버깅 모드 설정)</li>
+          <li>–trace (전부 다 디버깅 모드 설정)</li>
+          <li>컬러 출력 : spring.output.ansi.enabled</li>
+          <li>파일 출력 : logging.file 또는 logging.path</li>
+          <li>로그 레벨 조정 : logging.level.패키지 = 로그레벨</li>
+        </ul>
+      </li>
+      <li>커스텀 로그 설정 파일 사용하기
+        <ul>
+          <li><a href="https://docs.spring.io/spring-boot/docs/current/reference/html/howto-logging.html">https://docs.spring.io/spring-boot/docs/current/reference/html/howto-logging.html</a></li>
+          <li>Logback : logback-spring.xml (추천, logback.xml보다 더 많은 기능을 사용할 수 있다.)
+            <div class="language-xml highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5</pre></td><td class="code"><pre class="highlight"><code>  <span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+  <span class="nt">&lt;configuration&gt;</span>
+      <span class="nt">&lt;include</span> <span class="na">resource=</span><span class="s">"org/springframework/boot/logging/logback/base.xml"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;logger</span> <span class="na">name=</span><span class="s">"me.study"</span> <span class="na">level=</span><span class="s">"DEBUG"</span><span class="nt">/&gt;</span>
+  <span class="nt">&lt;/configuration&gt;</span>
+</code></pre></td></tr></tbody></table></div>            </div>
+          </li>
+          <li>Log4J2 : log4j2-spring.xml</li>
+          <li>JUL (비추) : logging.properties</li>
+          <li>Logback extention
+            <ul>
+              <li>프로파일 <code class="highlighter-rouge">&lt;springProfile name="프로파일"&gt;</code></li>
+              <li>Environment 프로퍼티 <code class="highlighter-rouge">&lt;springProperty&gt;</code></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>로거를 Log4j2로 변경하기
+        <ul>
+          <li><a href="https://docs.spring.io/spring-boot/docs/current/reference/html/howto-logging.html#howto-configure-log4j-for-logging">https://docs.spring.io/spring-boot/docs/current/reference/html/howto-logging.html#howto-configure-log4j-for-logging</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
 
 
       

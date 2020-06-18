@@ -28,6 +28,9 @@ tags:
     * 스프링 부트가 관리해주는 버전도 변경 할 수 있다.
 * 자동 설정 이해
   * @EnableAutoConfiguration (@SpringBootApplication 안에 포함되어 있다.)
+    * autoconfiguration 으로 등록된 bean 은 component scan으로 등록하는 bean을 덮어 쓴다.
+    * ConditionalOnMissingBean - 빈이 등록 되어 있지 않을때 빈 등록함.
+    * component scan -> autoConfiguration 순으로
   * Spring Bean은 사실 두 단계로 나눠서 생성된다.
     * 1단계 : @ComponentScan
     * 2단계 : @EnableAutoConfiguration
@@ -39,6 +42,10 @@ tags:
       * org.springframework.boot.autoconfigure.EnableAutoConfiguration
     * @Configuration
     * @ConditionalOnXxxYyyZzz
+  * @SpringBootApplication 은 아래 3가지 애노테이션을 포함 하고 있다.
+    * @SpringBootConfiguration
+    * @EnableAutoConfiguration
+    * @ComponentScan
 * 내장 서블릿 컨테이너
   * 스프링 부트는 서버가 아니다
   * 포트 설정 가능
@@ -66,6 +73,24 @@ tags:
     * HTTP는 사용못함 ?
       * 기본적으로 http 커넥터는 1개라 https설정을 하게 되면 http를 사용하지 못한다.
       * Connector를 따로 등록 해 주어야 한다.
+        ```java
+          /**
+          * https와 http를 사용하기 위해 connector 등록.
+          *
+          */
+          @Bean
+          public ServletWebServerFactory serverFactory() {
+              TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
+              tomcat.addAdditionalTomcatConnectors(createStandardConnector());
+              return tomcat;
+          }
+
+          private Connector createStandardConnector() {
+              Connector connector = new Connector("org.apache/.coyote.http11.Http11NioProtocol");
+              connector.setPort(8080);
+              return createStandardConnector();
+          }
+        ```
   * HTTP2
     * SSL은 기본적으로 적용되어 있어야 함
     * undertow는 별다른 설정 없이 properties로 설정 가능
@@ -108,7 +133,7 @@ tags:
     * 기본 로그 레벨 : INFO
     * FailureAnalyzer
     * 배너
-      * banner.txt | gif | jpg
+      * `banner.txt | gif | jpg`
       * classpath 또는 spring.banner.location
       * ${spring-booot.version} 등의 변수를 사용할 수 있음
       * Banner 클래스를 구현 후 SpringApplication.setBanner() 등으로 설정 가능
@@ -122,7 +147,37 @@ tags:
     * ApplicationEvent 등록
       * ApplicationContext를 만들기 전에 사용하는 리스너는 Bean을 등록할 수 없다.
         * SpringApplication.addListeners()
+          ```java
+            // applicationStartingEvent 는 application context 생성 전에 발생하기 때문에 이렇게 등록 해줘야 한다,
+            SpringApplication app = new SpringApplication(SpringBootGetStartApplication.class);
+            app.addListeners(new SampleListener());
+
+            @Component
+            public class SampleListener implements ApplicationListener<ApplicationStartedEvent> {
+                @Override
+                public void onApplicationEvent(ApplicationStartedEvent ApplicationStartedEvent) {
+                    System.out.println("Application is Startied");
+                }
+            }
+
+            @Component
+            public class SampleListener implements ApplicationListener<ApplicationStartingEvent> 
+                @Override
+                public void onApplicationEvent(ApplicationStartingEvent applicationStartingEvent) {
+                    System.out.println("Application is Starting");
+                }
+            }
+          ```
     * WebApplication Type 설정
+      * WebApplicationType
+        * NONE : 서블릿과 Webflux가 없을때
+        * SERVLET : Servlet
+        * REACTIVE : WebFlux
+      ```java
+        SpringApplication app = new SpringApplication(SpringBootGetStartApplication.class);
+        app.setWebApplicationType(WebApplicationType.NONE);
+        app.run(args);
+      ```
     * 애플리케이션 아규먼트 사용하기
       * -D는 JVM 옵션
       * --Application Arguments
@@ -130,4 +185,115 @@ tags:
     * 애플리케이션 실행한 뒤 뭔가 다른 작업을 하고 싶을 경우
       * ApplicationRunner(추천) 또는 CommandLineRunner
       * 순서 지정 기능 @Order
-    
+  * 외부 설정
+    * properties
+    * yaml
+    * 환경 변수
+    * 커맨드 라인 아규먼트
+    * 프로퍼티 우선순위
+      1. 유저 홈 디렉토리에 있는 spring-boot-dev-tools.properties
+      2. 테스트에 있는 @TestPropertySource
+        * @TestPropertySource(locations = "classpath:/test.properties")
+      3. @SpringBootTest 애노테이션의 properties 애트리뷰트
+        * @SpringBootTest(properties = "dongchul.name=dong2")
+      4. 커맨드 라인 아규먼트
+      5. SPRING_APPLICATION_JSON (환경 변수 또는 시스템 프로티) 에 들어있는 프로퍼티
+      6. ServletConfig 파라미터
+      7. ServletContext 파라미터
+      8. java:comp/env JNDI 애트리뷰트
+      9. System.getProperties() 자바 시스템 프로퍼티
+      10. OS 환경 변수
+      11. RandomValuePropertySource
+      12. JAR 밖에 있는 특정 프로파일용 application properties
+      13. JAR 안에 있는 특정 프로파일용 application properties
+      14. JAR 밖에 있는 application properties
+      15. JAR 안에 있는 application properties
+      16. @PropertySource
+      17. 기본 프로퍼티 (SpringApplication.setDefaultProperties)
+    * application.properties 우선순위
+      1. file:./config/
+      2. file:./
+      3. classpath:/config/
+      4. classpath:/
+    * 랜덤 값 설정하기
+      * ${random.*}
+    * 플레이스 홀더
+      * name = dongchul
+      * fullName = ${name} lee
+    * 타입 - 세이프 프로퍼티 @ConfigurationProperties
+      ```java
+        @Component
+        @ConfigurationProperties("dongchul")
+        @Validated // 프로퍼티 값을 검증 하기 위해 사용
+        public class DonghculProperties {
+
+            @NotEmpty
+            private String name;
+
+            @Size(min = 0,max = 100)
+            private int age;
+
+            private String fullName;
+            ...
+        }
+      ```
+      * 여러 프로퍼티를 묶어서 읽어올 수 있음.
+      * 빈으로 등록해서 다른 빈에 주입 할 수 있음
+        * @EnableConfigurtionProperties
+        * @Component
+        * @Bean
+      * 융통성 있는 바인딩
+        * context-path (kebab)
+        * context_path (under score)
+        * contextPath (camel)
+        * CONTEXTPATH
+      * 프로퍼티 타입 컨버전
+        * @DurationUnit
+      * 프로퍼티 값 검증
+        * @Validated
+        * JSR-303(@NotNull, ...)
+      * 메타 정보 생성
+      * @Value
+        * SpEL을 사용할수 있지만 위 기능들을 전부 사용하지 못한다.
+  * 프로파일
+    * @Profile 애노테이션은 어디에서 사용하는가 ?
+      * @Configuration
+      * @Component
+    * 어떤 프로파일을 활성화 할 것인가 ?
+      * spring.profiles.active
+    * 어떤 프로파일을 추가할 것인가 ?
+      * spring.profiles.include 
+    * 프로파일용 프로퍼티
+      * application-{profile}.properties / yml
+  * 로깅
+    * 로깅 퍼사드 vs 로거
+      * Commons Logging, SLF4j
+      * JUL, Log4J2, LogBack
+    * 스프링 5에 로거 관련 변경 사항
+      * [https://docs.spring.io/spring/docs/5.0.0.RC3/spring-framework-reference/overview.html#overview-logging](https://docs.spring.io/spring/docs/5.0.0.RC3/spring-framework-reference/overview.html#overview-logging)
+      * Spring-JCL
+        * Commons Logging -> SLF4j or Log4j2
+    * 스프링 부트 로깅
+      * 기본 포멧
+      * --debug (일부 핵심 라이브러리만 디버깅 모드 설정)
+      * --trace (전부 다 디버깅 모드 설정)
+      * 컬러 출력 : spring.output.ansi.enabled
+      * 파일 출력 : logging.file 또는 logging.path
+      * 로그 레벨 조정 : logging.level.패키지 = 로그레벨
+    * 커스텀 로그 설정 파일 사용하기 
+      * [https://docs.spring.io/spring-boot/docs/current/reference/html/howto-logging.html](https://docs.spring.io/spring-boot/docs/current/reference/html/howto-logging.html)
+      * Logback : logback-spring.xml (추천, logback.xml보다 더 많은 기능을 사용할 수 있다.)
+        ```xml
+          <?xml version="1.0" encoding="UTF-8"?>
+          <configuration>
+              <include resource="org/springframework/boot/logging/logback/base.xml"/>
+              <logger name="me.study" level="DEBUG"/>
+          </configuration>
+        ```
+      * Log4J2 : log4j2-spring.xml
+      * JUL (비추) : logging.properties
+      * Logback extention
+        * 프로파일 `<springProfile name="프로파일">`
+        * Environment 프로퍼티 `<springProperty>`
+    * 로거를 Log4j2로 변경하기
+      * [https://docs.spring.io/spring-boot/docs/current/reference/html/howto-logging.html#howto-configure-log4j-for-logging](https://docs.spring.io/spring-boot/docs/current/reference/html/howto-logging.html#howto-configure-log4j-for-logging)
