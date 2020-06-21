@@ -888,6 +888,52 @@
       </li>
     </ul>
   </li>
+  <li>테스트
+    <ul>
+      <li>시작은 spring-boot-starter-test를 추가하는것 부터
+        <ul>
+          <li>test scope로 추가</li>
+        </ul>
+      </li>
+      <li>@SpringBootTest
+        <ul>
+          <li>@RunWith(SpringRunner.class)랑 같이 써야함 - (Junit5 부터는 생략 가능하다.)</li>
+          <li>빈 설정 파일은 설정을 안해주나 ? 알아서 찾는다. (@SpringBootApplication)</li>
+          <li>WebEnvironment
+            <ul>
+              <li>MOCK : mock servlet environment : 내장 톰캣 구동 안함.</li>
+              <li>RANDOM_PORT, DEFINED_PORT : 내장 톰캣 사용 함</li>
+              <li>NONE : 서블릿 환경 제공 안함</li>
+            </ul>
+          </li>
+          <li>@MockBean
+            <ul>
+              <li>ApplicaionContext에 들어있는 빈을 Mock으로 만든 객체로 교체 함</li>
+              <li>모든 @Test 마다 자동으로 리셋</li>
+            </ul>
+          </li>
+          <li>슬라이스 테스트
+            <ul>
+              <li>레이어 별로 잘라서 테스트하고 싶을떄</li>
+              <li>@JsonTest</li>
+              <li>@WebMvcTest</li>
+              <li>@WebFluxTest</li>
+              <li>@DataJpaTest</li>
+              <li>…</li>
+            </ul>
+          </li>
+          <li>테스트 유틸
+            <ul>
+              <li>OutputCapture (log 및 stdout 관련 테스트)</li>
+              <li>TestPropertyValues</li>
+              <li>TestRestTemplate</li>
+              <li>ConfigFileApplicationContextInitailizer</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
 </ul>
 
 
