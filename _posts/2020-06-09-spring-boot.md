@@ -299,26 +299,79 @@ tags:
       * [https://docs.spring.io/spring-boot/docs/current/reference/html/howto-logging.html#howto-configure-log4j-for-logging](https://docs.spring.io/spring-boot/docs/current/reference/html/howto-logging.html#howto-configure-log4j-for-logging)
   * 테스트
     * 시작은 spring-boot-starter-test를 추가하는것 부터
-        * test scope로 추가
-    * @SpringBootTest
-        * @RunWith(SpringRunner.class)랑 같이 써야함 - (Junit5 부터는 생략 가능하다.)
-        * 빈 설정 파일은 설정을 안해주나 ? 알아서 찾는다. (@SpringBootApplication)
-        * WebEnvironment
-            * MOCK : mock servlet environment : 내장 톰캣 구동 안함.
-            * RANDOM_PORT, DEFINED_PORT : 내장 톰캣 사용 함
-            * NONE : 서블릿 환경 제공 안함
-        * @MockBean
-            * ApplicaionContext에 들어있는 빈을 Mock으로 만든 객체로 교체 함 
-            * 모든 @Test 마다 자동으로 리셋
-        * 슬라이스 테스트
-            * 레이어 별로 잘라서 테스트하고 싶을떄
-            * @JsonTest
-            * @WebMvcTest
-            * @WebFluxTest
-            * @DataJpaTest
-            * ...
-        * 테스트 유틸
-            * OutputCapture (log 및 stdout 관련 테스트)
-            * TestPropertyValues
-            * TestRestTemplate
-            * ConfigFileApplicationContextInitailizer
+      * test scope로 추가
+    * @SpringBootTest - 통합 테스트용
+      * @RunWith(SpringRunner.class)랑 같이 써야함 - (Junit5 부터는 생략 가능하다.)
+      * 빈 설정 파일은 설정을 안해주나 ? 알아서 찾는다. (@SpringBootApplication)
+      * WebEnvironment
+        * MOCK : mock servlet environment : 내장 톰캣 구동 안함.
+        * RANDOM_PORT, DEFINED_PORT : 내장 톰캣 사용 함
+        * NONE : 서블릿 환경 제공 안함
+    * @MockBean
+      * ApplicaionContext에 들어있는 빈을 Mock으로 만든 객체로 교체 함 
+      * 모든 @Test 마다 자동으로 리셋
+    * 슬라이스 테스트
+      * 레이어 별로 잘라서 테스트하고 싶을떄
+      * @JsonTest
+      * @WebMvcTest
+      * @WebFluxTest
+      * @DataJpaTest
+      * ...
+    * 테스트 유틸
+      * OutputCapture (log 및 stdout 관련 테스트)
+      * TestPropertyValues
+      * TestRestTemplate
+      * ConfigFileApplicationContextInitailizer
+    
+    ```java
+      /**
+      *
+      * @SpringBootTest
+      * 통합 테스트용
+      *
+      * @WebMvcTest(SampleContorller.class)
+      * 슬라이싱 테스트용
+      * 선언한 Controller 관련된 Bean 만 생성 하기 때문에
+      * Service ,Repository 같은 Bean 들은 모킹 해야 한다.
+      */
+      @RunWith(SpringRunner.class)
+      //@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK) // 기본값
+      @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) // 실제로 서버가 구동됨. rest template 로 확인 해야함.
+      @AutoConfigureMockMvc // mock mvc를 사용 하기 위함
+      public class SampleControllerTest {
+          // async client test for webflux
+          // webflux의존성을 가지고 있어야 사용 가능.
+          @Autowired
+          WebTestClient webTestClient;
+
+          @Autowired
+          MockMvc mockMvc;
+
+          @Autowired
+          TestRestTemplate testRestTemplate;
+
+          @MockBean //컨트롤러 테스트를 위해 모킹.
+          SampleService mockSampleService;
+
+          @Test
+          public void hello() throws Exception {
+              // sample service 를 mocking
+              when(mockSampleService.getName()).thenReturn("dongchul");
+
+              mockMvc.perform(get("/hello"))
+                      .andExpect(status().isOk())
+                      .andExpect(content().string("hello dongchul"))
+                      .andDo(print());
+
+              String result = testRestTemplate.getForObject("/hello", String.class);
+              assertEquals(result, "hello dongchul");
+
+              webTestClient.get().uri("/hello")
+                      .exchange()
+                      .expectStatus()
+                      .isOk()
+                      .expectBody(String.class)
+                      .isEqualTo("hello dongchul");
+          }
+      }
+    ```
