@@ -986,6 +986,31 @@
   <span class="o">}</span>
 </code></pre></td></tr></tbody></table></div>    </div>
   </li>
+  <li>Spring Boot Devtools
+    <ul>
+      <li>캐시 설정을 개발 환경에 맞게 변경.</li>
+      <li>클래스패스에 있는 파일이 변경 될 때 마다 자동으로 재시작.
+        <ul>
+          <li>직접 껐다 켜는것(cold starts) 보다 빠르다.</li>
+          <li>릴로딩 보다는 느리다. (JRebel같은게 아님)</li>
+          <li>리스타트 하고 싶지 않은 리소스는 ? spring.devtools.restart.exclude</li>
+          <li>리스타트 기능 끄려면 ? spring.devtools.restart.enabled = false</li>
+        </ul>
+      </li>
+      <li>라이브 릴로드 ? 리스타트 했을 때 브라우저 자동 리프레시 하는 기능
+        <ul>
+          <li>브라우저 플러그인 설치해야 함</li>
+          <li>라이브 릴로드 서버 끄려면 ? spring.devtools.liveload.enabled = false</li>
+        </ul>
+      </li>
+      <li>글로벌 설정
+        <ul>
+          <li>~/.spring-boot-devtools.properties</li>
+        </ul>
+      </li>
+      <li>리모트 애플리케이션</li>
+    </ul>
+  </li>
 </ul>
 
 

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-06-22T11:48:33+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">Azure API Management Service 활용법</title><link href="http://localhost:4000/dev/2020/06/17/azure-api-managerment-service/" rel="alternate" type="text/html" title="Azure API Management Service 활용법" /><published>2020-06-17T00:00:00+09:00</published><updated>2020-06-17T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/06/17/azure-api-managerment-service</id><content type="html" xml:base="http://localhost:4000/dev/2020/06/17/azure-api-managerment-service/">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-06-25T18:56:44+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">Azure API Management Service 활용법</title><link href="http://localhost:4000/dev/2020/06/17/azure-api-managerment-service/" rel="alternate" type="text/html" title="Azure API Management Service 활용법" /><published>2020-06-17T00:00:00+09:00</published><updated>2020-06-17T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/06/17/azure-api-managerment-service</id><content type="html" xml:base="http://localhost:4000/dev/2020/06/17/azure-api-managerment-service/">&lt;blockquote&gt;
   &lt;p&gt;Azure API Management Service를 사용한 API 응답 캐싱&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -678,6 +678,31 @@ API 요청시 응답값을 캐싱하여 빠르게 응답을 전달해주기 위�
       &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
   &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Spring Boot Devtools
+    &lt;ul&gt;
+      &lt;li&gt;캐시 설정을 개발 환경에 맞게 변경.&lt;/li&gt;
+      &lt;li&gt;클래스패스에 있는 파일이 변경 될 때 마다 자동으로 재시작.
+        &lt;ul&gt;
+          &lt;li&gt;직접 껐다 켜는것(cold starts) 보다 빠르다.&lt;/li&gt;
+          &lt;li&gt;릴로딩 보다는 느리다. (JRebel같은게 아님)&lt;/li&gt;
+          &lt;li&gt;리스타트 하고 싶지 않은 리소스는 ? spring.devtools.restart.exclude&lt;/li&gt;
+          &lt;li&gt;리스타트 기능 끄려면 ? spring.devtools.restart.enabled = false&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;라이브 릴로드 ? 리스타트 했을 때 브라우저 자동 리프레시 하는 기능
+        &lt;ul&gt;
+          &lt;li&gt;브라우저 플러그인 설치해야 함&lt;/li&gt;
+          &lt;li&gt;라이브 릴로드 서버 끄려면 ? spring.devtools.liveload.enabled = false&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;글로벌 설정
+        &lt;ul&gt;
+          &lt;li&gt;~/.spring-boot-devtools.properties&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;리모트 애플리케이션&lt;/li&gt;
+    &lt;/ul&gt;
   &lt;/li&gt;
 &lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="Java" /><category term="Spring" /><summary type="html">백기선님 강의 스프링 부트 개념과 활용 정리 노트 강의 내용을 다시한번 복습하기 위하여 정리합니다.</summary></entry><entry><title type="html">스프링 프레임워크 핵심 정리</title><link href="http://localhost:4000/dev/2020/06/05/spring-framework/" rel="alternate" type="text/html" title="스프링 프레임워크 핵심 정리" /><published>2020-06-05T00:00:00+09:00</published><updated>2020-06-05T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/06/05/spring-framework</id><content type="html" xml:base="http://localhost:4000/dev/2020/06/05/spring-framework/">&lt;blockquote&gt;
   &lt;p&gt;백기선님 강의 스프링프레임워크 핵심 기술 정리 노트&lt;br /&gt;
