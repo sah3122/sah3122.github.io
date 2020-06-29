@@ -1011,7 +1011,88 @@
       <li>리모트 애플리케이션</li>
     </ul>
   </li>
+  <li>스프링 웹 MVC
+    <ul>
+      <li><a href="https://docs.spring.io/spring/docs/5.0.7.RELEASE/spring-framework-reference/web.html#spring-web">레퍼런스</a></li>
+      <li>스프링 부트 MVC
+        <ul>
+          <li>자동 설정으로 제공하는 여러 기본 기능(앞으로 살펴볼 예정)</li>
+        </ul>
+      </li>
+      <li>스프링 MVC 확장
+        <ul>
+          <li>@Configuration + WebMvcConfigurer</li>
+        </ul>
+      </li>
+      <li>스프링 MVC 재정의
+        <ul>
+          <li>@Configuration + @EnableWebMvc</li>
+        </ul>
+      </li>
+      <li>HttpMessageConverters
+        <ul>
+          <li>HTTP 요청 본문을 객체로 변경하거나, 객체를 HTTP 응답 본문으로 변경 할 때 사용
+            <ul>
+              <li>{“username”:”dongchul”, “password”:”123”} &lt;-&gt; User
+                <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4</pre></td><td class="code"><pre class="highlight"><code>  <span class="nd">@PostMapping</span><span class="o">(</span><span class="s">"/user"</span><span class="o">)</span>
+  <span class="kd">public</span> <span class="n">User</span> <span class="nf">create</span><span class="o">(</span><span class="nd">@RequestBody</span> <span class="n">User</span> <span class="n">user</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="n">user</span><span class="o">;</span>
+  <span class="o">}</span>
+</code></pre></td></tr></tbody></table></div>                </div>
+              </li>
+            </ul>
+          </li>
+          <li>스프링 부트
+            <ul>
+              <li>뷰 리졸버 설정 제공</li>
+              <li>HttpMessageConvertersAutoConfiguration</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>정적 리소스 매핑 “/**”
+        <ul>
+          <li>기본 리소스 위치
+            <ul>
+              <li>classpath:/static</li>
+              <li>classpath:/public</li>
+              <li>classpath:/resources/</li>
+              <li>classpath:/META-INF/resources</li>
+              <li>예) “/hello.html” =&gt; static/hello.html</li>
+              <li>spring.mvc.static-path-pattern: 매핑 설정 변경 가능</li>
+              <li>spring.mvc-static-locations: 리소스 찾을 위치 변경 가능</li>
+            </ul>
+          </li>
+          <li>Last-Modified 헤더를 보고 304 응답을 보냄</li>
+          <li>ResourceHttpRequestHandler가 처리
+            <ul>
+              <li>WebMvcConfigurer의 addResourceHandlers로 커스터마이징 가능</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>웹 JAR 맵핑 “/webjars/*”
+        <ul>
+          <li>버전 생략 하고 사용하려면 webjars-locator-core 의존성 추가</li>
+        </ul>
+      </li>
+      <li>웰컴 페이지
+        <ul>
+          <li>index.html 찾아보고 있으면 제공</li>
+          <li>index.템플릿 찾아보고 있으면 제공</li>
+          <li>둘다 없으면 에러페이지 노출</li>
+        </ul>
+      </li>
+      <li>파비콘
+        <ul>
+          <li>favicon.ico 파일을 static 폴더 하위에 제공</li>
+          <li>파비콘 만들기 <a href="https://favicon.io">파비콘</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
 </ul>
+
 
 
       

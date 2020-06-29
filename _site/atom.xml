@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-06-25T18:56:44+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">Azure API Management Service 활용법</title><link href="http://localhost:4000/dev/2020/06/17/azure-api-managerment-service/" rel="alternate" type="text/html" title="Azure API Management Service 활용법" /><published>2020-06-17T00:00:00+09:00</published><updated>2020-06-17T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/06/17/azure-api-managerment-service</id><content type="html" xml:base="http://localhost:4000/dev/2020/06/17/azure-api-managerment-service/">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-06-29T18:23:31+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">Azure API Management Service 활용법</title><link href="http://localhost:4000/dev/2020/06/17/azure-api-managerment-service/" rel="alternate" type="text/html" title="Azure API Management Service 활용법" /><published>2020-06-17T00:00:00+09:00</published><updated>2020-06-17T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/06/17/azure-api-managerment-service</id><content type="html" xml:base="http://localhost:4000/dev/2020/06/17/azure-api-managerment-service/">&lt;blockquote&gt;
   &lt;p&gt;Azure API Management Service를 사용한 API 응답 캐싱&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -702,6 +702,86 @@ API 요청시 응답값을 캐싱하여 빠르게 응답을 전달해주기 위�
         &lt;/ul&gt;
       &lt;/li&gt;
       &lt;li&gt;리모트 애플리케이션&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;스프링 웹 MVC
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;https://docs.spring.io/spring/docs/5.0.7.RELEASE/spring-framework-reference/web.html#spring-web&quot;&gt;레퍼런스&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;스프링 부트 MVC
+        &lt;ul&gt;
+          &lt;li&gt;자동 설정으로 제공하는 여러 기본 기능(앞으로 살펴볼 예정)&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;스프링 MVC 확장
+        &lt;ul&gt;
+          &lt;li&gt;@Configuration + WebMvcConfigurer&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;스프링 MVC 재정의
+        &lt;ul&gt;
+          &lt;li&gt;@Configuration + @EnableWebMvc&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;HttpMessageConverters
+        &lt;ul&gt;
+          &lt;li&gt;HTTP 요청 본문을 객체로 변경하거나, 객체를 HTTP 응답 본문으로 변경 할 때 사용
+            &lt;ul&gt;
+              &lt;li&gt;{“username”:”dongchul”, “password”:”123”} &amp;lt;-&amp;gt; User
+                &lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;nd&quot;&gt;@PostMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/user&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;User&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nd&quot;&gt;@RequestBody&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;User&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;                &lt;/div&gt;
+              &lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;스프링 부트
+            &lt;ul&gt;
+              &lt;li&gt;뷰 리졸버 설정 제공&lt;/li&gt;
+              &lt;li&gt;HttpMessageConvertersAutoConfiguration&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;정적 리소스 매핑 “/**”
+        &lt;ul&gt;
+          &lt;li&gt;기본 리소스 위치
+            &lt;ul&gt;
+              &lt;li&gt;classpath:/static&lt;/li&gt;
+              &lt;li&gt;classpath:/public&lt;/li&gt;
+              &lt;li&gt;classpath:/resources/&lt;/li&gt;
+              &lt;li&gt;classpath:/META-INF/resources&lt;/li&gt;
+              &lt;li&gt;예) “/hello.html” =&amp;gt; static/hello.html&lt;/li&gt;
+              &lt;li&gt;spring.mvc.static-path-pattern: 매핑 설정 변경 가능&lt;/li&gt;
+              &lt;li&gt;spring.mvc-static-locations: 리소스 찾을 위치 변경 가능&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;Last-Modified 헤더를 보고 304 응답을 보냄&lt;/li&gt;
+          &lt;li&gt;ResourceHttpRequestHandler가 처리
+            &lt;ul&gt;
+              &lt;li&gt;WebMvcConfigurer의 addResourceHandlers로 커스터마이징 가능&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;웹 JAR 맵핑 “/webjars/*”
+        &lt;ul&gt;
+          &lt;li&gt;버전 생략 하고 사용하려면 webjars-locator-core 의존성 추가&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;웰컴 페이지
+        &lt;ul&gt;
+          &lt;li&gt;index.html 찾아보고 있으면 제공&lt;/li&gt;
+          &lt;li&gt;index.템플릿 찾아보고 있으면 제공&lt;/li&gt;
+          &lt;li&gt;둘다 없으면 에러페이지 노출&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;파비콘
+        &lt;ul&gt;
+          &lt;li&gt;favicon.ico 파일을 static 폴더 하위에 제공&lt;/li&gt;
+          &lt;li&gt;파비콘 만들기 &lt;a href=&quot;https://favicon.io&quot;&gt;파비콘&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
 &lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="Java" /><category term="Spring" /><summary type="html">백기선님 강의 스프링 부트 개념과 활용 정리 노트 강의 내용을 다시한번 복습하기 위하여 정리합니다.</summary></entry><entry><title type="html">스프링 프레임워크 핵심 정리</title><link href="http://localhost:4000/dev/2020/06/05/spring-framework/" rel="alternate" type="text/html" title="스프링 프레임워크 핵심 정리" /><published>2020-06-05T00:00:00+09:00</published><updated>2020-06-05T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/06/05/spring-framework</id><content type="html" xml:base="http://localhost:4000/dev/2020/06/05/spring-framework/">&lt;blockquote&gt;

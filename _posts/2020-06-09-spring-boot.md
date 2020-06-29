@@ -388,3 +388,45 @@ tags:
     * 글로벌 설정
         * ~/.spring-boot-devtools.properties
     * 리모트 애플리케이션
+  * 스프링 웹 MVC
+    * [레퍼런스](https://docs.spring.io/spring/docs/5.0.7.RELEASE/spring-framework-reference/web.html#spring-web)
+    * 스프링 부트 MVC
+      * 자동 설정으로 제공하는 여러 기본 기능(앞으로 살펴볼 예정)
+    * 스프링 MVC 확장
+      * @Configuration + WebMvcConfigurer
+    * 스프링 MVC 재정의
+      * @Configuration + @EnableWebMvc
+    * HttpMessageConverters
+      * HTTP 요청 본문을 객체로 변경하거나, 객체를 HTTP 응답 본문으로 변경 할 때 사용
+        * {“username”:”dongchul”, “password”:”123”} <-> User
+          ```java
+            @PostMapping("/user")
+            public User create(@RequestBody User user) {
+                return user;
+            }
+          ```
+      * 스프링 부트
+        * 뷰 리졸버 설정 제공
+        * HttpMessageConvertersAutoConfiguration
+    * 정적 리소스 매핑 "/**"
+      * 기본 리소스 위치
+        * classpath:/static
+        * classpath:/public
+        * classpath:/resources/
+        * classpath:/META-INF/resources
+        * 예) "/hello.html" => static/hello.html
+        * spring.mvc.static-path-pattern: 매핑 설정 변경 가능
+        * spring.mvc-static-locations: 리소스 찾을 위치 변경 가능
+      * Last-Modified 헤더를 보고 304 응답을 보냄
+      * ResourceHttpRequestHandler가 처리
+        * WebMvcConfigurer의 addResourceHandlers로 커스터마이징 가능
+    * 웹 JAR 맵핑 "/webjars/*"
+      * 버전 생략 하고 사용하려면 webjars-locator-core 의존성 추가
+    * 웰컴 페이지
+      * index.html 찾아보고 있으면 제공
+      * index.템플릿 찾아보고 있으면 제공
+      * 둘다 없으면 에러페이지 노출
+    * 파비콘
+      * favicon.ico 파일을 static 폴더 하위에 제공
+      * 파비콘 만들기 [파비콘](https://favicon.io)
+      
