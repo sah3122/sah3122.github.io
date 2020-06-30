@@ -429,4 +429,207 @@ tags:
     * 파비콘
       * favicon.ico 파일을 static 폴더 하위에 제공
       * 파비콘 만들기 [파비콘](https://favicon.io)
-      
+    * 템플릿 엔진
+      * 스프링 부트가 자동설정을 지원하는 템플릿 엔진
+        * FreeMarker
+        * Groovy
+        * Thymeleaf
+        * Mustache
+      * JSP를 권장하지 않는 이유
+        * JAR 패키징 할 때는 동작하지 않고 WAR 패키징 해야함.
+        * Undertow는 JSP를 지원하지 않음.
+      * Thymeleaf 사용하기
+        * https://www.thymeleaf.org
+        * https://www.thymeleaf.org/doc/articles/standarddialect5minutes.html
+        * 의존성 추가 : spring-boot-starter-thymeleaf
+        * 템플릿 파일 위치 : /src/main/resources/template
+        * 예제 : https://github.com/thymeleaf/thymeleafexamples-stsm/blob/3.0-master/src/main/webapp/WEB-INF/templates/seedstartermng.html
+    * HTML 템블릿 뷰 테스트를 보다 전문적으로 하자.
+      * http://htmlunit.sourceforge.net/
+      * http://htmlunit.sourceforge.net/gettingStarted.html
+      * 의존성 추가
+      * @Autowired WebClient  
+    * ExceptionHandler
+      * 스프링 @MVC 예외 처리 방법
+        * @ControllerAdvice
+        * @ExceptionHanlder
+          ```java
+            @ExceptionHandler(SampleException.class)
+            public @ResponseBody AppError sampleError(SampleException e) {
+                AppError appError = new AppError();
+                appError.setMessage("error.app.key");
+                appError.setReason("IDK");
+                return appError;
+
+            }
+          ```
+      * 스프링 부트가 제공하는 기본 예외 처리기
+        * BasicErrorController
+          * HTML 과 JSON 응답 지원
+        * 커스터마이징 방법
+          * ErrorController 구현
+      * 커스텀 에러 페이지
+        * 상태 코드 값에 따라 에러 페이지 보여주기
+        * src/main/resources/static/error/
+        * 404.html
+        * 5xx.html
+        * ErrorViewResolver 구현  
+    * Spring HATEOAS
+      `Hypermedia As The Engine Of Application State`
+      * 서버 : 현재 리소스와 연관된 링크 정보를 클라이언트에게 제공한다.
+      * 클라이언트 : 연관된 링크 정보를 바탕으로 리소스에 접근한다.
+      * 연관된 링크 정보
+        * Relation
+        * Hypertext Reference
+      * spring-boot-starter-hateoas 의존성 추가
+      * https://spring.io/understanding/HATEOAS
+      * https://spring.io/guides/gs/rest-hateoas/
+      * https://docs.spring.io/spring-hateoas/docs/current/reference/html/
+      * ObjectMapper 제공
+        * 커스터마이징
+          * property에 spring.jackson.* 값 변환하는 방식 추천
+        * Jackson2ObjectMapperBuilder
+      * LinkDiscovers 제공
+        * 클라이언트 쪽에서 링크 정보를 Rel 이름으로 찾을 때 사용할 수 있는 XPath 확장 클래스 
+      ```java
+        public class Hello extends RepresentationModel {
+            private String prefix;
+
+            private String name;
+            ...
+        }
+
+        public Hello hello() {
+            Hello hello = new Hello();
+            hello.setName("dongchul");
+            hello.setPrefix("Hey, ");
+
+            hello.add(linkTo(SampleController.class).withSelfRel());
+            return hello;
+        }
+      ```
+    * CORS
+      * SOP와 CORS
+        * Single-Origin Policy
+        * Cross-Origin Resource Sharing
+        * Origin ?
+          * URI 스키마 (http, https)
+          * hostname (localhost...)
+          * 포트 (8080, 18080)
+      * 스프링 MVC @CrossOrigin
+        * https://docs.spring.io/spring/docs/5.0.7.RELEASE/spring-framework-reference/web.html#mvc-cors
+        * @Controller나 @RequestMapping에 추가 하거나
+          ```java
+            @CrossOrigin(origins = "http://localhost:18080")
+            @GetMapping("/hello")
+            public Hello hello() {
+                Hello hello = new Hello();
+            }
+          ```
+        * WebMvcConfigurer 사용해서 글로벌 설정  
+          ```java
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("htt://localhost:18080");
+            }
+          ```
+  * 스프링 데이터
+    * 인메모리 데이터베이스
+      * 지원하는 인-메모리 데이터베이스
+        * H2 (추천, 콘솔때문에)
+        * HSQL
+        * Derby
+      * Spring-JDBC가 클래스패스에 있으면 자동 설정이 필요한 빈을 설정 해준다.
+        * DataSource
+        * JdbcTemplate
+      * 인-메모리 데이터베이스 기본 연결 정보 확인 하는 방법
+        * URL : "testdb"
+        * username : "sa"
+        * password : ""
+      * H2 콘솔 사용하는 방법
+        * spring-boot-devtools를 추가 하거나
+        * spring.h2.console.enabled=true 추가
+        * /h2-console로 접속 (path변경 가능)
+    * MySQL
+      * 지원하는 DBCP
+        1. HikariCP (기본)
+          * https://github.com/brettwooldridge/HikariCP#frequently-used
+        2. Tomcat CP
+        3. Commonc DBCP2
+      * DBCP 설정
+        * spring.datasource.hikari.*
+        * spring.datasource.tomcat.*
+        * spring.datasource.dbcp2.*
+      * MySQL 라이센스 (GPL) 주의
+        * MySQL 대신 MariaDB 사용 검토
+        * 소스 코드 공개 의무 여부 확인
+      * MySQL 접속시 에러
+        * MySQL 5.* 최신 버전 사용할 때 문제
+          * `Sat Jul 21 11:17:59 PDT 2018 WARN: Establishing SSL connection without server's identity verification is not recommended. According to MySQL 5.5.45+, 5.6.26+ and 5.7.6+ requirements SSL connection must be established by default if explicit option isn't set. For compliance with existing applications not using SSL the verifyServerCertificate property is set to 'false'. You need either to explicitly disable SSL by setting useSSL=false, or set useSSL=true and provide truststore for server certificate verification.`
+        * 해결
+          * jdbc:mysql:/localhost:3306/springboot?useSSL=false
+        * MySQL 8.* 최신 버전 사용할 때 문제
+          * com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException: Public Key Retrieval is not allowed
+        * 해결
+          * jdbc:mysql:/localhost:3306/springboot?useSSL=false&allowPublicKeyRetrieval=true
+    * PostgreSQL
+      * Mysql 과는 달리 라이센스 문제가 없다. 가장 추천하는 DB
+    * Spring-Data-JPA 
+      * ORM(Object-Relational Mapping)과 JPA (Java Persistence API)
+        * 객체와 릴레이션을 맵핑할 때 발생하는 개념적 불일치를 해결하는 프레임워크
+        * http://hibernate.org/what-is-an-orm
+        * JPA: ORM을 위한 자바(EE) 표준
+      * 스프링 데이터 JPA
+        * Repository 빈 자동 생성
+        * 쿼리 메소드 자동 구현
+        * @EnableJpaRepositories (스프링 부트가 자동으로 설정 해줌.)
+      * 스프링 데이터 JPA 사용하기
+        * @Entity 클래스 만들기
+        * Repository 만들기
+      * 스프링 데이터 리파지토리 테스트 만들기
+        * H2 DB를 테스트 의존성에 추가하기
+        * @DataJpaTest (슬라이스 테스트) 작성      
+          * 테스트를 실행할 때는 Inmemory DB를 사용하는것을 추천.  
+          ```java
+            @RunWith(SpringRunner.class)
+            @DataJpaTest // 슬라이싱 테스트 DataSource, JdbcTemplate, Repository 등을 주입 받는다. 인메모리 데이터 베이스가 반드시 필요함
+            public class AccountRepositoryTest {
+                @Autowired
+                DataSource dataSource;
+
+                @Autowired
+                JdbcTemplate jdbcTemplate;
+
+                @Autowired
+                AccountRepository accountRepository;
+
+                ...
+            }
+          ```
+      * JPA를 사용한 데이터베이스 초기화
+        * spring.jpa.hibernate.dll.auto 
+          * create
+          * create-drop
+          * update
+          * validate
+        * spring.jpa.generate-dll=true로 설정 해줘야 한다.
+      * SQL 스크립트를 사용한 데이터베이스 초기화
+        * schema.sql 또는 schema-${platform}.sql
+        * data.sql 또는 data-${platform}.sql
+        * ${platform} 값은 spring.datasource.platform으로 설정 가능. 
+      * 데이터베이스 마이그레이션 툴
+        * Flyway 와 Liquibase가 대표적, Flyway 사용
+        * https://docs.spring.io/spring-boot/docs/2.0.3.RELEASE/reference/htmlsingle/#howto-execute-flyway-database-migrations-on-startup
+        * 의존성 추가
+          * org.flywaydb:flyway-core
+        * 마이그레이션 디렉토리
+          * /resource/db/migration 또는 db/migration/{vendor}
+          * spring.flyway.location으로 변경 가능
+        * 마이그레이션 파일 이름
+          * 한번 적용이 된 파일은 절대 수정하면 안되고 새로운 파일을 만들어서 버전을 올려야 한다.
+          * V숫자__이름.sql
+          * V는 꼭 대문자
+          * 숫자는 순차적으로 (타임스템프 권장)
+          * 숫자와 이름 사이에 언더바 두개
+          * 이름은 가능한 서술적으로

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-06-29T18:23:31+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">Azure API Management Service 활용법</title><link href="http://localhost:4000/dev/2020/06/17/azure-api-managerment-service/" rel="alternate" type="text/html" title="Azure API Management Service 활용법" /><published>2020-06-17T00:00:00+09:00</published><updated>2020-06-17T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/06/17/azure-api-managerment-service</id><content type="html" xml:base="http://localhost:4000/dev/2020/06/17/azure-api-managerment-service/">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-06-30T17:37:27+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">Azure API Management Service 활용법</title><link href="http://localhost:4000/dev/2020/06/17/azure-api-managerment-service/" rel="alternate" type="text/html" title="Azure API Management Service 활용법" /><published>2020-06-17T00:00:00+09:00</published><updated>2020-06-17T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/06/17/azure-api-managerment-service</id><content type="html" xml:base="http://localhost:4000/dev/2020/06/17/azure-api-managerment-service/">&lt;blockquote&gt;
   &lt;p&gt;Azure API Management Service를 사용한 API 응답 캐싱&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -780,6 +780,361 @@ API 요청시 응답값을 캐싱하여 빠르게 응답을 전달해주기 위�
         &lt;ul&gt;
           &lt;li&gt;favicon.ico 파일을 static 폴더 하위에 제공&lt;/li&gt;
           &lt;li&gt;파비콘 만들기 &lt;a href=&quot;https://favicon.io&quot;&gt;파비콘&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;템플릿 엔진
+        &lt;ul&gt;
+          &lt;li&gt;스프링 부트가 자동설정을 지원하는 템플릿 엔진
+            &lt;ul&gt;
+              &lt;li&gt;FreeMarker&lt;/li&gt;
+              &lt;li&gt;Groovy&lt;/li&gt;
+              &lt;li&gt;Thymeleaf&lt;/li&gt;
+              &lt;li&gt;Mustache&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;JSP를 권장하지 않는 이유
+            &lt;ul&gt;
+              &lt;li&gt;JAR 패키징 할 때는 동작하지 않고 WAR 패키징 해야함.&lt;/li&gt;
+              &lt;li&gt;Undertow는 JSP를 지원하지 않음.&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;Thymeleaf 사용하기
+            &lt;ul&gt;
+              &lt;li&gt;https://www.thymeleaf.org&lt;/li&gt;
+              &lt;li&gt;https://www.thymeleaf.org/doc/articles/standarddialect5minutes.html&lt;/li&gt;
+              &lt;li&gt;의존성 추가 : spring-boot-starter-thymeleaf&lt;/li&gt;
+              &lt;li&gt;템플릿 파일 위치 : /src/main/resources/template&lt;/li&gt;
+              &lt;li&gt;예제 : https://github.com/thymeleaf/thymeleafexamples-stsm/blob/3.0-master/src/main/webapp/WEB-INF/templates/seedstartermng.html&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;HTML 템블릿 뷰 테스트를 보다 전문적으로 하자.
+        &lt;ul&gt;
+          &lt;li&gt;http://htmlunit.sourceforge.net/&lt;/li&gt;
+          &lt;li&gt;http://htmlunit.sourceforge.net/gettingStarted.html&lt;/li&gt;
+          &lt;li&gt;의존성 추가&lt;/li&gt;
+          &lt;li&gt;@Autowired WebClient&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;ExceptionHandler
+        &lt;ul&gt;
+          &lt;li&gt;스프링 @MVC 예외 처리 방법
+            &lt;ul&gt;
+              &lt;li&gt;@ControllerAdvice&lt;/li&gt;
+              &lt;li&gt;@ExceptionHanlder
+                &lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;nd&quot;&gt;@ExceptionHandler&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SampleException&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nd&quot;&gt;@ResponseBody&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AppError&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;sampleError&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SampleException&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;AppError&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;appError&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AppError&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;appError&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setMessage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;error.app.key&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;appError&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setReason&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;IDK&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;appError&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;                &lt;/div&gt;
+              &lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;스프링 부트가 제공하는 기본 예외 처리기
+            &lt;ul&gt;
+              &lt;li&gt;BasicErrorController
+                &lt;ul&gt;
+                  &lt;li&gt;HTML 과 JSON 응답 지원&lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/li&gt;
+              &lt;li&gt;커스터마이징 방법
+                &lt;ul&gt;
+                  &lt;li&gt;ErrorController 구현&lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;커스텀 에러 페이지
+            &lt;ul&gt;
+              &lt;li&gt;상태 코드 값에 따라 에러 페이지 보여주기&lt;/li&gt;
+              &lt;li&gt;src/main/resources/static/error/&lt;/li&gt;
+              &lt;li&gt;404.html&lt;/li&gt;
+              &lt;li&gt;5xx.html&lt;/li&gt;
+              &lt;li&gt;ErrorViewResolver 구현&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;Spring HATEOAS
+&lt;code class=&quot;highlighter-rouge&quot;&gt;Hypermedia As The Engine Of Application State&lt;/code&gt;
+        &lt;ul&gt;
+          &lt;li&gt;서버 : 현재 리소스와 연관된 링크 정보를 클라이언트에게 제공한다.&lt;/li&gt;
+          &lt;li&gt;클라이언트 : 연관된 링크 정보를 바탕으로 리소스에 접근한다.&lt;/li&gt;
+          &lt;li&gt;연관된 링크 정보
+            &lt;ul&gt;
+              &lt;li&gt;Relation&lt;/li&gt;
+              &lt;li&gt;Hypertext Reference&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;spring-boot-starter-hateoas 의존성 추가&lt;/li&gt;
+          &lt;li&gt;https://spring.io/understanding/HATEOAS&lt;/li&gt;
+          &lt;li&gt;https://spring.io/guides/gs/rest-hateoas/&lt;/li&gt;
+          &lt;li&gt;https://docs.spring.io/spring-hateoas/docs/current/reference/html/&lt;/li&gt;
+          &lt;li&gt;ObjectMapper 제공
+            &lt;ul&gt;
+              &lt;li&gt;커스터마이징
+                &lt;ul&gt;
+                  &lt;li&gt;property에 spring.jackson.* 값 변환하는 방식 추천&lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/li&gt;
+              &lt;li&gt;Jackson2ObjectMapperBuilder&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;LinkDiscovers 제공
+            &lt;ul&gt;
+              &lt;li&gt;
+                &lt;p&gt;클라이언트 쪽에서 링크 정보를 Rel 이름으로 찾을 때 사용할 수 있는 XPath 확장 클래스
+```java
+public class Hello extends RepresentationModel {
+  private String prefix;&lt;/p&gt;
+
+                &lt;p&gt;private String name;
+  …
+}&lt;/p&gt;
+              &lt;/li&gt;
+            &lt;/ul&gt;
+
+            &lt;p&gt;public Hello hello() {
+    Hello hello = new Hello();
+    hello.setName(“dongchul”);
+    hello.setPrefix(“Hey, “);&lt;/p&gt;
+
+            &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;hello.add(linkTo(SampleController.class).withSelfRel());
+return hello; } ```
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;            &lt;/div&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;CORS
+        &lt;ul&gt;
+          &lt;li&gt;SOP와 CORS
+            &lt;ul&gt;
+              &lt;li&gt;Single-Origin Policy&lt;/li&gt;
+              &lt;li&gt;Cross-Origin Resource Sharing&lt;/li&gt;
+              &lt;li&gt;Origin ?
+                &lt;ul&gt;
+                  &lt;li&gt;URI 스키마 (http, https)&lt;/li&gt;
+                  &lt;li&gt;hostname (localhost…)&lt;/li&gt;
+                  &lt;li&gt;포트 (8080, 18080)&lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;스프링 MVC @CrossOrigin
+            &lt;ul&gt;
+              &lt;li&gt;https://docs.spring.io/spring/docs/5.0.7.RELEASE/spring-framework-reference/web.html#mvc-cors&lt;/li&gt;
+              &lt;li&gt;@Controller나 @RequestMapping에 추가 하거나
+                &lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;nd&quot;&gt;@CrossOrigin&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;origins&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;http://localhost:18080&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nd&quot;&gt;@GetMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/hello&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Hello&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hello&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;Hello&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hello&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Hello&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;                &lt;/div&gt;
+              &lt;/li&gt;
+              &lt;li&gt;WebMvcConfigurer 사용해서 글로벌 설정
+                &lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;addCorsMappings&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CorsRegistry&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;registry&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;registry&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;addMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/**&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+              &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;allowedOrigins&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;htt://localhost:18080&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;                &lt;/div&gt;
+              &lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;스프링 데이터
+    &lt;ul&gt;
+      &lt;li&gt;인메모리 데이터베이스
+        &lt;ul&gt;
+          &lt;li&gt;지원하는 인-메모리 데이터베이스
+            &lt;ul&gt;
+              &lt;li&gt;H2 (추천, 콘솔때문에)&lt;/li&gt;
+              &lt;li&gt;HSQL&lt;/li&gt;
+              &lt;li&gt;Derby&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;Spring-JDBC가 클래스패스에 있으면 자동 설정이 필요한 빈을 설정 해준다.
+            &lt;ul&gt;
+              &lt;li&gt;DataSource&lt;/li&gt;
+              &lt;li&gt;JdbcTemplate&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;인-메모리 데이터베이스 기본 연결 정보 확인 하는 방법
+            &lt;ul&gt;
+              &lt;li&gt;URL : “testdb”&lt;/li&gt;
+              &lt;li&gt;username : “sa”&lt;/li&gt;
+              &lt;li&gt;password : “”&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;H2 콘솔 사용하는 방법
+            &lt;ul&gt;
+              &lt;li&gt;spring-boot-devtools를 추가 하거나&lt;/li&gt;
+              &lt;li&gt;spring.h2.console.enabled=true 추가&lt;/li&gt;
+              &lt;li&gt;/h2-console로 접속 (path변경 가능)&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;MySQL
+        &lt;ul&gt;
+          &lt;li&gt;지원하는 DBCP
+            &lt;ol&gt;
+              &lt;li&gt;HikariCP (기본)
+                &lt;ul&gt;
+                  &lt;li&gt;https://github.com/brettwooldridge/HikariCP#frequently-used&lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/li&gt;
+              &lt;li&gt;Tomcat CP&lt;/li&gt;
+              &lt;li&gt;Commonc DBCP2&lt;/li&gt;
+            &lt;/ol&gt;
+          &lt;/li&gt;
+          &lt;li&gt;DBCP 설정
+            &lt;ul&gt;
+              &lt;li&gt;spring.datasource.hikari.*&lt;/li&gt;
+              &lt;li&gt;spring.datasource.tomcat.*&lt;/li&gt;
+              &lt;li&gt;spring.datasource.dbcp2.*&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;MySQL 라이센스 (GPL) 주의
+            &lt;ul&gt;
+              &lt;li&gt;MySQL 대신 MariaDB 사용 검토&lt;/li&gt;
+              &lt;li&gt;소스 코드 공개 의무 여부 확인&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;MySQL 접속시 에러
+            &lt;ul&gt;
+              &lt;li&gt;MySQL 5.* 최신 버전 사용할 때 문제
+                &lt;ul&gt;
+                  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Sat Jul 21 11:17:59 PDT 2018 WARN: Establishing SSL connection without server's identity verification is not recommended. According to MySQL 5.5.45+, 5.6.26+ and 5.7.6+ requirements SSL connection must be established by default if explicit option isn't set. For compliance with existing applications not using SSL the verifyServerCertificate property is set to 'false'. You need either to explicitly disable SSL by setting useSSL=false, or set useSSL=true and provide truststore for server certificate verification.&lt;/code&gt;&lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/li&gt;
+              &lt;li&gt;해결
+                &lt;ul&gt;
+                  &lt;li&gt;jdbc:mysql:/localhost:3306/springboot?useSSL=false&lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/li&gt;
+              &lt;li&gt;MySQL 8.* 최신 버전 사용할 때 문제
+                &lt;ul&gt;
+                  &lt;li&gt;com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException: Public Key Retrieval is not allowed&lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/li&gt;
+              &lt;li&gt;해결
+                &lt;ul&gt;
+                  &lt;li&gt;jdbc:mysql:/localhost:3306/springboot?useSSL=false&amp;amp;allowPublicKeyRetrieval=true&lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;PostgreSQL
+        &lt;ul&gt;
+          &lt;li&gt;Mysql 과는 달리 라이센스 문제가 없다. 가장 추천하는 DB&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;Spring-Data-JPA
+        &lt;ul&gt;
+          &lt;li&gt;ORM(Object-Relational Mapping)과 JPA (Java Persistence API)
+            &lt;ul&gt;
+              &lt;li&gt;객체와 릴레이션을 맵핑할 때 발생하는 개념적 불일치를 해결하는 프레임워크&lt;/li&gt;
+              &lt;li&gt;http://hibernate.org/what-is-an-orm&lt;/li&gt;
+              &lt;li&gt;JPA: ORM을 위한 자바(EE) 표준&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;스프링 데이터 JPA
+            &lt;ul&gt;
+              &lt;li&gt;Repository 빈 자동 생성&lt;/li&gt;
+              &lt;li&gt;쿼리 메소드 자동 구현&lt;/li&gt;
+              &lt;li&gt;@EnableJpaRepositories (스프링 부트가 자동으로 설정 해줌.)&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;스프링 데이터 JPA 사용하기
+            &lt;ul&gt;
+              &lt;li&gt;@Entity 클래스 만들기&lt;/li&gt;
+              &lt;li&gt;Repository 만들기&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;스프링 데이터 리파지토리 테스트 만들기
+            &lt;ul&gt;
+              &lt;li&gt;H2 DB를 테스트 의존성에 추가하기&lt;/li&gt;
+              &lt;li&gt;@DataJpaTest (슬라이스 테스트) 작성
+                &lt;ul&gt;
+                  &lt;li&gt;테스트를 실행할 때는 Inmemory DB를 사용하는것을 추천.
+                    &lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nd&quot;&gt;@RunWith&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SpringRunner&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nd&quot;&gt;@DataJpaTest&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 슬라이싱 테스트 DataSource, JdbcTemplate, Repository 등을 주입 받는다. 인메모리 데이터 베이스가 반드시 필요함&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AccountRepositoryTest&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nd&quot;&gt;@Autowired&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;DataSource&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dataSource&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@Autowired&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;JdbcTemplate&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;jdbcTemplate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@Autowired&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;AccountRepository&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;accountRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;                    &lt;/div&gt;
+                  &lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;JPA를 사용한 데이터베이스 초기화
+            &lt;ul&gt;
+              &lt;li&gt;spring.jpa.hibernate.dll.auto
+                &lt;ul&gt;
+                  &lt;li&gt;create&lt;/li&gt;
+                  &lt;li&gt;create-drop&lt;/li&gt;
+                  &lt;li&gt;update&lt;/li&gt;
+                  &lt;li&gt;validate&lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/li&gt;
+              &lt;li&gt;spring.jpa.generate-dll=true로 설정 해줘야 한다.&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;SQL 스크립트를 사용한 데이터베이스 초기화
+            &lt;ul&gt;
+              &lt;li&gt;schema.sql 또는 schema-${platform}.sql&lt;/li&gt;
+              &lt;li&gt;data.sql 또는 data-${platform}.sql&lt;/li&gt;
+              &lt;li&gt;${platform} 값은 spring.datasource.platform으로 설정 가능.&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;데이터베이스 마이그레이션 툴
+            &lt;ul&gt;
+              &lt;li&gt;Flyway 와 Liquibase가 대표적, Flyway 사용&lt;/li&gt;
+              &lt;li&gt;https://docs.spring.io/spring-boot/docs/2.0.3.RELEASE/reference/htmlsingle/#howto-execute-flyway-database-migrations-on-startup&lt;/li&gt;
+              &lt;li&gt;의존성 추가
+                &lt;ul&gt;
+                  &lt;li&gt;org.flywaydb:flyway-core&lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/li&gt;
+              &lt;li&gt;마이그레이션 디렉토리
+                &lt;ul&gt;
+                  &lt;li&gt;/resource/db/migration 또는 db/migration/{vendor}&lt;/li&gt;
+                  &lt;li&gt;spring.flyway.location으로 변경 가능&lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/li&gt;
+              &lt;li&gt;마이그레이션 파일 이름
+                &lt;ul&gt;
+                  &lt;li&gt;한번 적용이 된 파일은 절대 수정하면 안되고 새로운 파일을 만들어서 버전을 올려야 한다.&lt;/li&gt;
+                  &lt;li&gt;V숫자__이름.sql&lt;/li&gt;
+                  &lt;li&gt;V는 꼭 대문자&lt;/li&gt;
+                  &lt;li&gt;숫자는 순차적으로 (타임스템프 권장)&lt;/li&gt;
+                  &lt;li&gt;숫자와 이름 사이에 언더바 두개&lt;/li&gt;
+                  &lt;li&gt;이름은 가능한 서술적으로&lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
         &lt;/ul&gt;
       &lt;/li&gt;
     &lt;/ul&gt;

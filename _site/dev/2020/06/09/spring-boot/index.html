@@ -1089,10 +1089,364 @@
           <li>파비콘 만들기 <a href="https://favicon.io">파비콘</a></li>
         </ul>
       </li>
+      <li>템플릿 엔진
+        <ul>
+          <li>스프링 부트가 자동설정을 지원하는 템플릿 엔진
+            <ul>
+              <li>FreeMarker</li>
+              <li>Groovy</li>
+              <li>Thymeleaf</li>
+              <li>Mustache</li>
+            </ul>
+          </li>
+          <li>JSP를 권장하지 않는 이유
+            <ul>
+              <li>JAR 패키징 할 때는 동작하지 않고 WAR 패키징 해야함.</li>
+              <li>Undertow는 JSP를 지원하지 않음.</li>
+            </ul>
+          </li>
+          <li>Thymeleaf 사용하기
+            <ul>
+              <li>https://www.thymeleaf.org</li>
+              <li>https://www.thymeleaf.org/doc/articles/standarddialect5minutes.html</li>
+              <li>의존성 추가 : spring-boot-starter-thymeleaf</li>
+              <li>템플릿 파일 위치 : /src/main/resources/template</li>
+              <li>예제 : https://github.com/thymeleaf/thymeleafexamples-stsm/blob/3.0-master/src/main/webapp/WEB-INF/templates/seedstartermng.html</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>HTML 템블릿 뷰 테스트를 보다 전문적으로 하자.
+        <ul>
+          <li>http://htmlunit.sourceforge.net/</li>
+          <li>http://htmlunit.sourceforge.net/gettingStarted.html</li>
+          <li>의존성 추가</li>
+          <li>@Autowired WebClient</li>
+        </ul>
+      </li>
+      <li>ExceptionHandler
+        <ul>
+          <li>스프링 @MVC 예외 처리 방법
+            <ul>
+              <li>@ControllerAdvice</li>
+              <li>@ExceptionHanlder
+                <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8</pre></td><td class="code"><pre class="highlight"><code>  <span class="nd">@ExceptionHandler</span><span class="o">(</span><span class="n">SampleException</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+  <span class="kd">public</span> <span class="nd">@ResponseBody</span> <span class="n">AppError</span> <span class="nf">sampleError</span><span class="o">(</span><span class="n">SampleException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">AppError</span> <span class="n">appError</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AppError</span><span class="o">();</span>
+      <span class="n">appError</span><span class="o">.</span><span class="na">setMessage</span><span class="o">(</span><span class="s">"error.app.key"</span><span class="o">);</span>
+      <span class="n">appError</span><span class="o">.</span><span class="na">setReason</span><span class="o">(</span><span class="s">"IDK"</span><span class="o">);</span>
+      <span class="k">return</span> <span class="n">appError</span><span class="o">;</span>
+
+  <span class="o">}</span>
+</code></pre></td></tr></tbody></table></div>                </div>
+              </li>
+            </ul>
+          </li>
+          <li>스프링 부트가 제공하는 기본 예외 처리기
+            <ul>
+              <li>BasicErrorController
+                <ul>
+                  <li>HTML 과 JSON 응답 지원</li>
+                </ul>
+              </li>
+              <li>커스터마이징 방법
+                <ul>
+                  <li>ErrorController 구현</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li>커스텀 에러 페이지
+            <ul>
+              <li>상태 코드 값에 따라 에러 페이지 보여주기</li>
+              <li>src/main/resources/static/error/</li>
+              <li>404.html</li>
+              <li>5xx.html</li>
+              <li>ErrorViewResolver 구현</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>Spring HATEOAS
+<code class="highlighter-rouge">Hypermedia As The Engine Of Application State</code>
+        <ul>
+          <li>서버 : 현재 리소스와 연관된 링크 정보를 클라이언트에게 제공한다.</li>
+          <li>클라이언트 : 연관된 링크 정보를 바탕으로 리소스에 접근한다.</li>
+          <li>연관된 링크 정보
+            <ul>
+              <li>Relation</li>
+              <li>Hypertext Reference</li>
+            </ul>
+          </li>
+          <li>spring-boot-starter-hateoas 의존성 추가</li>
+          <li>https://spring.io/understanding/HATEOAS</li>
+          <li>https://spring.io/guides/gs/rest-hateoas/</li>
+          <li>https://docs.spring.io/spring-hateoas/docs/current/reference/html/</li>
+          <li>ObjectMapper 제공
+            <ul>
+              <li>커스터마이징
+                <ul>
+                  <li>property에 spring.jackson.* 값 변환하는 방식 추천</li>
+                </ul>
+              </li>
+              <li>Jackson2ObjectMapperBuilder</li>
+            </ul>
+          </li>
+          <li>LinkDiscovers 제공
+            <ul>
+              <li>
+                <p>클라이언트 쪽에서 링크 정보를 Rel 이름으로 찾을 때 사용할 수 있는 XPath 확장 클래스
+```java
+public class Hello extends RepresentationModel {
+  private String prefix;</p>
+
+                <p>private String name;
+  …
+}</p>
+              </li>
+            </ul>
+
+            <p>public Hello hello() {
+    Hello hello = new Hello();
+    hello.setName(“dongchul”);
+    hello.setPrefix(“Hey, “);</p>
+
+            <div class="highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2</pre></td><td class="code"><pre class="highlight"><code>hello.add(linkTo(SampleController.class).withSelfRel());
+return hello; } ```
+</code></pre></td></tr></tbody></table></div>            </div>
+          </li>
+        </ul>
+      </li>
+      <li>CORS
+        <ul>
+          <li>SOP와 CORS
+            <ul>
+              <li>Single-Origin Policy</li>
+              <li>Cross-Origin Resource Sharing</li>
+              <li>Origin ?
+                <ul>
+                  <li>URI 스키마 (http, https)</li>
+                  <li>hostname (localhost…)</li>
+                  <li>포트 (8080, 18080)</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li>스프링 MVC @CrossOrigin
+            <ul>
+              <li>https://docs.spring.io/spring/docs/5.0.7.RELEASE/spring-framework-reference/web.html#mvc-cors</li>
+              <li>@Controller나 @RequestMapping에 추가 하거나
+                <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5</pre></td><td class="code"><pre class="highlight"><code>  <span class="nd">@CrossOrigin</span><span class="o">(</span><span class="n">origins</span> <span class="o">=</span> <span class="s">"http://localhost:18080"</span><span class="o">)</span>
+  <span class="nd">@GetMapping</span><span class="o">(</span><span class="s">"/hello"</span><span class="o">)</span>
+  <span class="kd">public</span> <span class="n">Hello</span> <span class="nf">hello</span><span class="o">()</span> <span class="o">{</span>
+      <span class="n">Hello</span> <span class="n">hello</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Hello</span><span class="o">();</span>
+  <span class="o">}</span>
+</code></pre></td></tr></tbody></table></div>                </div>
+              </li>
+              <li>WebMvcConfigurer 사용해서 글로벌 설정
+                <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5</pre></td><td class="code"><pre class="highlight"><code>  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">addCorsMappings</span><span class="o">(</span><span class="n">CorsRegistry</span> <span class="n">registry</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">registry</span><span class="o">.</span><span class="na">addMapping</span><span class="o">(</span><span class="s">"/**"</span><span class="o">)</span>
+              <span class="o">.</span><span class="na">allowedOrigins</span><span class="o">(</span><span class="s">"htt://localhost:18080"</span><span class="o">);</span>
+  <span class="o">}</span>
+</code></pre></td></tr></tbody></table></div>                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>스프링 데이터
+    <ul>
+      <li>인메모리 데이터베이스
+        <ul>
+          <li>지원하는 인-메모리 데이터베이스
+            <ul>
+              <li>H2 (추천, 콘솔때문에)</li>
+              <li>HSQL</li>
+              <li>Derby</li>
+            </ul>
+          </li>
+          <li>Spring-JDBC가 클래스패스에 있으면 자동 설정이 필요한 빈을 설정 해준다.
+            <ul>
+              <li>DataSource</li>
+              <li>JdbcTemplate</li>
+            </ul>
+          </li>
+          <li>인-메모리 데이터베이스 기본 연결 정보 확인 하는 방법
+            <ul>
+              <li>URL : “testdb”</li>
+              <li>username : “sa”</li>
+              <li>password : “”</li>
+            </ul>
+          </li>
+          <li>H2 콘솔 사용하는 방법
+            <ul>
+              <li>spring-boot-devtools를 추가 하거나</li>
+              <li>spring.h2.console.enabled=true 추가</li>
+              <li>/h2-console로 접속 (path변경 가능)</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>MySQL
+        <ul>
+          <li>지원하는 DBCP
+            <ol>
+              <li>HikariCP (기본)
+                <ul>
+                  <li>https://github.com/brettwooldridge/HikariCP#frequently-used</li>
+                </ul>
+              </li>
+              <li>Tomcat CP</li>
+              <li>Commonc DBCP2</li>
+            </ol>
+          </li>
+          <li>DBCP 설정
+            <ul>
+              <li>spring.datasource.hikari.*</li>
+              <li>spring.datasource.tomcat.*</li>
+              <li>spring.datasource.dbcp2.*</li>
+            </ul>
+          </li>
+          <li>MySQL 라이센스 (GPL) 주의
+            <ul>
+              <li>MySQL 대신 MariaDB 사용 검토</li>
+              <li>소스 코드 공개 의무 여부 확인</li>
+            </ul>
+          </li>
+          <li>MySQL 접속시 에러
+            <ul>
+              <li>MySQL 5.* 최신 버전 사용할 때 문제
+                <ul>
+                  <li><code class="highlighter-rouge">Sat Jul 21 11:17:59 PDT 2018 WARN: Establishing SSL connection without server's identity verification is not recommended. According to MySQL 5.5.45+, 5.6.26+ and 5.7.6+ requirements SSL connection must be established by default if explicit option isn't set. For compliance with existing applications not using SSL the verifyServerCertificate property is set to 'false'. You need either to explicitly disable SSL by setting useSSL=false, or set useSSL=true and provide truststore for server certificate verification.</code></li>
+                </ul>
+              </li>
+              <li>해결
+                <ul>
+                  <li>jdbc:mysql:/localhost:3306/springboot?useSSL=false</li>
+                </ul>
+              </li>
+              <li>MySQL 8.* 최신 버전 사용할 때 문제
+                <ul>
+                  <li>com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException: Public Key Retrieval is not allowed</li>
+                </ul>
+              </li>
+              <li>해결
+                <ul>
+                  <li>jdbc:mysql:/localhost:3306/springboot?useSSL=false&amp;allowPublicKeyRetrieval=true</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>PostgreSQL
+        <ul>
+          <li>Mysql 과는 달리 라이센스 문제가 없다. 가장 추천하는 DB</li>
+        </ul>
+      </li>
+      <li>Spring-Data-JPA
+        <ul>
+          <li>ORM(Object-Relational Mapping)과 JPA (Java Persistence API)
+            <ul>
+              <li>객체와 릴레이션을 맵핑할 때 발생하는 개념적 불일치를 해결하는 프레임워크</li>
+              <li>http://hibernate.org/what-is-an-orm</li>
+              <li>JPA: ORM을 위한 자바(EE) 표준</li>
+            </ul>
+          </li>
+          <li>스프링 데이터 JPA
+            <ul>
+              <li>Repository 빈 자동 생성</li>
+              <li>쿼리 메소드 자동 구현</li>
+              <li>@EnableJpaRepositories (스프링 부트가 자동으로 설정 해줌.)</li>
+            </ul>
+          </li>
+          <li>스프링 데이터 JPA 사용하기
+            <ul>
+              <li>@Entity 클래스 만들기</li>
+              <li>Repository 만들기</li>
+            </ul>
+          </li>
+          <li>스프링 데이터 리파지토리 테스트 만들기
+            <ul>
+              <li>H2 DB를 테스트 의존성에 추가하기</li>
+              <li>@DataJpaTest (슬라이스 테스트) 작성
+                <ul>
+                  <li>테스트를 실행할 때는 Inmemory DB를 사용하는것을 추천.
+                    <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14</pre></td><td class="code"><pre class="highlight"><code><span class="nd">@RunWith</span><span class="o">(</span><span class="n">SpringRunner</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="nd">@DataJpaTest</span> <span class="c1">// 슬라이싱 테스트 DataSource, JdbcTemplate, Repository 등을 주입 받는다. 인메모리 데이터 베이스가 반드시 필요함</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AccountRepositoryTest</span> <span class="o">{</span>
+    <span class="nd">@Autowired</span>
+    <span class="n">DataSource</span> <span class="n">dataSource</span><span class="o">;</span>
+
+    <span class="nd">@Autowired</span>
+    <span class="n">JdbcTemplate</span> <span class="n">jdbcTemplate</span><span class="o">;</span>
+
+    <span class="nd">@Autowired</span>
+    <span class="n">AccountRepository</span> <span class="n">accountRepository</span><span class="o">;</span>
+
+    <span class="o">...</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div>                    </div>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li>JPA를 사용한 데이터베이스 초기화
+            <ul>
+              <li>spring.jpa.hibernate.dll.auto
+                <ul>
+                  <li>create</li>
+                  <li>create-drop</li>
+                  <li>update</li>
+                  <li>validate</li>
+                </ul>
+              </li>
+              <li>spring.jpa.generate-dll=true로 설정 해줘야 한다.</li>
+            </ul>
+          </li>
+          <li>SQL 스크립트를 사용한 데이터베이스 초기화
+            <ul>
+              <li>schema.sql 또는 schema-${platform}.sql</li>
+              <li>data.sql 또는 data-${platform}.sql</li>
+              <li>${platform} 값은 spring.datasource.platform으로 설정 가능.</li>
+            </ul>
+          </li>
+          <li>데이터베이스 마이그레이션 툴
+            <ul>
+              <li>Flyway 와 Liquibase가 대표적, Flyway 사용</li>
+              <li>https://docs.spring.io/spring-boot/docs/2.0.3.RELEASE/reference/htmlsingle/#howto-execute-flyway-database-migrations-on-startup</li>
+              <li>의존성 추가
+                <ul>
+                  <li>org.flywaydb:flyway-core</li>
+                </ul>
+              </li>
+              <li>마이그레이션 디렉토리
+                <ul>
+                  <li>/resource/db/migration 또는 db/migration/{vendor}</li>
+                  <li>spring.flyway.location으로 변경 가능</li>
+                </ul>
+              </li>
+              <li>마이그레이션 파일 이름
+                <ul>
+                  <li>한번 적용이 된 파일은 절대 수정하면 안되고 새로운 파일을 만들어서 버전을 올려야 한다.</li>
+                  <li>V숫자__이름.sql</li>
+                  <li>V는 꼭 대문자</li>
+                  <li>숫자는 순차적으로 (타임스템프 권장)</li>
+                  <li>숫자와 이름 사이에 언더바 두개</li>
+                  <li>이름은 가능한 서술적으로</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
     </ul>
   </li>
 </ul>
-
 
 
       
