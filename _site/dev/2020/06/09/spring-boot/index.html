@@ -1442,6 +1442,65 @@ return hello; } ```
               </li>
             </ul>
           </li>
+          <li>Redis
+            <ul>
+              <li>캐시, 메시지 브로커, 키/벨류 스토어 등으로 사용 가능</li>
+              <li>의존성 추가
+                <ul>
+                  <li>spring-boot-starter-data-redis</li>
+                </ul>
+              </li>
+              <li>스프링 데이터 Redis
+                <ul>
+                  <li>https://projects.spring.io/spring-data-redis/</li>
+                  <li>StringRedisTemplate 또는 RedisTemplate</li>
+                  <li>extends CrudRepository</li>
+                </ul>
+              </li>
+              <li>Redis 주요 커맨드
+                <ul>
+                  <li>https://redis.io/commands</li>
+                  <li>keys *</li>
+                  <li>get {key}</li>
+                  <li>hgetall {key}</li>
+                  <li>hget {key} {column}</li>
+                </ul>
+              </li>
+              <li>커스터마이징
+                <ul>
+                  <li>spring.redis.*</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li>MongoDB
+            <ul>
+              <li>스프링 데이터 몽고 DB
+                <ul>
+                  <li>Mongotemplate</li>
+                  <li>MongoRepository</li>
+                  <li>내장형 MongoDB (테스트용)
+                    <ul>
+                      <li>de.flapdoodle.embed:de.flapdoodle.embed.mongo</li>
+                    </ul>
+                  </li>
+                  <li>@DataMongoTest</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li>Neo4J
+            <ul>
+              <li>Neo4j는 노드간의 연관 관계를 영속화 하는데 유리한 그래프 데이터베이스</li>
+              <li>스프링 데이터 Neo4J
+                <ul>
+                  <li>Neo4jTemplate (Deprecated)</li>
+                  <li>SessionFactory</li>
+                  <li>Neo4jRepository</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
         </ul>
       </li>
     </ul>

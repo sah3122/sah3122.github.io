@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-06-30T17:37:27+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">Azure API Management Service 활용법</title><link href="http://localhost:4000/dev/2020/06/17/azure-api-managerment-service/" rel="alternate" type="text/html" title="Azure API Management Service 활용법" /><published>2020-06-17T00:00:00+09:00</published><updated>2020-06-17T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/06/17/azure-api-managerment-service</id><content type="html" xml:base="http://localhost:4000/dev/2020/06/17/azure-api-managerment-service/">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-07-01T13:31:13+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">Azure API Management Service 활용법</title><link href="http://localhost:4000/dev/2020/06/17/azure-api-managerment-service/" rel="alternate" type="text/html" title="Azure API Management Service 활용법" /><published>2020-06-17T00:00:00+09:00</published><updated>2020-06-17T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/06/17/azure-api-managerment-service</id><content type="html" xml:base="http://localhost:4000/dev/2020/06/17/azure-api-managerment-service/">&lt;blockquote&gt;
   &lt;p&gt;Azure API Management Service를 사용한 API 응답 캐싱&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -1131,6 +1131,65 @@ return hello; } ```
                   &lt;li&gt;숫자는 순차적으로 (타임스템프 권장)&lt;/li&gt;
                   &lt;li&gt;숫자와 이름 사이에 언더바 두개&lt;/li&gt;
                   &lt;li&gt;이름은 가능한 서술적으로&lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;Redis
+            &lt;ul&gt;
+              &lt;li&gt;캐시, 메시지 브로커, 키/벨류 스토어 등으로 사용 가능&lt;/li&gt;
+              &lt;li&gt;의존성 추가
+                &lt;ul&gt;
+                  &lt;li&gt;spring-boot-starter-data-redis&lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/li&gt;
+              &lt;li&gt;스프링 데이터 Redis
+                &lt;ul&gt;
+                  &lt;li&gt;https://projects.spring.io/spring-data-redis/&lt;/li&gt;
+                  &lt;li&gt;StringRedisTemplate 또는 RedisTemplate&lt;/li&gt;
+                  &lt;li&gt;extends CrudRepository&lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/li&gt;
+              &lt;li&gt;Redis 주요 커맨드
+                &lt;ul&gt;
+                  &lt;li&gt;https://redis.io/commands&lt;/li&gt;
+                  &lt;li&gt;keys *&lt;/li&gt;
+                  &lt;li&gt;get {key}&lt;/li&gt;
+                  &lt;li&gt;hgetall {key}&lt;/li&gt;
+                  &lt;li&gt;hget {key} {column}&lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/li&gt;
+              &lt;li&gt;커스터마이징
+                &lt;ul&gt;
+                  &lt;li&gt;spring.redis.*&lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;MongoDB
+            &lt;ul&gt;
+              &lt;li&gt;스프링 데이터 몽고 DB
+                &lt;ul&gt;
+                  &lt;li&gt;Mongotemplate&lt;/li&gt;
+                  &lt;li&gt;MongoRepository&lt;/li&gt;
+                  &lt;li&gt;내장형 MongoDB (테스트용)
+                    &lt;ul&gt;
+                      &lt;li&gt;de.flapdoodle.embed:de.flapdoodle.embed.mongo&lt;/li&gt;
+                    &lt;/ul&gt;
+                  &lt;/li&gt;
+                  &lt;li&gt;@DataMongoTest&lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;Neo4J
+            &lt;ul&gt;
+              &lt;li&gt;Neo4j는 노드간의 연관 관계를 영속화 하는데 유리한 그래프 데이터베이스&lt;/li&gt;
+              &lt;li&gt;스프링 데이터 Neo4J
+                &lt;ul&gt;
+                  &lt;li&gt;Neo4jTemplate (Deprecated)&lt;/li&gt;
+                  &lt;li&gt;SessionFactory&lt;/li&gt;
+                  &lt;li&gt;Neo4jRepository&lt;/li&gt;
                 &lt;/ul&gt;
               &lt;/li&gt;
             &lt;/ul&gt;
