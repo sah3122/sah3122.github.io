@@ -398,8 +398,6 @@
 강의 내용을 다시한번 복습하기 위하여 정리합니다.</p>
 </blockquote>
 
-<p>작성중인 문서입니다.</p>
-
 <p>스프링 부트란 독립적이며, 프로덕션 레벨의 스프링 기반 어플리케이션을 간편하게 만들수 있게 도와주는 툴입니다.</p>
 
 <h2 id="스프링-부트-원리">스프링 부트 원리</h2>
@@ -1499,6 +1497,262 @@ return hello; } ```
                   <li>Neo4jRepository</li>
                 </ul>
               </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>스프링 시큐리티
+        <ul>
+          <li>웹 시큐리티</li>
+          <li>메소드 시큐리티</li>
+          <li>다양한 인증 방법 지원
+            <ul>
+              <li>LDAP, 폼 인증, Basic 인증, OAuth, …</li>
+            </ul>
+          </li>
+          <li>스프링 부트 시큐리티 자동 설정
+            <ul>
+              <li>SecurityAutoConfiguration</li>
+              <li>UserDetailServiceAutoConfiguration</li>
+              <li>spring-boot-starter-secutiry
+                <ul>
+                  <li>스프링 시큐리티 5.* 의존성 추가</li>
+                </ul>
+              </li>
+              <li>모든 요청에 인증이 필요함</li>
+              <li>기본 사용자 생성
+                <ul>
+                  <li>Username : user</li>
+                  <li>Password : 애플리케이션을 실행 할 때 마다 랜덤 값 생성 (콘솔 출력)</li>
+                  <li>spring.security.user.name</li>
+                  <li>spring.security.user.password</li>
+                </ul>
+              </li>
+              <li>인증 관련 각종 이벤트 발생
+                <ul>
+                  <li>DefaultAuthenticationEventPublisher 빈 등록</li>
+                  <li>다양한 인증 에러 핸들러 등록 가능</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li>UserDetailsService 구현
+            <ul>
+              <li>https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#jc-authentication-userdetailsservice</li>
+              <li>UserDetails 를 구현한 기본 구현체(User)를 Spring Security에서 제공해준다.
+                <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26<br/>27<br/>28</pre></td><td class="code"><pre class="highlight"><code><span class="nd">@Service</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SecutiryAccountService</span> <span class="kd">implements</span> <span class="n">UserDetailsService</span> <span class="o">{</span>
+
+    <span class="nd">@Autowired</span>
+    <span class="kd">private</span> <span class="n">PasswordEncoder</span> <span class="n">passwordEncoder</span><span class="o">;</span>
+
+    <span class="nd">@Autowired</span>
+    <span class="kd">private</span> <span class="n">SecurityAccountRepository</span> <span class="n">securityAccountRepository</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="n">SecurityAccount</span> <span class="nf">createAccount</span><span class="o">(</span><span class="n">String</span> <span class="n">username</span><span class="o">,</span> <span class="n">String</span> <span class="n">password</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">SecurityAccount</span> <span class="n">securityAccount</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SecurityAccount</span><span class="o">();</span>
+        <span class="n">securityAccount</span><span class="o">.</span><span class="na">setUsername</span><span class="o">(</span><span class="n">username</span><span class="o">);</span>
+        <span class="n">securityAccount</span><span class="o">.</span><span class="na">setPassword</span><span class="o">(</span><span class="n">passwordEncoder</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="n">password</span><span class="o">));</span>
+        <span class="k">return</span> <span class="n">securityAccountRepository</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">securityAccount</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">UserDetails</span> <span class="nf">loadUserByUsername</span><span class="o">(</span><span class="n">String</span> <span class="n">username</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">UsernameNotFoundException</span> <span class="o">{</span>
+        <span class="n">Optional</span><span class="o">&lt;</span><span class="n">SecurityAccount</span><span class="o">&gt;</span> <span class="n">byUserName</span> <span class="o">=</span> <span class="n">securityAccountRepository</span><span class="o">.</span><span class="na">findByUserName</span><span class="o">(</span><span class="n">username</span><span class="o">);</span>
+        <span class="n">SecurityAccount</span> <span class="n">securityAccount</span> <span class="o">=</span> <span class="n">byUserName</span><span class="o">.</span><span class="na">orElseThrow</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="k">new</span> <span class="n">UsernameNotFoundException</span><span class="o">(</span><span class="n">username</span><span class="o">));</span>
+
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">User</span><span class="o">(</span><span class="n">securityAccount</span><span class="o">.</span><span class="na">getUsername</span><span class="o">(),</span> <span class="n">securityAccount</span><span class="o">.</span><span class="na">getPassword</span><span class="o">(),</span> <span class="n">authorites</span><span class="o">());</span> <span class="c1">// UserDetails 를 구현한 기본 구현체를 Spring Security에서 제공해준다.</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="n">Collection</span><span class="o">&lt;?</span> <span class="kd">extends</span> <span class="n">GrantedAuthority</span><span class="o">&gt;</span> <span class="nf">authorites</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="k">new</span> <span class="n">SimpleGrantedAuthority</span><span class="o">(</span><span class="s">"ROLE_USER"</span><span class="o">));</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div>                </div>
+              </li>
+            </ul>
+          </li>
+          <li>PasswordEncoder 설정 및 사용
+            <ul>
+              <li>https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#core-services-password-encoding
+                <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6</pre></td><td class="code"><pre class="highlight"><code><span class="c1">// Noop : 사용해서는 안되는 방법. 아무 인코딩 / 디코딩을 하지 않는 방법</span>
+<span class="nd">@Bean</span>
+<span class="kd">public</span> <span class="n">PasswordEncoder</span> <span class="nf">passwordEncoder</span><span class="o">()</span> <span class="o">{</span>
+    <span class="c1">//return NoOpPasswordEncoder.getInstance();</span>
+    <span class="k">return</span> <span class="n">PasswordEncoderFactories</span><span class="o">.</span><span class="na">createDelegatingPasswordEncoder</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div>                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>RestTemplate 과 WebClient
+    <ul>
+      <li>RestTemplate
+        <ul>
+          <li>Blocking I/O 기반의 Synchronous API</li>
+          <li>RestTemplateAutoConfiguration</li>
+          <li>프로젝트에 spring-web 모듈이 있다면 RestTemplateBuilder를 빈으로 등록해준다.</li>
+          <li>https://docs.spring.io/spring/docs/current/spring-framework-reference/integration.html#rest-client-access</li>
+          <li>기본적으로 java.net.HttpURLConnection 사용</li>
+          <li>커스터마이징
+            <ul>
+              <li>로컬 커스터마이징</li>
+              <li>글로벌 커스터마이징
+                <ul>
+                  <li>RestTemplateCustomizer</li>
+                  <li>빈 재정의</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>WebClient
+        <ul>
+          <li>Non-Blocking I/O 기반의 Asynchronous API</li>
+          <li>WebClientAutoConfiguration</li>
+          <li>프로젝트에 spring-webflux 모듈이 있다면 WebClient.Builder를 빈으로 등록해준다.</li>
+          <li>https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html#webflux-client</li>
+          <li>기본적으로 Reactor Netty의 HTTP 클라이언트 사용</li>
+          <li>커스터마이징
+            <ul>
+              <li>로컬 커스터마이징</li>
+              <li>글로벌 커스터마이징
+                <ul>
+                  <li>WebClientCustomizer</li>
+                  <li>빈 재정의
+                    <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26<br/>27<br/>28<br/>29<br/>30<br/>31<br/>32<br/>33<br/>34<br/>35<br/>36<br/>37<br/>38<br/>39<br/>40<br/>41<br/>42<br/>43<br/>44<br/>45<br/>46<br/>47<br/>48<br/>49<br/>50<br/>51<br/>52<br/>53</pre></td><td class="code"><pre class="highlight"><code><span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">RestRunner</span> <span class="kd">implements</span> <span class="n">ApplicationRunner</span> <span class="o">{</span>
+
+<span class="nd">@Autowired</span>
+<span class="n">RestTemplateBuilder</span> <span class="n">restTemplateBuilder</span><span class="o">;</span>
+
+<span class="nd">@Autowired</span>
+<span class="n">WebClient</span><span class="o">.</span><span class="na">Builder</span> <span class="n">builder</span><span class="o">;</span>
+
+<span class="nd">@Override</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">(</span><span class="n">ApplicationArguments</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+
+    <span class="n">RestTemplate</span> <span class="n">restTemplate</span> <span class="o">=</span> <span class="n">restTemplateBuilder</span><span class="o">.</span><span class="na">build</span><span class="o">();</span>
+    <span class="n">WebClient</span> <span class="n">webClient</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="na">build</span><span class="o">();</span>
+
+    <span class="n">StopWatch</span> <span class="n">stopWatch</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StopWatch</span><span class="o">();</span>
+    <span class="n">stopWatch</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+
+    <span class="n">String</span> <span class="n">helloResult</span> <span class="o">=</span> <span class="n">restTemplate</span><span class="o">.</span><span class="na">getForObject</span><span class="o">(</span><span class="s">"http://localhost:8080/hello"</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">helloResult</span><span class="o">);</span>
+
+    <span class="n">String</span> <span class="n">worldResult</span> <span class="o">=</span> <span class="n">restTemplate</span><span class="o">.</span><span class="na">getForObject</span><span class="o">(</span><span class="s">"http://localhost:8080/world"</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">worldResult</span><span class="o">);</span>
+
+    <span class="n">Mono</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">helloMono</span> <span class="o">=</span> <span class="n">webClient</span><span class="o">.</span><span class="na">get</span><span class="o">().</span><span class="na">uri</span><span class="o">(</span><span class="s">"http://localhost:8080/hello"</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">retrieve</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">bodyToMono</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+    <span class="c1">//subscribe 시 실제로 요청을 보내게 되며 non blocking 으로 동작 한다.</span>
+    <span class="n">helloMono</span><span class="o">.</span><span class="na">subscribe</span><span class="o">(</span><span class="n">s</span> <span class="o">-&gt;</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">stopWatch</span><span class="o">.</span><span class="na">isRunning</span><span class="o">())</span>
+            <span class="n">stopWatch</span><span class="o">.</span><span class="na">stop</span><span class="o">();</span>
+
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">stopWatch</span><span class="o">.</span><span class="na">prettyPrint</span><span class="o">());</span>
+        <span class="n">stopWatch</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+    <span class="o">});</span>
+
+    <span class="n">Mono</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">worldMono</span> <span class="o">=</span> <span class="n">webClient</span><span class="o">.</span><span class="na">get</span><span class="o">().</span><span class="na">uri</span><span class="o">(</span><span class="s">"http://localhost:8080/world"</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">retrieve</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">bodyToMono</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+    <span class="n">worldMono</span><span class="o">.</span><span class="na">subscribe</span><span class="o">(</span><span class="n">s</span> <span class="o">-&gt;</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">stopWatch</span><span class="o">.</span><span class="na">isRunning</span><span class="o">())</span>
+            <span class="n">stopWatch</span><span class="o">.</span><span class="na">stop</span><span class="o">();</span>
+
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">stopWatch</span><span class="o">.</span><span class="na">prettyPrint</span><span class="o">());</span>
+        <span class="n">stopWatch</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+    <span class="o">});</span>
+
+    <span class="n">stopWatch</span><span class="o">.</span><span class="na">stop</span><span class="o">();</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">stopWatch</span><span class="o">.</span><span class="na">prettyPrint</span><span class="o">());</span>
+<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div>                    </div>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>스프링 부트 운영
+    <ul>
+      <li>스프링 부트 Actuator
+        <ul>
+          <li>의존성
+            <ul>
+              <li>spring-boot-starter-actuator</li>
+            </ul>
+          </li>
+          <li>애플리케이션의 각종 정보를 확인 할 수 있는 Endpoints
+            <ul>
+              <li>다양한 Endpoints 제공</li>
+              <li>JMX 또는 HTTP를 통해 접근 가능 함</li>
+              <li>shutdown을 제외한 모든 Endpoint는 기본적으로 활성화 상태</li>
+              <li>활성화 옵션 조정
+                <ul>
+                  <li>management.endpoints.enabled-by-default=false</li>
+                  <li>management.endpoint.info.enabled=true</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li>JConsole 사용하기
+            <ul>
+              <li>https://docs.oracle.com/javase/tutorial/jmx/mbeans/</li>
+              <li>https://docs.oracle.com/javase/7/docs/technotes/guides/management/jconsole.html</li>
+            </ul>
+          </li>
+          <li>VisualVM 사용하기
+            <ul>
+              <li>https://visualvm.github.io/download.html</li>
+              <li>java 10이상은 포함되어 있지 않다.</li>
+              <li>jconsole보다 확인하기 편하다</li>
+            </ul>
+          </li>
+          <li>HTTP 사용하기
+            <ul>
+              <li>/acturator</li>
+              <li>health와 info를 제외한 대부분의 Endpoint가 기본적으로 비공개 상태</li>
+              <li>공개 옵션 조정
+                <ul>
+                  <li>management.endpoints.web.expose.include=*</li>
+                  <li>management.endpoints.web.expose.exclude=env,beans</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li>스프링 부트 어드민
+            <ul>
+              <li>https://github.com/codecentric/spring-boot-admin 스프링 부트 Actuator UI 제공</li>
+              <li>어드민 서버 설정
+                <ul>
+                  <li>@EnableAdminServer</li>
+                  <li>spring-boot-admin-starter-server 의존성 필요</li>
+                </ul>
+              </li>
+              <li>클라이언트 설정
+                <ul>
+                  <li>spring-boot-admin-starter-client 의존성 필요</li>
+                  <li>spring.boot.admin.client.url=http://localhost:8080(어드민 서버 주소)</li>
+                  <li>management.endpoints.web.exposure.include=*</li>
+                </ul>
+              </li>
+              <li>운영중에도 로그 레벨 변경 가능</li>
+              <li>스프링 시큐리티를 반드시 설정 해야 한다.</li>
             </ul>
           </li>
         </ul>

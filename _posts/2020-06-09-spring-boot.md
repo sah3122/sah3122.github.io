@@ -10,8 +10,6 @@ tags:
 > 백기선님 강의 스프링 부트 개념과 활용 정리 노트
 강의 내용을 다시한번 복습하기 위하여 정리합니다.
 
-작성중인 문서입니다.
-
 스프링 부트란 독립적이며, 프로덕션 레벨의 스프링 기반 어플리케이션을 간편하게 만들수 있게 도와주는 툴입니다. 
 
 ## 스프링 부트 원리
@@ -634,21 +632,21 @@ tags:
           * 숫자와 이름 사이에 언더바 두개
           * 이름은 가능한 서술적으로
       * Redis
-          * 캐시, 메시지 브로커, 키/벨류 스토어 등으로 사용 가능
-          * 의존성 추가
-            * spring-boot-starter-data-redis
-          * 스프링 데이터 Redis
-            * https://projects.spring.io/spring-data-redis/
-            * StringRedisTemplate 또는 RedisTemplate
-            * extends CrudRepository
-          * Redis 주요 커맨드
-            * https://redis.io/commands
-            * keys *
-            * get {key}
-            * hgetall {key}
-            * hget {key} {column}
-          * 커스터마이징
-            * spring.redis.*
+        * 캐시, 메시지 브로커, 키/벨류 스토어 등으로 사용 가능
+        * 의존성 추가
+          * spring-boot-starter-data-redis
+        * 스프링 데이터 Redis
+          * https://projects.spring.io/spring-data-redis/
+          * StringRedisTemplate 또는 RedisTemplate
+          * extends CrudRepository
+        * Redis 주요 커맨드
+          * https://redis.io/commands
+          * keys *
+          * get {key}
+          * hgetall {key}
+          * hget {key} {column}
+        * 커스터마이징
+          * spring.redis.*
       * MongoDB
         * 스프링 데이터 몽고 DB
           * Mongotemplate
@@ -662,3 +660,178 @@ tags:
           * Neo4jTemplate (Deprecated)
           * SessionFactory
           * Neo4jRepository
+    * 스프링 시큐리티
+      * 웹 시큐리티
+      * 메소드 시큐리티
+      * 다양한 인증 방법 지원
+        * LDAP, 폼 인증, Basic 인증, OAuth, ...
+      * 스프링 부트 시큐리티 자동 설정
+        * SecurityAutoConfiguration 
+        * UserDetailServiceAutoConfiguration
+        * spring-boot-starter-secutiry
+          * 스프링 시큐리티 5.* 의존성 추가
+        * 모든 요청에 인증이 필요함
+        * 기본 사용자 생성
+          * Username : user
+          * Password : 애플리케이션을 실행 할 때 마다 랜덤 값 생성 (콘솔 출력)
+          * spring.security.user.name
+          * spring.security.user.password
+        * 인증 관련 각종 이벤트 발생
+          * DefaultAuthenticationEventPublisher 빈 등록
+          * 다양한 인증 에러 핸들러 등록 가능
+      * UserDetailsService 구현
+        * https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#jc-authentication-userdetailsservice
+        * UserDetails 를 구현한 기본 구현체(User)를 Spring Security에서 제공해준다.
+        ```java
+          @Service
+          public class SecutiryAccountService implements UserDetailsService {
+
+              @Autowired
+              private PasswordEncoder passwordEncoder;
+
+              @Autowired
+              private SecurityAccountRepository securityAccountRepository;
+
+              public SecurityAccount createAccount(String username, String password) {
+                  SecurityAccount securityAccount = new SecurityAccount();
+                  securityAccount.setUsername(username);
+                  securityAccount.setPassword(passwordEncoder.encode(password));
+                  return securityAccountRepository.save(securityAccount);
+              }
+
+              @Override
+              public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+                  Optional<SecurityAccount> byUserName = securityAccountRepository.findByUserName(username);
+                  SecurityAccount securityAccount = byUserName.orElseThrow(() -> new UsernameNotFoundException(username));
+
+                  return new User(securityAccount.getUsername(), securityAccount.getPassword(), authorites()); // UserDetails 를 구현한 기본 구현체를 Spring Security에서 제공해준다.
+              }
+
+              private Collection<? extends GrantedAuthority> authorites() {
+                  return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
+              }
+          }
+        ```
+      * PasswordEncoder 설정 및 사용
+        * https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#core-services-password-encoding
+        ```java
+          // Noop : 사용해서는 안되는 방법. 아무 인코딩 / 디코딩을 하지 않는 방법
+          @Bean
+          public PasswordEncoder passwordEncoder() {
+              //return NoOpPasswordEncoder.getInstance();
+              return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+          }
+        ```
+  * RestTemplate 과 WebClient
+    * RestTemplate
+      * Blocking I/O 기반의 Synchronous API
+      * RestTemplateAutoConfiguration
+      * 프로젝트에 spring-web 모듈이 있다면 RestTemplateBuilder를 빈으로 등록해준다.
+      * https://docs.spring.io/spring/docs/current/spring-framework-reference/integration.html#rest-client-access
+      * 기본적으로 java.net.HttpURLConnection 사용
+      * 커스터마이징
+        * 로컬 커스터마이징
+        * 글로벌 커스터마이징
+          * RestTemplateCustomizer
+          * 빈 재정의 
+    * WebClient 
+      * Non-Blocking I/O 기반의 Asynchronous API
+      * WebClientAutoConfiguration
+      * 프로젝트에 spring-webflux 모듈이 있다면 WebClient.Builder를 빈으로 등록해준다.
+      * https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html#webflux-client
+      * 기본적으로 Reactor Netty의 HTTP 클라이언트 사용
+      * 커스터마이징
+        * 로컬 커스터마이징
+        * 글로벌 커스터마이징
+          * WebClientCustomizer
+          * 빈 재정의
+      ```java
+        @Component
+        public class RestRunner implements ApplicationRunner {
+
+            @Autowired
+            RestTemplateBuilder restTemplateBuilder;
+
+            @Autowired
+            WebClient.Builder builder;
+
+            @Override
+            public void run(ApplicationArguments args) throws Exception {
+
+                RestTemplate restTemplate = restTemplateBuilder.build();
+                WebClient webClient = builder.build();
+
+                StopWatch stopWatch = new StopWatch();
+                stopWatch.start();
+
+                String helloResult = restTemplate.getForObject("http://localhost:8080/hello", String.class);
+                System.out.println(helloResult);
+
+                String worldResult = restTemplate.getForObject("http://localhost:8080/world", String.class);
+                System.out.println(worldResult);
+
+                Mono<String> helloMono = webClient.get().uri("http://localhost:8080/hello")
+                        .retrieve()
+                        .bodyToMono(String.class);
+                //subscribe 시 실제로 요청을 보내게 되며 non blocking 으로 동작 한다.
+                helloMono.subscribe(s -> {
+                    System.out.println(s);
+                    if(stopWatch.isRunning())
+                        stopWatch.stop();
+
+                    System.out.println(stopWatch.prettyPrint());
+                    stopWatch.start();
+                });
+
+                Mono<String> worldMono = webClient.get().uri("http://localhost:8080/world")
+                        .retrieve()
+                        .bodyToMono(String.class);
+                worldMono.subscribe(s -> {
+                    System.out.println(s);
+                    if(stopWatch.isRunning())
+                        stopWatch.stop();
+
+                    System.out.println(stopWatch.prettyPrint());
+                    stopWatch.start();
+                });
+
+                stopWatch.stop();
+                System.out.println(stopWatch.prettyPrint());
+            }
+        }
+      ```
+  * 스프링 부트 운영
+    * 스프링 부트 Actuator 
+      * 의존성
+        * spring-boot-starter-actuator
+      * 애플리케이션의 각종 정보를 확인 할 수 있는 Endpoints
+        * 다양한 Endpoints 제공
+        * JMX 또는 HTTP를 통해 접근 가능 함
+        * shutdown을 제외한 모든 Endpoint는 기본적으로 활성화 상태
+        * 활성화 옵션 조정
+          * management.endpoints.enabled-by-default=false
+          * management.endpoint.info.enabled=true
+      * JConsole 사용하기
+        * https://docs.oracle.com/javase/tutorial/jmx/mbeans/
+        * https://docs.oracle.com/javase/7/docs/technotes/guides/management/jconsole.html
+      * VisualVM 사용하기
+        * https://visualvm.github.io/download.html
+        * java 10이상은 포함되어 있지 않다.
+        * jconsole보다 확인하기 편하다
+      * HTTP 사용하기
+        * /acturator
+        * health와 info를 제외한 대부분의 Endpoint가 기본적으로 비공개 상태
+        * 공개 옵션 조정
+          * management.endpoints.web.expose.include=*
+          * management.endpoints.web.expose.exclude=env,beans
+      * 스프링 부트 어드민
+        * https://github.com/codecentric/spring-boot-admin 스프링 부트 Actuator UI 제공 
+        * 어드민 서버 설정
+          * @EnableAdminServer
+          * spring-boot-admin-starter-server 의존성 필요
+        * 클라이언트 설정
+          * spring-boot-admin-starter-client 의존성 필요
+          * spring.boot.admin.client.url=http://localhost:8080(어드민 서버 주소)
+          * management.endpoints.web.exposure.include=*
+        * 운영중에도 로그 레벨 변경 가능
+        * 스프링 시큐리티를 반드시 설정 해야 한다.
