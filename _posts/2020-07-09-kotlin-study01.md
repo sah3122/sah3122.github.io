@@ -289,3 +289,125 @@ tags:
     }
   ```
   > if를 표현식으로 사용할 경우에는 반드시 else를 포함하여야 한다. 그렇지 않으면 컴파일 에러가 발생할 것이다.
+
+### 널 문법
+* 코틀린에서는 널을 지정할 수 있는 변수를 ?와 함께 선언할 것을 요구한다.
+  ```kotlin
+    var str: String? = null
+  ```
+* 타입 확인과 형변환
+  * is 연산자를 사용하여 타입을 확인한다. is 연산자는 자바의 instanceOf 연산자와 같은 기능을 함
+    ```kotlin
+      fun isString(any: Any): Boolean {
+        return if (any is String) true else false
+      }
+    ```
+### 똑똑한 형변환
+* 자바에서의 형변환은 명시적으로 수행해야 한다.
+  ```java
+    public void printStringLength(Object obj) {
+      if (obj instanceOf String) {
+        String str = (String) obj;
+        System.out.print(str.length());
+      }
+    }
+  ```
+* 코틀린 컴파일러는 Smart cast를 통하여 암시적으로 타입을 형변환 하게 된다.
+  ```kotlin
+    fun printStringLength(any: Any) {
+      if (any is String) {
+        println(any.length)
+      }
+    }
+  ```
+
+### 명시적 형변환
+* 명시적으로 타입을 변환 하기 위해선 as 연산자를 사용한다. 형변환을 하지 못하는 경우 ClassCastException을 발생
+  ```kotlin
+    fun length(any: Any): Int {
+      val string = any as String
+      return string.length
+    }
+  ```
+* Null이 가능한 값으로 형 변환을 하기 위해선 Null을 허용하는 변수로 선언해주어야 한다.
+  ```kotlin
+    val string: String? = any as String
+  ```
+* 형변환이 실패한 경우 널 값을 대신 전달 받고 싶으면 안전한 형변환 연산자인 as? 를 사용할 수 있다.
+  ```kotlin
+    val any = "/home/users"
+    val string: String? = any as? String // string
+    val file: File? = any as? File // null
+  ```
+### when 표현식
+* when 에서는 마지막 분기가 else가 되도록 강제한다.
+```kotlin
+  fun whatNumber(x: Int) {
+    when (x) {
+      0 -> println("x is zero")
+      1 -> println("x is 1")
+      else -> println("x is neither 0 nor 1")
+    }
+  }
+```
+* if ... else 및 try ... catch와 마찬가지로 when도 표현식으로 사용될 수 있다.
+  ```kotlin
+    fun isMinOrMax(x: Int): Boolean {
+      val isZero = when (x) {
+        Int.MIN_VALUE -> true
+        Int.MAX_VALUE -> true
+        1,2 -> true // 분기가 같은 경우 콤마를 사용하여 묶을 수 있다. 
+        else -> false
+      }
+      return isZero
+    }
+  ```
+* when은 각 조건에 상수만 매치하도록 제한하지 않는다. 반환하는 타입이 매치하는 타입과 같으면 어떤 함수든 사용 가능하다.
+  ```kotlin
+    fun isAbs(x: Int): Boolean {
+      return when (x) {
+        Math.abs(x) -> true
+        else -> false
+      }
+    }
+  ```
+* when은 범위 연산자 역시 지원한다. in 연산자를 사용해 값이 범위 안에 포함되어 있는지를 확인할 수 있으며, 만약 포함되어 있다면 해당 조건은 true로 평가된다.
+  ```kotlin
+    fun isSingleDigit(x: Int): Boolean {
+      return when (x) {
+        in -9..9 -> true
+        else -> false
+      }
+    }
+
+    fun isDieNumber(x: Int): Boolean {
+       return when (x) {
+         in listOf(1, 2, 3, 4, 5, 6) -> true
+         else -> false
+       }
+    }
+
+    fun startsWithFoo(any: Any): Boolean {
+      return when (any) {
+        is String -> any.startWith("Foo")
+        else -> false
+      }
+    }
+  ```
+* 인자가 없는 when은 if ... else 절을 대체하게 된다.
+  ```kotlin
+    fun whenWithourArgs(x: Int, y: Int) {
+      when {
+        x < y -> println("x is less than y")
+        x > y -> println("x is greater than y")
+        else -> println("x must equal y")
+      }
+    }
+  ```
+
+### 타입 체게
+* 코틀린에선 최상위 타입을 Any라고 부른다. 이는 자바의 오브젝트 타입과 유사하다.
+* Any 타입은 toString, hashCode, equals 메소드를 정의하고 있다. 또한 apply, let, to와 같은 확장 함수도 정의하고 있다.
+* Unit 타입은 자바의 void 와 유사하다. 유닛은 싱글톤 인스턴스와 함께 적절한 타입 Unit이나 ()로 나타낸다. 함수가 유닛을 반환하도록 정의되어 있다면, 이 함수는 싱글톤 유닛 인스턴스를 반환할것이다.
+* Nothing은 값을 지니지 않는 타입이다. Any가 모든 타입의 슈퍼클래스이고 Nothing은 모든 타입의 서브클래스이다. 
+
