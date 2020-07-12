@@ -1,4 +1,77 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-07-11T16:38:51+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">Kotlin Study - 기본기</title><link href="http://localhost:4000/dev/2020/07/09/kotlin-study01/" rel="alternate" type="text/html" title="Kotlin Study - 기본기" /><published>2020-07-09T00:00:00+09:00</published><updated>2020-07-09T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/07/09/kotlin-study01</id><content type="html" xml:base="http://localhost:4000/dev/2020/07/09/kotlin-study01/">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-07-12T23:04:42+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">Kotlin Study - 코틀린과 객체 지향 프로그래밍</title><link href="http://localhost:4000/dev/2020/07/12/kotlin-study02/" rel="alternate" type="text/html" title="Kotlin Study - 코틀린과 객체 지향 프로그래밍" /><published>2020-07-12T00:00:00+09:00</published><updated>2020-07-12T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/07/12/kotlin-study02</id><content type="html" xml:base="http://localhost:4000/dev/2020/07/12/kotlin-study02/">&lt;blockquote&gt;
+  &lt;p&gt;Kotlin Study - 코틀린과 객체 지향 프로그래밍&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;코틀린 프로그래밍 책을 공부하며 정리한 글입니다.&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;코틀린과-객체-지향-프로그래밍&quot;&gt;코틀린과 객체 지향 프로그래밍&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;모든 것은 객체다.&lt;/li&gt;
+  &lt;li&gt;객체는 메시지를 보내고 받는 방식으로 통신한다.(객체 관점)&lt;/li&gt;
+  &lt;li&gt;객체는 자신만의 메모리를 갖는다.(객체 관점)&lt;/li&gt;
+  &lt;li&gt;모든 객체는 클래스의 인스턴스다.(반드시 객체여야 한다.)&lt;/li&gt;
+  &lt;li&gt;클래스는 인스턴스를 위한 공유되는 행위를 갖는다.(프로그램 리스트에서 객체의 형태로)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;코틀린은 위 내용을 모두 지원하며 현대적인 OOP 언어의 세 가지 기둥인 캡슐화, 상속, 다형성을 지원하고 있다.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;클래스&quot;&gt;클래스&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;클래스는 객체 지향 프로그래밍 언어에서 핵심적인 구성요소이다. 클래스는 타입의 행위와, 데이터를 나타낸다.
+    &lt;div class=&quot;language-kotlin highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Deposit&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;코틀린은 자바와 다르게 같은 소스 파일 안에 여러 클래스를 정의 할 수 있다. 접근 지정자를 명시하지 않는다면 public 접근지정자가 정의된다. (java는 package-private)&lt;/li&gt;
+  &lt;li&gt;위 예제에서는 기본 생성자를 가지고 있다. 새로운 생성자를 정의하고 싶다면 아래와 같이 할 수 있다.
+    &lt;div class=&quot;language-kotlin highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Person&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;constructor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;firstName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;lastName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;fun&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;person&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;dongchul&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;lee&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;위 코드에서의 constructor 키워드는 주 생성자를 의미하게 된다. 코틀린 컴파일러는 생성자 컨텍스트를 가지고 있으며 init 블록을 활용하여 주 생성자의 한 부분으로 코드를 동작 시킬 수 있다.
+    &lt;div class=&quot;language-kotlin highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Person&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;constructor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;firstName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;lastName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;init&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;firstName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;trim&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;invalid argument&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;o&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;위 생성자 코드에서의 인자는 어떤 방식으로 정의 되는것인가 ? 매개변수인가 ? 그렇지 않다. 2개의 인자는 프로퍼티로 정의 된다. 자바 코드에서 예를 들면 아래와 같이 사용할 수 있게 된다.
+    &lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;n&quot;&gt;Person&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;person&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;dongchul&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;lee&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;person&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getFirstName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;person&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getLastName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;이름만 존재하고 성을 Nullable로 정의하는 생성자를 만들땐 this를 활용하여 아래와 같이 할 수 있다.
+    &lt;div class=&quot;language-kotlin highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;k&quot;&gt;constructor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;firstName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fristName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;생성자 인자에 접두사로 val이나 var를 반드시 붙일 필요는 없으며 getter 메소드가 필요없는 경우에는 다음과 같이 할 수 있다.
+    &lt;div class=&quot;language-kotlin highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Person2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;firstName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lastName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;init&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;$firstName,$lastName&quot;&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;age&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;fun&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;fun&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getAge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;첫번째와는 달리 getName, getAge 두개의 메소드를 지원하게 될것이다.&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="kotlin" /><summary type="html">Kotlin Study - 코틀린과 객체 지향 프로그래밍</summary></entry><entry><title type="html">Kotlin Study - 기본기</title><link href="http://localhost:4000/dev/2020/07/09/kotlin-study01/" rel="alternate" type="text/html" title="Kotlin Study - 기본기" /><published>2020-07-09T00:00:00+09:00</published><updated>2020-07-09T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/07/09/kotlin-study01</id><content type="html" xml:base="http://localhost:4000/dev/2020/07/09/kotlin-study01/">&lt;blockquote&gt;
   &lt;p&gt;Kotlin Study - 코틀린 기본기&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -3579,61 +3652,4 @@ Java7 부터 Enum 상수에 추상 메소드를 구현할 수 있습니다.&lt;/
 복잡한 분기문들을 제거 하였기 때문에 상수 정의만 해준다면 어디서든 정상적으로 동작하겠죠 :)&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;예제를 사칙연산으로 들었지만 Enum을 사용하는 어느 곳이라도 비슷하게 적용할 수 있을것이라 생각하여 공유드렸습니다.&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="Java" /><summary type="html">Enum 사용법에 대하여 정리 및 사내 공유를 위해 작성</summary></entry><entry><title type="html">TDD, CleanCode, Refactoring 5주차 정리</title><link href="http://localhost:4000/dev/2020/04/25/tdd-clean-code-5w/" rel="alternate" type="text/html" title="TDD, CleanCode, Refactoring 5주차 정리" /><published>2020-04-25T00:00:00+09:00</published><updated>2020-04-25T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/04/25/tdd-clean-code-5w</id><content type="html" xml:base="http://localhost:4000/dev/2020/04/25/tdd-clean-code-5w/">&lt;blockquote&gt;
-  &lt;p&gt;TDD, CleanCode, Refactoring 5주차 정리&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&quot;사다리-타기-tdd-구현&quot;&gt;사다리 타기 tdd 구현&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;Out - in 접근 방식 vs in.- out 접근 방식&lt;/li&gt;
-  &lt;li&gt;TDD 로 구현하기에는 in.- out 방식이 더 적합하다.
-    &lt;ul&gt;
-      &lt;li&gt;가장 작은 단위의.객체부터 기능을 추가하면서 개발한다.&lt;/li&gt;
-      &lt;li&gt;도메인 설계에서 가장 마지막 객체(의존관계가 없는)&lt;/li&gt;
-      &lt;li&gt;가장 작은 단위의 객체가 구현되었으면, 객체를 더 작게 나눌수 없을까 고민&lt;/li&gt;
-      &lt;li&gt;가장 작은 단위의 객체가 새롭게 만들어 졌으면 다시 고민
-        &lt;ul&gt;
-          &lt;li&gt;위와 같은 사이클을 계속하여 진행&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;책임주도설계로 사다리타기 재설계
-    &lt;ul&gt;
-      &lt;li&gt;책임주도설계 == 인터페이스 주도 설계
-        &lt;ul&gt;
-          &lt;li&gt;사다리 초기화(생성)&lt;/li&gt;
-          &lt;li&gt;사다리 실행&lt;/li&gt;
-          &lt;li&gt;사다리 결과 구하기&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;메시지를 먼저 결정하면 내부 상태가 어떻게 도출될지는 자연스럽게 정해진다.&lt;/li&gt;
-      &lt;li&gt;책임 (객체가 해야할 행동, 메시지)를 먼저 정해보는것.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;패키지들 간의 의존성은 단방향으로 만들어야 한다.
-    &lt;ul&gt;
-      &lt;li&gt;추후에 큰변화 (분리) 할때 편리하다.&lt;/li&gt;
-      &lt;li&gt;sonarqube와 같은 정적 분석 도구를 활용해 cyclic dependency를 찾아준다.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;서비스 로직은 어디에 구현하는것이좋을까 ?
-    &lt;ul&gt;
-      &lt;li&gt;일급 콜렉션을 쓴다.&lt;/li&gt;
-      &lt;li&gt;3개 이상의 인스턴스 변수를 사용하지 않는다.&lt;/li&gt;
-      &lt;li&gt;묻지 말고 시켜라. (데이터를 꺼내지말고 메시지를 던져라)&lt;/li&gt;
-      &lt;li&gt;상태 변경의 주도권은 외부에 있지 않고 도메인이 가지고 있어야 한다.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;도메인 설계, 구현 반복
-    &lt;ul&gt;
-      &lt;li&gt;요구사항을 분석후 도메인 설계.&lt;/li&gt;
-      &lt;li&gt;한번에 완벽한 설계를 하겠다는 욕심을 버려라.
-        &lt;ul&gt;
-          &lt;li&gt;반복적인 설계와 구현을 통해 도메인에 대한 이해도를 높여야 한다.&lt;/li&gt;
-          &lt;li&gt;도메인에 대한 이해도가 높아야 추상화 수준도 높아진다.&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="TDD" /><category term="Clean Code" /><category term="Java" /><summary type="html">TDD, CleanCode, Refactoring 5주차 정리</summary></entry></feed>
+&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="Java" /><summary type="html">Enum 사용법에 대하여 정리 및 사내 공유를 위해 작성</summary></entry></feed>
