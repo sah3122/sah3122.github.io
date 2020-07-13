@@ -5,6 +5,7 @@ categories:
  - dev
 tags:
  - kotlin
+comments: true
 ---
 > Kotlin Study - 코틀린과 객체 지향 프로그래밍
 

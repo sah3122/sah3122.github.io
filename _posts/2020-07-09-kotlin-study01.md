@@ -5,6 +5,7 @@ categories:
  - dev
 tags:
  - kotlin
+comments: true
 ---
 > Kotlin Study - 코틀린 기본기
 
