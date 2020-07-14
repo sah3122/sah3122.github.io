@@ -215,3 +215,74 @@ fun showFirst(input: String) {
       }
     }
   ```
+### 추상 클래스
+* 코틀린에서 추상 클래스를 정의하는 방법
+  ```kotlin
+    abstract class A {
+      abstract fun doSomething()
+    }
+  ```
+* 인터페이스와는 달리 추상 클래스는 함수의 메소드를 정의하지 않는 경우 해당 함수에 추상함수로 표시해주어야 한다.
+* 재정의 가능함 함수를 상속하고 파생 클래스에서 abstract로 표시할 수 있다.
+  ```kotlin
+    open class AParent protected constructor() {
+      open fun someMethod(): Int = Random().nextInt()
+    }
+
+    abstract class DDerived : AParent() {
+      abstract override fun someMethod() : Int
+    }
+
+    class AlwaysOne : DDerived() {
+      override fun someMethod() : Int {
+        return 1
+      }
+    }
+  ```
+
+### 인터페이스 또는 추상클래스
+* Is - a Vs Can - Do : 파생된 클래스에 대하여 Is - a 관계가 성립될 수 없다면 추상클래스보다는 인터페이스를 사용해야 한다.  
+  인터페이스는 Can - Do 관계를 뜻한다. 각기 다른 두 객체 타입에 Can - Do 기능이 해당된다면, 인터페이스 구현으로 진행해야 한다.
+* 코드재사용 촉진 - 정의돈 모든 메소드의 구현을 제공해야 하는 인터페이스보다 클래스를 상속하여 코드를 재사용 할 수 있다. 파생 클래스는 정의된 메소드의 일부분만 재 정의 하거나 구현하면된다.
+* 버전관리 - 인터페이스를 사용하며 새로운 멤버가 추가되는 경우 모든 파생클래스가 새로운 구현체를 추가하도록 코드수정이 필요하다.  
+  똑같은 일이 추상클래스를 사용하는 경우에는 발생하지 않는다.
+
+### 다형성
+* 캡슐화와 상속에 이어 다형성이 객체지향 프로그래밍의 세 번째 기둥으로 정의된다. 다형성은 타입 단계에서 '어떻게'로부터 '무엇'을 분리한다. 다형성이 제공하는 장점 중 하나는 코드 조직화와 가독성 향상이다. 
+  또한 새로운 기능이 추가되는 경우 유연하게 확장할 수 있다.
+
+### 오버라이딩 규칙
+* 코틀린은 자바보다 더욱 명시적인 언어이다. 각 메소드는 파생된 클래스에서 오버라이딩 될 수 있다. 코틀린에서는 함수를 재정의 하기 위해선 open이라는 키워드를 사용해야 한다. 메소드를 재정의 한다는것을 알리기 위해 override를 명시해줘야 하는것도 특징이다.
+  ```kotlin
+    abstract class SingleEngineAirplane protected constructor() {
+      abstract fun fly()
+    }
+
+    class CesnaAirplane : SingleEngineAirplane() {
+      override fun fly() {
+        println("Flying a cesna")
+      }
+    }
+  ```
+* 메소드 앞에 final 키워드를 추가함으로써 파생 클래스에서 함수를 오버라이드 하는것을 명시적으로 막을수 있다.
+  ```kotlin
+    class CesnaAirplane : SingleEngineAirplane() {
+      final override fun fly() {
+        println("Flying a cesna")
+      }
+    }
+  ```
+* 프로퍼티 역시 가상으로 표현할 수 있다.
+  ```kotlin
+    open class Base {
+      open val property1: String
+        get() = "Base::value"
+    }
+
+    class Derived1 : Base() {
+      override val property1: String
+        get() = "Derived::value"
+    }
+
+    class Derived2(override val property1: String) : Base() {}
+  ```
