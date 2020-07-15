@@ -83,7 +83,7 @@
 <link href="/assets/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="JPA,Spring," />
+  <meta name="keywords" content="java," />
 
 
 
@@ -111,17 +111,17 @@
 
 
 
-<meta name="description" content="JPA환경 DB Replication 설정시 이슈 정리.">
-<meta name="keywords" content="JPA, Spring">
+<meta name="description" content="모던 자바 인 액션 정리">
+<meta name="keywords" content="java">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Spring JPA DB Master / Slave 적용시 주의할 점">
-<meta property="og:url" content="http://localhost:4000/dev/2020/01/24/jpa-replication-issue/">
+<meta property="og:title" content="모던 자바 인 액션 - 1,2부 정리">
+<meta property="og:url" content="http://localhost:4000/dev/2020/07/16/modern-java01/">
 <meta property="og:site_name" content="천천히 걷는 방법">
-<meta property="og:description" content="JPA환경 DB Replication 설정시 이슈 정리.">
+<meta property="og:description" content="모던 자바 인 액션 정리">
 <meta property="og:locale" content="ko">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Spring JPA DB Master / Slave 적용시 주의할 점">
-<meta name="twitter:description" content="JPA환경 DB Replication 설정시 이슈 정리.">
+<meta name="twitter:title" content="모던 자바 인 액션 - 1,2부 정리">
+<meta name="twitter:description" content="모던 자바 인 액션 정리">
 
 
 <script type="text/javascript" id="hexo.configurations">
@@ -154,7 +154,7 @@
 
 
 
-  <title>Spring JPA DB Master / Slave 적용시 주의할 점 | 천천히 걷는 방법</title>
+  <title>모던 자바 인 액션 - 1,2부 정리 | 천천히 걷는 방법</title>
   
 
 
@@ -280,7 +280,7 @@
   
 
   <article class="post post-type- " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://localhost:4000/dev/2020/01/24/jpa-replication-issue/">
+    <link itemprop="mainEntityOfPage" href="http://localhost:4000/dev/2020/07/16/modern-java01/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="DongChul Lee">
@@ -300,7 +300,7 @@
           <h1 class="post-title" itemprop="name headline">
           
           
-            Spring JPA DB Master / Slave 적용시 주의할 점
+            모던 자바 인 액션 - 1,2부 정리
           
         </h1>
         
@@ -314,8 +314,8 @@
               
                 <span class="post-meta-item-text">작성일</span>
               
-              <time title="" itemprop="dateCreated datePublished" datetime="2020-01-24T00:00:00+09:00">
-                2020-01-24
+              <time title="" itemprop="dateCreated datePublished" datetime="2020-07-16T00:00:00+09:00">
+                2020-07-16
               </time>
             
 
@@ -363,7 +363,7 @@
           
             
                 <div class="post-description">
-                    JPA환경 DB Replication 설정시 이슈 정리.
+                    모던 자바 인 액션 정리
                 </div>
             
           
@@ -393,52 +393,48 @@
 
 
 
-  <p>스프링 JPA를 사용하면서 데이터 베이스 이중화를 하는 경우에 크게 두가지 방법으로 구현한다. <br />
-첫번째는 AOP 를 이용하여 쿼리 타이밍에 특정한 Datasource를 불러오는 방법. <br />
-두번째는 Transaction의 Readonly 속성을 감지하여 이중화. <br /></p>
+  <blockquote>
+  <p>Modern Java In Action 정리</p>
+</blockquote>
 
-<p>지금 진행중인 프로젝트에서 두번째 방법으로 데이터베이스 이중화를 설정하였지만 생각하지 못한 문제점이 발생. 원인파악 및 최소한의 해결 방법을 정리.</p>
+<p><code class="highlighter-rouge">모던 자바 인 액션 책을 보고 정리한 글입니다.</code></p>
 
+<p>작성중인 글입니다. :)</p>
+
+<h2 id="람다-표현식">람다 표현식</h2>
 <ul>
-  <li>문제점
-    <ul>
-      <li>DataSource를 여러개를 사용하기 때문에 일반적으로 스프링 JPA 설정으로 데이터소스를 만들수 없다. 커스텀한 데이터 소스들을 서버가 실행될때 등록하여 실행한다.</li>
-      <li>위 방법을 사용시 스프링에서 제공해주는 기본 설정을 사용하지 못하여 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class}) 와 같이 기본설정을 제거 하는 코드가 필요.</li>
-      <li>기본설정을 제거 하여 Entity Manager룰 새롭게 등록 해주어야 했다.</li>
-      <li>LocalContainerEntityManagerFactoryBean 를 사용하여 EntityManager를 등록 하니 아무런 설정들이 없는상태.</li>
-      <li>스프링 JPA를 사용하면 hibernate naming 전략이 snake case로 설정된다. 하지만 자동설정을 못하니 naming 전략이 camel case로 설정 되어 실행되고 있었다.</li>
-      <li>문제점을 해결하기 위해 property에 naming 전략을 정의 해봤지만 정상적으로 실행되지 않았다. 구글링 결과 아래 코드를 사용하여 해결할 수 있었다.
-        <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7</pre></td><td class="code"><pre class="highlight"><code>    <span class="n">entityManagerFactoryBean</span><span class="o">.</span><span class="na">setDataSource</span><span class="o">(</span><span class="n">dataSource</span><span class="o">());</span>
-    <span class="n">entityManagerFactoryBean</span><span class="o">.</span><span class="na">setPackagesToScan</span><span class="o">(</span><span class="s">"com.my.pakage"</span><span class="o">);</span>
-    <span class="n">entityManagerFactoryBean</span><span class="o">.</span><span class="na">setJpaVendorAdapter</span><span class="o">(</span><span class="n">vendorAdapter</span><span class="o">);</span>
-
-    <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">properties</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
-    <span class="n">properties</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"hibernate.physical_naming_strategy"</span><span class="o">,</span> <span class="s">"org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy"</span><span class="o">);</span>
-    <span class="n">entityManagerFactoryBean</span><span class="o">.</span><span class="na">setJpaPropertyMap</span><span class="o">(</span><span class="n">properties</span><span class="o">);</span>
-</code></pre></td></tr></tbody></table></div>        </div>
-      </li>
-    </ul>
-  </li>
-  <li>남은 문제
-    <ul>
-      <li>스프링 자동 설정이 정확히 어떤것들을 설정해 주는지 모르니 기본적으로 사용하던 설정들중 어떤것들이 빠져 있는지 확인이 필요하다.</li>
-      <li>가능하다면 스프링에서 제동해주는 자동설정을 그대로 사용하고 싶기 때문에 방법을 조금더 찾아 볼 예정.</li>
-    </ul>
-  </li>
-  <li>문제 해결 추가.
-    <ul>
-      <li>스프링 자동 설정중 테이블 네이밍 설정이 빠져 있는것을 확인. <br />
-hibernate.implicit_naming_strategy / org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy 추가.</li>
-      <li>스프링에서 제공하는 자동 설정이 어떤것들이 있는지 라이브러리에서 확인. <br />
-org.springframework.boot.autoconfigure.orm.jpa 해당 패키지 아래 jpa, hibernate autoconfiguration을 확인할 수 있다.</li>
-    </ul>
-  </li>
+  <li>람다 표현식은 익명 함수의 일종이다. 이름은 없지만, 파라미터 리스트, 바디, 반환 형식을 가지며 예외를 던질 수 있다.</li>
+  <li>람다 표현식으로 간결하고 가독성 좋은 코드를 구현할 수 있다.</li>
+  <li>함수형 인터페이스는 하나의 추상 메서드만을 정의하는 인터페이스이다. @FunctionalInterface로 나타내어 둘 이상의 추상 메서드를 정의 하지 못하게 막을 수 있다.<br />
+Default 메서드는 함수형 인터페이스에서도 구현이 가능하다.</li>
+  <li>함수형 인터페이스를 기대하는 곳에서만 람다 표현식을 사용할 수 있다.</li>
+  <li>람다 표현식을 이용하여 함수형 인터페이스의 추상 메서드를 즉석으로 제공할 수 있으며, 람다 표현식 전체가 함수형 인터페이스의 인스턴스로 취급된다.</li>
+  <li>java.util.function 패키지는 Predicate<T>, Function&lt;T, R&gt;, Supplier<T>, Consumer<T>, BinaryOperator<T> 등을 포함하여 자주 사용하는 다양한 함수형 인터페이스를 제공한다.</T></T></T></T></li>
+  <li>자바 8은 Predicate<T>와 Function&lt;T, R&gt;같은 제네릭 함수형 인터페이스와 관련한 박싱 동작을 피할 수 있는 IntPredicate, IntToLongFunction 등과 같은 기본형 특화 인터페이스를 제공한다.  
+기본형 특화 인터페이스를 사용하여 불필요한 박싱, 언박싱 과정을 피할 수 있게 된다.</T></li>
+  <li>실행 어라운드 패턴 (자원할당, 자원 정리 등 코드 중간에 실행해야 하는 로직)을 람다와 함께 활용하여 유연성과 재사용성을 추가로 얻을 수 있다.</li>
+  <li>람다 표현식의 기대형식(type expected)를 대상형식(target type)이라고 한다.</li>
+  <li>메서드 참조를 사용하여 기존 메서드 구현을 재사용하고 가독성을 높일 수 있다.</li>
+  <li>Comparator, Predicate, Function 같은 함수형 인터페이스는 람다 표현식을 조립할 수 있는 다양한 디폴트 메서드를 제공한다.</li>
 </ul>
 
-<p>개발환경</p>
+<h2 id="스트림">스트림</h2>
 <ul>
-  <li>스프링 부트 2.2.2</li>
-  <li>스프링 데이터 JPA 2.2.2</li>
+  <li>스트림이란 ?
+    <ul>
+      <li>데이터 처리 연산을 지원하도록 소스에서 추출된 연속된 요소이다.</li>
+      <li>연속된 요소 : 컬렉션과 마찬가지로 스트림은 특정 요소 형식으로 이루어진 연속된 값 집합의 인터페이스를 제공한다.</li>
+      <li>소스 : 스트림은 컬렉션, 배열, I/O 자원 등의 데이터 제공 소스로부터 데이터를 소비한다.</li>
+      <li>데이터 처리 연산 : 스트림은 함수형 프로그래밍 언어에서 일반적으로 지원하는 연산과 데이터베이스와 비슷한 연산을 지원</li>
+    </ul>
+  </li>
+  <li>스트림의 특징
+    <ul>
+      <li>파이프 라아닝 : 스트림연산은 일반적으로 스트림 연산끼리 연결하여 커다란 파이프라인을 구성할 수 있도록 스트림 자신을 반환한다.<br />
+그 덕분에 게으름(laziness), 쇼트서킷(short circuting)같은 최적화도 얻을 수 있다,</li>
+      <li>내부 반복 : 반복자를 이용하여 명시적으로 반복하는 컬렉션과 달리 스트림은 내부 반복을 지원한다.</li>
+    </ul>
+  </li>
 </ul>
 
 
@@ -471,10 +467,7 @@ org.springframework.boot.autoconfigure.orm.jpa 해당 패키지 아래 jpa, hibe
         <div class="post-tags">
           
             
-            <a href="/tag/#/JPA" rel="tag"># JPA</a>
-          
-            
-            <a href="/tag/#/Spring" rel="tag"># Spring</a>
+            <a href="/tag/#/java" rel="tag"># java</a>
           
         </div>
       
@@ -490,15 +483,15 @@ org.springframework.boot.autoconfigure.orm.jpa 해당 패키지 아래 jpa, hibe
         <div class="post-nav" id="post-nav-id">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/dev/2020/02/14/ddd-serenade-2w/" rel="next" title="DDD 세레나데 2주차 강의 정리">
-                <i class="fa fa-chevron-left"></i> DDD 세레나데 2주차 강의 정리
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/dev/2020/07/12/kotlin-study02/" rel="prev" title="Kotlin Study - 코틀린과 객체 지향 프로그래밍">
+                Kotlin Study - 코틀린과 객체 지향 프로그래밍 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -554,8 +547,17 @@ org.springframework.boot.autoconfigure.orm.jpa 해당 패키지 아래 jpa, hibe
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            목차
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            흝어보기
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/assets/images/avatar.gif"
@@ -639,6 +641,34 @@ org.springframework.boot.autoconfigure.orm.jpa 해당 패키지 아래 jpa, hibe
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+
+
+
+
+
+
+
+            
+              <div class="post-toc-content">
+    <ol class=nav>
+      <li class="nav-item nav-level-2"> <a class="nav-link" href="#람다-표현식"> <span class="nav-number">1</span> <span class="nav-text">람다 표현식</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#스트림"> <span class="nav-number">2</span> <span class="nav-text">스트림</span> </a> </li>
+    </ol>
+  </div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
