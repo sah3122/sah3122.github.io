@@ -435,7 +435,32 @@ Default 메서드는 함수형 인터페이스에서도 구현이 가능하다.<
       <li>내부 반복 : 반복자를 이용하여 명시적으로 반복하는 컬렉션과 달리 스트림은 내부 반복을 지원한다.</li>
     </ul>
   </li>
+  <li>정리
+    <ul>
+      <li>스트림은 소스에서 추출된 연속 요소로, 데이터 처리 연산을 지원한다.</li>
+      <li>스트림은 내부 반복을 지원한다. 내부 반복은 filter, map, sorted등의 연산으로 반복을 추상화 한다.</li>
+      <li>스트림에는 중간 연산과 최종 연산이 있다.</li>
+      <li>중간 연산은 filter와 map처럼 스트림을 반환하면서 다른 연산과 연결되는 연산이다. 중간 연산을 이용해서 파이프 라인을 구성할 수 있지만 중간 연산으로는 어떤 결과도 생성할 수 없다.</li>
+      <li>forEach나 count처럼 스트림 파이프라인을 처리해서 스트림이 아닌 결과를 반환하는 연산을 최종연산이라 한다.</li>
+      <li>스트림의 요소는 요청할 때 게으른(lazily) 연산을 시도한다.</li>
+    </ul>
+  </li>
 </ul>
+
+<h2 id="스트림-활용">스트림 활용</h2>
+<ul>
+  <li>필터링
+    <ul>
+      <li>Predicate로 필터링
+        <ul>
+          <li>스트림 인터페이스는 filter를 지원한다. filter 메서드는 Predicate(Boolean을 리턴하는 함수)를 인수로 받아 일치하는 모든 요소를 포함하는 스트림을 반환한다.</li>
+          <li>고유요소로 필터링을 하기 위해선 distinct 메소드를 사용한다. (hashcode, equals로 결정)</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
 
 
       
@@ -661,7 +686,7 @@ Default 메서드는 함수형 인터페이스에서도 구현이 가능하다.<
             
               <div class="post-toc-content">
     <ol class=nav>
-      <li class="nav-item nav-level-2"> <a class="nav-link" href="#람다-표현식"> <span class="nav-number">1</span> <span class="nav-text">람다 표현식</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#스트림"> <span class="nav-number">2</span> <span class="nav-text">스트림</span> </a> </li>
+      <li class="nav-item nav-level-2"> <a class="nav-link" href="#람다-표현식"> <span class="nav-number">1</span> <span class="nav-text">람다 표현식</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#스트림"> <span class="nav-number">2</span> <span class="nav-text">스트림</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#스트림-활용"> <span class="nav-number">3</span> <span class="nav-text">스트림 활용</span> </a> </li>
     </ol>
   </div>
             
