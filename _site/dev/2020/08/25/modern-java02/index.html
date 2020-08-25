@@ -1,0 +1,1120 @@
+
+<!doctype html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next muse use-motion" lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/assets/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/assets/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/assets/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="java," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="천천히 걷는 방법" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="모던 자바 인 액션 정리">
+<meta name="keywords" content="java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="모던 자바 인 액션 - 스트림 활용">
+<meta property="og:url" content="http://localhost:4000/dev/2020/08/25/modern-java02/">
+<meta property="og:site_name" content="천천히 걷는 방법">
+<meta property="og:description" content="모던 자바 인 액션 정리">
+<meta property="og:locale" content="ko">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="모던 자바 인 액션 - 스트림 활용">
+<meta name="twitter:description" content="모던 자바 인 액션 정리">
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '작성자'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://localhost:4000/"/>
+
+
+
+
+
+  <title>모던 자바 인 액션 - 스트림 활용 | 천천히 걷는 방법</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="ko">
+
+  
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">천천히 걷는 방법</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">적당히 잘하는 개발자가 되기 위한 기록 저장소</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            홈
+          </a>
+        </li>
+      
+        
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            아카이브
+          </a>
+        </li>
+      
+        
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            태그
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+<div id="posts" class="posts-expand">
+  
+  
+
+  
+
+  
+  
+  
+
+  <article class="post post-type- " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://localhost:4000/dev/2020/08/25/modern-java02/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="DongChul Lee">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="assets/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="천천히 걷는 방법">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+          
+          
+            모던 자바 인 액션 - 스트림 활용
+          
+        </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">작성일</span>
+              
+              <time title="" itemprop="dateCreated datePublished" datetime="2020-08-25T00:00:00+09:00">
+                2020-08-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/category/#/dev" itemprop="url" rel="index">
+                    <span itemprop="name">dev</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            
+                <div class="post-description">
+                    모던 자바 인 액션 정리
+                </div>
+            
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <blockquote>
+  <p>Modern Java In Action 정리 - 스트림 활용</p>
+</blockquote>
+
+<p><code class="highlighter-rouge">모던 자바 인 액션 책을 보고 정리한 글입니다.</code></p>
+
+<p>작성중인 글입니다. :)</p>
+
+<h2 id="스트림-활용">스트림 활용</h2>
+<ul>
+  <li>필터링
+    <ul>
+      <li>Predicate로 필터링
+        <ul>
+          <li>스트림 인터페이스는 filter를 지원한다. filter 메서드는 Predicate(Boolean을 리턴하는 함수)를 인수로 받아 일치하는 모든 요소를 포함하는 스트림을 반환한다.</li>
+          <li>고유요소로 필터링을 하기 위해선 distinct 메소드를 사용한다. (hashcode, equals로 결정)</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>스트림 슬라이싱
+    <ul>
+      <li>TakeWhile 활용 - java 9 부터 지원
+        <ul>
+          <li>만약 필터링을 할 대상이 이미 정렬이 되어 있는 대상이라면 filter를 사용하기 보다는 takewhile을 사용하는것을 권장한다.</li>
+          <li>predicate를 만족하지 않는 첫번째 지점부터 마지막 스트림을 버린다.</li>
+          <li>takeWhile은 filter + break 라고 정의할 수있다.
+            <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9</pre></td><td class="code"><pre class="highlight"><code>  <span class="c1">// 전체 리스트 순회</span>
+  <span class="n">List</span><span class="o">&lt;</span><span class="n">Dish</span><span class="o">&gt;</span> <span class="n">filterMenu</span> <span class="o">=</span> <span class="n">specialMenu</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+                            <span class="o">.</span><span class="na">filter</span><span class="o">(</span><span class="n">dish</span> <span class="o">-&gt;</span> <span class="n">dish</span><span class="o">.</span><span class="na">getCalories</span><span class="o">()</span> <span class="o">&lt;</span> <span class="mi">320</span><span class="o">)</span>
+                            <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">toList</span><span class="o">());</span>
+        
+  <span class="c1">// 조건에 맞지 않으면 Stop</span>
+  <span class="n">List</span><span class="o">&lt;</span><span class="n">Dish</span><span class="o">&gt;</span> <span class="n">filterMenu</span> <span class="o">=</span> <span class="n">specialMenu</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+                            <span class="o">.</span><span class="na">takeWhile</span><span class="o">(</span><span class="n">dish</span> <span class="o">-&gt;</span> <span class="n">dish</span><span class="o">.</span><span class="na">getCalories</span><span class="o">()</span> <span class="o">&lt;</span> <span class="mi">320</span><span class="o">)</span>
+                            <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">toList</span><span class="o">());</span>
+</code></pre></td></tr></tbody></table></div>            </div>
+          </li>
+        </ul>
+      </li>
+      <li>DropWhile 활용 - java 9 부터 지원
+        <ul>
+          <li>나머지 요소를 선택하려면 DropWhile을 사용할 수 있다.</li>
+          <li>predicate를 처음으로 만족하지 지점까지의 요소를 버리는 작업을 진행.
+            <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4</pre></td><td class="code"><pre class="highlight"><code>  <span class="c1">// 처음으로 거짓이 되는 지점까지 버림.</span>
+  <span class="n">List</span><span class="o">&lt;</span><span class="n">Dish</span><span class="o">&gt;</span> <span class="n">filterMenu</span> <span class="o">=</span> <span class="n">specialMenu</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+                            <span class="o">.</span><span class="na">dropWhile</span><span class="o">(</span><span class="n">dish</span> <span class="o">-&gt;</span> <span class="n">dish</span><span class="o">.</span><span class="na">getCalories</span><span class="o">()</span> <span class="o">&lt;</span> <span class="mi">320</span><span class="o">)</span>
+                            <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">toList</span><span class="o">());</span>
+</code></pre></td></tr></tbody></table></div>            </div>
+          </li>
+        </ul>
+      </li>
+      <li>스트림 축소
+        <ul>
+          <li>스트림은 주어진 값 이하의 크기를 갖는 새로운 스트림을 반환하는 <code class="highlighter-rouge">limit(n)</code> 메서드를 지원한다.
+            <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5</pre></td><td class="code"><pre class="highlight"><code>  <span class="c1">// 3개 요소 반환</span>
+  <span class="n">List</span><span class="o">&lt;</span><span class="n">Dish</span><span class="o">&gt;</span> <span class="n">filterMenu</span> <span class="o">=</span> <span class="n">specialMenu</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+                            <span class="o">.</span><span class="na">filter</span><span class="o">(</span><span class="n">dish</span> <span class="o">-&gt;</span> <span class="n">dish</span><span class="o">.</span><span class="na">getCalories</span><span class="o">()</span> <span class="o">&lt;</span> <span class="mi">320</span><span class="o">)</span>
+                            <span class="o">.</span><span class="na">limit</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
+                            <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">toList</span><span class="o">());</span>
+</code></pre></td></tr></tbody></table></div>            </div>
+          </li>
+        </ul>
+      </li>
+      <li>요소 건너뛰기
+        <ul>
+          <li>스트림은 처음 n개의 요소를 제외한 스트림을 반환하는 skip(n) 메서드를 지원한다.</li>
+          <li>n개 이하의 요소를 포함하는 스트림에 skip(n)을 호출하면 빈 스트림이 반환된다.
+            <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5</pre></td><td class="code"><pre class="highlight"><code>  <span class="c1">// 처음 3개 요소 건너뛰기</span>
+  <span class="n">List</span><span class="o">&lt;</span><span class="n">Dish</span><span class="o">&gt;</span> <span class="n">filterMenu</span> <span class="o">=</span> <span class="n">specialMenu</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+                            <span class="o">.</span><span class="na">filter</span><span class="o">(</span><span class="n">dish</span> <span class="o">-&gt;</span> <span class="n">dish</span><span class="o">.</span><span class="na">getCalories</span><span class="o">()</span> <span class="o">&lt;</span> <span class="mi">320</span><span class="o">)</span>
+                            <span class="o">.</span><span class="na">skip</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
+                            <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">toList</span><span class="o">());</span>
+</code></pre></td></tr></tbody></table></div>            </div>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>매핑
+    <ul>
+      <li>특정 객체에서 특정 데이터를 선택하는 작업은 데이터 처리 과정에서 자주 수행되는 연산이다.<br />
+스트림 API의 map과 flatMap 메서드는 특정 데이터를 선택하는 기능을 제공한다.</li>
+      <li>스트림의 각 요소에 함수 적용하기
+        <ul>
+          <li>스트림은 함수를 인수로 받는 map 메서드를 지원한다. 인수로 제공된 함수는 각 요소에 적용되며 함수를 적용한 결과가 새로운 요소로 매핑된다.
+            <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15</pre></td><td class="code"><pre class="highlight"><code>    <span class="c1">// 요리명을 추출하는 예제</span>
+    <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">dishNames</span> <span class="o">=</span> <span class="n">menu</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+                            <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="nl">Dish:</span><span class="o">:</span><span class="n">getName</span><span class="o">)</span>
+                            <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">toList</span><span class="o">());</span>
+    <span class="c1">// 단어 리스트의 글자수 추출</span>
+    <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">words</span> <span class="o">=</span> <span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="s">"Modern"</span><span class="o">,</span> <span class="s">"Java"</span><span class="o">,</span> <span class="s">"In"</span><span class="o">,</span> <span class="s">"Action"</span><span class="o">);</span>
+    <span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">wordLengths</span> <span class="o">=</span> <span class="n">words</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+          <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="nl">String:</span><span class="o">:</span><span class="n">length</span><span class="o">)</span>
+          <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">toList</span><span class="o">());</span>
+
+    <span class="c1">// map 을 연결하여 요리명의 글자수 추출</span>
+    <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">dishNames</span> <span class="o">=</span> <span class="n">menu</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+                            <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="nl">Dish:</span><span class="o">:</span><span class="n">getName</span><span class="o">)</span>
+                            <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="nl">String:</span><span class="o">:</span><span class="n">length</span><span class="o">)</span>
+                            <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">toList</span><span class="o">());</span>                        
+</code></pre></td></tr></tbody></table></div>            </div>
+          </li>
+        </ul>
+      </li>
+      <li>스트림 평면화
+        <ul>
+          <li>이전 예제를 사용하여 리스트에서 고유문자로 이루어진 리스트를 반환 해보자.</li>
+          <li>예를들어 [“hello”, “world”] 리스트가 [“h”, “e”, “l”, “l”, “o”, “w”, “o”, “r”, “l”, “d”] 가 되도록 변경하는 것이다.
+            <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4</pre></td><td class="code"><pre class="highlight"><code>  <span class="n">words</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">word</span> <span class="o">-&gt;</span> <span class="n">word</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">""</span><span class="o">))</span>
+        <span class="o">.</span><span class="na">distinct</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">tolist</span><span class="o">())</span>
+</code></pre></td></tr></tbody></table></div>            </div>
+          </li>
+          <li>위와 같이 실행한다면 map의 결과값으로 Stream&lt;String[]&gt;이 될것이다. 원하는 결과는 Stream<String>인데 어떻게 구현헤야 할지 생각 해보자.</String></li>
+          <li>방법을 모른다면 간단하지가 않다. flatMap은 사용해 문제를 해결할수 있다.
+            <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5</pre></td><td class="code"><pre class="highlight"><code>  <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">uniqueCharacters</span> <span class="o">=</span> <span class="n">words</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+          <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">word</span> <span class="o">-&gt;</span> <span class="n">word</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">""</span><span class="o">))</span> <span class="c1">// 각 단어를 개별 문자를 포함하는 배열로 변환 </span>
+          <span class="o">.</span><span class="na">flatMap</span><span class="o">(</span><span class="nl">Arrays:</span><span class="o">:</span><span class="n">stream</span><span class="o">)</span> <span class="c1">// 생성된 스트림을 하나의 스트림으로 평면화</span>
+          <span class="o">.</span><span class="na">distinct</span><span class="o">()</span>
+          <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">toList</span><span class="o">());</span>
+</code></pre></td></tr></tbody></table></div>            </div>
+          </li>
+          <li>flatMap은 각 배열을 스트림이 아니라 스트림의 콘텐츠로 매핑한다. 즉, map(Arrays::stream)과 달리 flatMap은 하나의 평면화된 스트림을 반환한다.<br />
+요약하면 flatMap 메서드는 스트림의 각 값을 다른 스트림으로 만든 다음 모든 스트림을 하나의 스트림으로 연결하는 기능을 수행한다.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>검색과 매칭
+    <ul>
+      <li>특정 속성이 데이터 집합에 있는지 여부를 검색하는 데이터 처리도 자주 사용된다.</li>
+      <li>요소 매칭
+        <ul>
+          <li>스트림은 allMatch, anyMatch, noneMatch, findFirst, findAny등 다양한 유틸리티 메서드를 지원한다.
+            <ul>
+              <li>Predicate가 적어도 한 요소와 일치 하는지 확인
+                <ul>
+                  <li>boolean isMatch = menu.stream().anyMatch(Dish::isVegetarian)</li>
+                </ul>
+              </li>
+              <li>Predicate가 모든 요소와 일치하는지 검사
+                <ul>
+                  <li>boolean isMatch = menu.stream().allMatch(Dish::isVegetarian)</li>
+                </ul>
+              </li>
+              <li>boolean값을 반환 하기 때문에 최종연산에 포함된다.</li>
+            </ul>
+          </li>
+          <li>NoneMatch
+            <ul>
+              <li>noneMatch는 allMatch와 반대 연산을 수행한다. 즉. noneMatch는 주어진 predicate와 일치하는 요소가 없는지 확인한다.</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>요소 검색
+        <ul>
+          <li>findAny 메서드는 현재 스트림에서 임의의 요소를 반환한다. findAny 메서드를 다른 스트림 연산과 연결해서 사용할 수 있다.\
+            <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4</pre></td><td class="code"><pre class="highlight"><code>  <span class="c1">// filter 와 findAny를 활용해 채식 요리를 선택하는 방법</span>
+  <span class="n">Optional</span><span class="o">&lt;</span><span class="n">Dish</span><span class="o">&gt;</span> <span class="n">dish</span> <span class="o">=</span> <span class="n">words</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+          <span class="o">.</span><span class="na">filter</span><span class="o">(</span><span class="nl">Dish:</span><span class="o">:</span><span class="n">isVegetarian</span><span class="o">)</span>
+          <span class="o">.</span><span class="na">findAny</span><span class="o">();</span>
+</code></pre></td></tr></tbody></table></div>            </div>
+          </li>
+          <li>Optional 이란 값의 존재 여부를 표현하는 컨테이너 클래스이다. 이전 예제에서 findAny는 아무 요소도 반환하지 않을 수 있다. NPE를 발생 시킬 수 있으므로<br />
+java 8 라이브러리는 Optional을 만들었고 해당 내용은 나중에 정리 하겠습니다.</li>
+          <li>첫 번째 요소 찾기
+            <ul>
+              <li>리스트 또는 정렬된 데이터로 부터 생성된 스트림은 논리적인 아이템 순서가 정해져 있을 수 있다. 이런 스트림에서 첫번째 요소를 찾기 위한 방법은 findFirst를 사용하는 것이다.
+                <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6</pre></td><td class="code"><pre class="highlight"><code><span class="c1">//  3으로 나누어 떨어지는 첫 번째 제곱근 값을 반환하는 코드.</span>
+<span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">someNumbers</span> <span class="o">=</span> <span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="mi">5</span><span class="o">);</span>
+<span class="n">Optional</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">first</span> <span class="o">=</span> <span class="n">someNumbers</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">n</span> <span class="o">-&gt;</span> <span class="n">n</span> <span class="o">*</span> <span class="n">n</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">filter</span><span class="o">(</span><span class="n">n</span> <span class="o">-&gt;</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">findFirst</span><span class="o">();</span>
+</code></pre></td></tr></tbody></table></div>                </div>
+              </li>
+            </ul>
+          </li>
+          <li>findAny와 findFirst는 언제 사용하나 ?
+            <ul>
+              <li>두 개의 메서드를 모두 제공하는 이유는 병렬성 때문이다. 병렬 실행에서는 첫번째 반환 요소를 선택하기 어려우니 반환 순서가 상관이 없다면 병렬 스트림에서 제약이 적은 findAny를 주로 사용한다.</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>리듀싱
+    <ul>
+      <li>스트림의 최종연산 중 하나로 마지막 결과가 나올때까지 스트림의 모든 요소를 반복적으로 처리하는 과정</li>
+      <li>함수형 프로그래밍 언어 용어로는 이과정이 마치 종이를 작은 조각이 될때까지 반복해서 접는것과 비슷하다 하여 폴드라고 부른다.
+        <ul>
+          <li>요소의 합
+            <ul>
+              <li>reduce 메서드를 살펴보기 전에 for-each 루프를 이용해 리스트의 숫자 요소를 더하는 코드를 확인
+                <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4</pre></td><td class="code"><pre class="highlight"><code>  <span class="kt">int</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+  <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">x</span> <span class="o">:</span> <span class="n">numbers</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">sum</span> <span class="o">+=</span> <span class="n">x</span><span class="o">;</span>
+  <span class="o">}</span>
+</code></pre></td></tr></tbody></table></div>                </div>
+              </li>
+              <li>numbers의 요소는 결과에 반복적으로 더해진다. 리스트에서 하나의 숫자가 남을 때 까지 reduce 과정을 반복한다.</li>
+              <li>파라미터
+                <ul>
+                  <li>sum 변수의 초깃값 0</li>
+                  <li>리스트의 모든 요소를 조합하는 연산 (+)</li>
+                </ul>
+              </li>
+              <li>reduce를 사용하면 애플리케이션의 반복된 패턴을 추상화 할 수 있다.
+                <ul>
+                  <li>int sum = numbers.stream().reduce(0, (a, b) -&gt; a + b);</li>
+                </ul>
+              </li>
+              <li>reduce는 두개의 인수를 갖는다.
+                <ul>
+                  <li>초깃값 0.</li>
+                  <li>두 요소를 조합해 새로운 값을 만드는 BinaryOperator<T>. 예제에서는 람다 표현식 (a, b) -&gt; a + b를 사용했다.</T></li>
+                </ul>
+              </li>
+              <li>reduce로 다른 람다, 즉 (a, b) -&gt; a * b를 넘겨주면 모든 요소에 곱셈을 적용할 수 있다.</li>
+              <li>Java 8 에서는 Integer 클래스에 두 숫자를 더하는 정적 sum 메서드를 지원하여 아래와 같이 사용할 수 있다.
+                <ul>
+                  <li>int sum = numbers.stream().reduce(0, Integer::sum);</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li>초깃값 없음
+            <ul>
+              <li>초깃값을 받지 않도록 오버로드된 reduce는 결과값으로 Optional객체를 반환한다.</li>
+              <li>Optional<Integer> sum = numbers.stream().reduce((a, b) -&gt; a + b);</Integer></li>
+            </ul>
+          </li>
+          <li>최대값, 최솟값
+            <ul>
+              <li>최대값과 최솟값을 찾는 연산도 reduce를 활용하면 쉽게 할 수 있다.
+                <ul>
+                  <li>Optional<Integer> max = numbers.stream().reduce(Integer::max);</Integer></li>
+                  <li>Optional<Integer> min = numbers.stream().reduce(Integer::min);</Integer></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            
+            <a href="/tag/#/java" rel="tag"># java</a>
+          
+        </div>
+      
+
+      
+      
+      
+      
+      
+
+      
+      
+        <div class="post-nav" id="post-nav-id">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/dev/2020/07/16/modern-java01/" rel="prev" title="모던 자바 인 액션 - 1,2부 정리">
+                모던 자바 인 액션 - 1,2부 정리 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+      
+
+      
+    </footer>
+  </article>
+
+  <div class="post-spread">
+    
+  </div>
+</div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        
+        
+        
+
+
+
+
+
+
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            목차
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            흝어보기
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/assets/images/avatar.gif"
+               alt="DongChul Lee" />
+          <p class="site-author-name" itemprop="name">DongChul Lee</p>
+           
+              <p class="site-description motion-element" itemprop="description">사내 공유, 개인의 경험을 기록하는 블로그입니다.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">포스트</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">카테고리</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/">
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">태그</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+        
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              
+              
+              <span class="links-of-author-item">
+                <a href="https://github.com/sah3122" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+
+
+
+
+
+
+
+            
+              <div class="post-toc-content">
+    <ol class=nav>
+      <li class="nav-item nav-level-2"> <a class="nav-link" href="#스트림-활용"> <span class="nav-number">1</span> <span class="nav-text">스트림 활용</span> </a> </li>
+    </ol>
+  </div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+        
+        
+      <div id="disqus_thread"></div>
+      <script>
+
+      /**
+      *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+      *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+      /*
+      var disqus_config = function () {
+      this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+      };
+      */
+      (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://sah3122.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+      })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+          
+      </div>
+    </main>       
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DongChul Lee</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://jekyllrb.com">Jekyll</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/simpleyyt/jekyll-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+   
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/assets/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/assets/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/assets/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/assets/js/src/post-details.js?v=5.1.1"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/assets/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+    
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/assets/js/src/js.cookie.js?v=5.1.1"></script>
+  <script type="text/javascript" src="/assets/js/src/scroll-cookie.js?v=5.1.1"></script>
+
+
+  
+
+</body>
+</html>
+

@@ -399,8 +399,6 @@
 
 <p><code class="highlighter-rouge">모던 자바 인 액션 책을 보고 정리한 글입니다.</code></p>
 
-<p>작성중인 글입니다. :)</p>
-
 <h2 id="람다-표현식">람다 표현식</h2>
 <ul>
   <li>람다 표현식은 익명 함수의 일종이다. 이름은 없지만, 파라미터 리스트, 바디, 반환 형식을 가지며 예외를 던질 수 있다.</li>
@@ -443,66 +441,6 @@ Default 메서드는 함수형 인터페이스에서도 구현이 가능하다.<
       <li>중간 연산은 filter와 map처럼 스트림을 반환하면서 다른 연산과 연결되는 연산이다. 중간 연산을 이용해서 파이프 라인을 구성할 수 있지만 중간 연산으로는 어떤 결과도 생성할 수 없다.</li>
       <li>forEach나 count처럼 스트림 파이프라인을 처리해서 스트림이 아닌 결과를 반환하는 연산을 최종연산이라 한다.</li>
       <li>스트림의 요소는 요청할 때 게으른(lazily) 연산을 시도한다.</li>
-    </ul>
-  </li>
-</ul>
-
-<h2 id="스트림-활용">스트림 활용</h2>
-<ul>
-  <li>필터링
-    <ul>
-      <li>Predicate로 필터링
-        <ul>
-          <li>스트림 인터페이스는 filter를 지원한다. filter 메서드는 Predicate(Boolean을 리턴하는 함수)를 인수로 받아 일치하는 모든 요소를 포함하는 스트림을 반환한다.</li>
-          <li>고유요소로 필터링을 하기 위해선 distinct 메소드를 사용한다. (hashcode, equals로 결정)</li>
-        </ul>
-      </li>
-    </ul>
-  </li>
-  <li>스트림 슬라이싱
-    <ul>
-      <li>TakeWhile 활용 - java 9 부터 지원
-        <ul>
-          <li>만약 필터링을 할 대상이 이미 정렬이 되어 있는 대상이라면 filter를 사용하기 보다는 takewhile을 사용하는것을 권장한다.</li>
-          <li>predicate를 만족하지 않는 첫번째 지점부터 마지막 스트림을 버린다.</li>
-          <li>takeWhile은 filter + break 라고 정의할 수있다.
-            <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9</pre></td><td class="code"><pre class="highlight"><code>  <span class="c1">// 전체 리스트 순회</span>
-  <span class="n">List</span><span class="o">&lt;</span><span class="n">Dish</span><span class="o">&gt;</span> <span class="n">filterMenu</span> <span class="o">=</span> <span class="n">specialMenu</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
-                            <span class="o">.</span><span class="na">filter</span><span class="o">(</span><span class="n">dish</span> <span class="o">-&gt;</span> <span class="n">dish</span><span class="o">.</span><span class="na">getCalories</span><span class="o">()</span> <span class="o">&lt;</span> <span class="mi">320</span><span class="o">)</span>
-                            <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">toList</span><span class="o">());</span>
-        
-  <span class="c1">// 조건에 맞지 않으면 Stop</span>
-  <span class="n">List</span><span class="o">&lt;</span><span class="n">Dish</span><span class="o">&gt;</span> <span class="n">filterMenu</span> <span class="o">=</span> <span class="n">specialMenu</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
-                            <span class="o">.</span><span class="na">takeWhile</span><span class="o">(</span><span class="n">dish</span> <span class="o">-&gt;</span> <span class="n">dish</span><span class="o">.</span><span class="na">getCalories</span><span class="o">()</span> <span class="o">&lt;</span> <span class="mi">320</span><span class="o">)</span>
-                            <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">toList</span><span class="o">());</span>
-</code></pre></td></tr></tbody></table></div>            </div>
-          </li>
-        </ul>
-      </li>
-      <li>DropWhile 활용 - java 9 부터 지원
-        <ul>
-          <li>나머지 요소를 선택하려면 DropWhile을 사용할 수 있다.</li>
-          <li>predicate를 처음으로 만족하지 지점까지의 요소를 버리는 작업을 진행.
-            <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4</pre></td><td class="code"><pre class="highlight"><code>  <span class="c1">// 처음으로 거짓이 되는 지점까지 버림.</span>
-  <span class="n">List</span><span class="o">&lt;</span><span class="n">Dish</span><span class="o">&gt;</span> <span class="n">filterMenu</span> <span class="o">=</span> <span class="n">specialMenu</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
-                            <span class="o">.</span><span class="na">dropWhile</span><span class="o">(</span><span class="n">dish</span> <span class="o">-&gt;</span> <span class="n">dish</span><span class="o">.</span><span class="na">getCalories</span><span class="o">()</span> <span class="o">&lt;</span> <span class="mi">320</span><span class="o">)</span>
-                            <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">toList</span><span class="o">());</span>
-</code></pre></td></tr></tbody></table></div>            </div>
-          </li>
-        </ul>
-      </li>
-      <li>스트림 축소
-        <ul>
-          <li>스트림은 주어진 값 이하의 크기를 갖는 새로운 스트림을 반환하는 <code class="highlighter-rouge">limit(n)</code> 메서드를 지원한다.
-            <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5</pre></td><td class="code"><pre class="highlight"><code>  <span class="c1">// 3개 요소 반환</span>
-  <span class="n">List</span><span class="o">&lt;</span><span class="n">Dish</span><span class="o">&gt;</span> <span class="n">filterMenu</span> <span class="o">=</span> <span class="n">specialMenu</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
-                            <span class="o">.</span><span class="na">filter</span><span class="o">(</span><span class="n">dish</span> <span class="o">-&gt;</span> <span class="n">dish</span><span class="o">.</span><span class="na">getCalories</span><span class="o">()</span> <span class="o">&lt;</span> <span class="mi">320</span><span class="o">)</span>
-                            <span class="o">.</span><span class="na">limit</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
-                            <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">toList</span><span class="o">());</span>
-</code></pre></td></tr></tbody></table></div>            </div>
-          </li>
-        </ul>
-      </li>
     </ul>
   </li>
 </ul>
@@ -552,6 +490,10 @@ Default 메서드는 함수형 인터페이스에서도 구현이 가능하다.<
       
         <div class="post-nav" id="post-nav-id">
           <div class="post-nav-next post-nav-item">
+            
+              <a href="/dev/2020/08/25/modern-java02/" rel="next" title="모던 자바 인 액션 - 스트림 활용">
+                <i class="fa fa-chevron-left"></i> 모던 자바 인 액션 - 스트림 활용
+              </a>
             
           </div>
 
@@ -642,7 +584,7 @@ Default 메서드는 함수형 인터페이스에서도 구현이 가능하다.<
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">25</span>
                 <span class="site-state-item-name">포스트</span>
               </a>
             </div>
@@ -731,7 +673,7 @@ Default 메서드는 함수형 인터페이스에서도 구현이 가능하다.<
             
               <div class="post-toc-content">
     <ol class=nav>
-      <li class="nav-item nav-level-2"> <a class="nav-link" href="#람다-표현식"> <span class="nav-number">1</span> <span class="nav-text">람다 표현식</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#스트림"> <span class="nav-number">2</span> <span class="nav-text">스트림</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#스트림-활용"> <span class="nav-number">3</span> <span class="nav-text">스트림 활용</span> </a> </li>
+      <li class="nav-item nav-level-2"> <a class="nav-link" href="#람다-표현식"> <span class="nav-number">1</span> <span class="nav-text">람다 표현식</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#스트림"> <span class="nav-number">2</span> <span class="nav-text">스트림</span> </a> </li>
     </ol>
   </div>
             
