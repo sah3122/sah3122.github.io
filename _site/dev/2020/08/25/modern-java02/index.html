@@ -635,12 +635,135 @@ java 8 라이브러리는 Optional을 만들었고 해당 내용은 나중에 �
                 <ul>
                   <li>Optional<Integer> max = numbers.stream().reduce(Integer::max);</Integer></li>
                   <li>Optional<Integer> min = numbers.stream().reduce(Integer::min);</Integer></li>
+                  <li>메소드 레퍼런스 대신 람다 표현식을 사용해도 되지만 메소드 레퍼런스를 활용할 수 있으면 활용하도록 하자.
+                    <ul>
+                      <li>(x, y) -&gt; x &gt; y ? x : y;</li>
+                    </ul>
+                  </li>
                 </ul>
               </li>
             </ul>
           </li>
         </ul>
       </li>
+    </ul>
+  </li>
+  <li>기본형 특화 스트림
+    <ul>
+      <li>숫자 스트림으로 매핑
+        <ul>
+          <li>스트림을 특화 스트림으로 사용할 땐 mapToInt, mapToDouble, mapToLong을 가장 많이 사용한다.</li>
+          <li>이들 스트림은 map과 같은 역할을 하지만 Stream<T> 가 아닌 특화된 스트림을 반환한다.
+</T>            <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code>  <span class="kt">int</span> <span class="n">calories</span> <span class="o">=</span> <span class="n">menu</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+                      <span class="o">.</span><span class="na">mapToInt</span><span class="o">(</span><span class="nl">Dish:</span><span class="o">:</span><span class="n">getCalories</span><span class="o">)</span>
+                      <span class="o">.</span><span class="na">sum</span><span class="o">();</span>
+</code></pre></td></tr></tbody></table></div>            </div>
+          </li>
+          <li>mapToInt 메서드는 각 요리에서 모든 칼로리를(Integer)형태로 추출한 다음 IntStream을 반환 한다. 따라서 IntStream에서 제공하는 sum과 같은 메소드를 사용할 수 있다.</li>
+        </ul>
+      </li>
+      <li>객체 스트림으로 복원하기
+        <ul>
+          <li>IntStream으로 만든 다음, 다시 Stream으로 만들기 위한 방법</li>
+          <li>IntStream과 같은 특화된 스트림은 각 스트림의 기본값들만 만들수 있다. IntStream의 map 연산은 int를 인수로 받아 int를 반환하는 람다 (IntUnaryOperator)를 인수로 받게 된다.<br />
+하지만 정수가 아닌 Dish와 같은 값을 반환 하기 위해선 스트림 인터페이스에 정의된 연산을 사용해야 한다. 이런 경우 boxed 메서드를 사용할 수 있다.
+            <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2</pre></td><td class="code"><pre class="highlight"><code>  <span class="n">IntStream</span> <span class="n">intStream</span> <span class="o">=</span> <span class="n">menu</span><span class="o">.</span><span class="na">stream</span><span class="o">().</span><span class="na">mapToInt</span><span class="o">(</span><span class="nl">Dish:</span><span class="o">:</span><span class="n">getCalories</span><span class="o">);</span>
+  <span class="n">Stream</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">stream</span> <span class="o">=</span> <span class="n">intStream</span><span class="o">.</span><span class="na">boxed</span><span class="o">();</span>
+</code></pre></td></tr></tbody></table></div>            </div>
+          </li>
+        </ul>
+      </li>
+      <li>숫자 범위
+        <ul>
+          <li>특정 범위의 숫자를 이용하거나 정의하기 위한 메서드
+            <ul>
+              <li>IntSteram.rangeClose(1, 100) // 1 ~ 100 의 숫자 범위를 만든다.</li>
+              <li>range()는 열려있는 연산을 하기 때문에 마지막 숫자가 범위에 포함되지 않는다.</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>스트림 만들기
+    <ul>
+      <li>값으로 스트림 만들기
+        <ul>
+          <li>Stream.of(“Modern “, “Java”, “In”, “Action”);</li>
+        </ul>
+      </li>
+      <li>null 가능한 스트림 만들기 - Java 9부터 지원
+        <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1</pre></td><td class="code"><pre class="highlight"><code>  <span class="n">Stream</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">homeValueStream</span> <span class="o">=</span> <span class="n">Stream</span><span class="o">.</span><span class="na">ofNullable</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">"home"</span><span class="o">));</span>
+</code></pre></td></tr></tbody></table></div>        </div>
+      </li>
+      <li>null이 될 수 있는 객체를 포함하는 스트림 값을 flatMap을 사용한다면 더욱 유용하게 사용할 수 있다.
+        <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2</pre></td><td class="code"><pre class="highlight"><code>  <span class="n">Stream</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">values</span> <span class="o">=</span> <span class="n">Stream</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">"config"</span><span class="o">,</span> <span class="s">"home"</span><span class="o">,</span> <span class="s">"user"</span><span class="o">)</span>
+                                <span class="o">.</span><span class="na">flatMap</span><span class="o">(</span><span class="n">key</span> <span class="o">-&gt;</span> <span class="n">Stream</span><span class="o">.</span><span class="na">ofNullable</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="n">key</span><span class="o">)))</span>
+</code></pre></td></tr></tbody></table></div>        </div>
+      </li>
+      <li>배열로 스트림 만들기
+        <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2</pre></td><td class="code"><pre class="highlight"><code>  <span class="kt">int</span><span class="o">[]</span> <span class="n">nubmers</span> <span class="o">=</span> <span class="o">{</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="mi">5</span><span class="o">};</span>
+  <span class="kt">int</span> <span class="n">sum</span> <span class="o">=</span> <span class="n">Arrays</span><span class="o">.</span><span class="na">stream</span><span class="o">(</span><span class="n">numbers</span><span class="o">).</span><span class="na">sum</span><span class="o">();</span>
+</code></pre></td></tr></tbody></table></div>        </div>
+      </li>
+      <li>함수로 무한 스트림 만들기
+        <ul>
+          <li>iterate 사용
+            <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code>  <span class="n">Stream</span><span class="o">.</span><span class="na">iterate</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">n</span> <span class="o">-&gt;</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">2</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">limit</span><span class="o">(</span><span class="mi">10</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">forEach</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">::</span><span class="n">println</span><span class="o">)</span>
+</code></pre></td></tr></tbody></table></div>            </div>
+          </li>
+          <li>iterate 메서드는 초깃값과 람다를 활용하여 스트림을 생성 할 수 있다. 이때 생성되는 스트림은 무한적이기 때문에 반드시 limit과 같은 메서드를 사용하여 범위를 지정해주어야 한다.</li>
+          <li>iterate는 순차적으로 실행되며 무한적으로 새엇ㅇ되는 스트림을 언바운드 스트림이라고 표현한다.</li>
+          <li>Java 9 부터는 iterate 에서 Predicate를 지원한다.
+            <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11</pre></td><td class="code"><pre class="highlight"><code>  <span class="c1">// 0 부터 시작하여 100 보다 작은 수의 스트림 생성</span>
+  <span class="n">Stream</span><span class="o">.</span><span class="na">iterate</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">n</span> <span class="o">-&gt;</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="o">,</span> <span class="n">n</span> <span class="o">-&gt;</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">2</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">forEach</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">::</span><span class="n">println</span><span class="o">)</span>
+  <span class="c1">// 아래와 같은 방법은 사용할 수 없다. 스트림의 종료시점을 알수 없기 때문이다 .</span>
+  <span class="n">Stream</span><span class="o">.</span><span class="na">iterate</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">n</span> <span class="o">-&gt;</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">2</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">filter</span><span class="o">(</span><span class="n">n</span> <span class="o">-&gt;</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">forEach</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">::</span><span class="n">println</span><span class="o">)</span>
+  <span class="c1">// 스트림 쇼트서킷을 지원하는 takeWhile을 사용하는것이 해법이다.      </span>
+  <span class="n">Stream</span><span class="o">.</span><span class="na">iterate</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">n</span> <span class="o">-&gt;</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">2</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">takeWhile</span><span class="o">(</span><span class="n">n</span> <span class="o">-&gt;</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">forEach</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">::</span><span class="n">println</span><span class="o">)</span>
+</code></pre></td></tr></tbody></table></div>            </div>
+            <ul>
+              <li>generate 사용
+                <ul>
+                  <li>iterate와 비슷하게 generate도 요구할 때 값을 계산하는 무한 스트림을 만들 수 있다.</li>
+                  <li>iterate와 차이점은 생산된 값을 연속적으로 계산하지 않고 Supplier<T> 를 인수로 받아 새로운 값을 생성한다.
+</T>                    <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code>  <span class="n">Stream</span><span class="o">.</span><span class="na">generate</span><span class="o">(</span><span class="nl">Math:</span><span class="o">:</span><span class="n">random</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">limit</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">forEach</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">::</span><span class="n">println</span><span class="o">)</span>
+</code></pre></td></tr></tbody></table></div>                    </div>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>정리
+    <ul>
+      <li>스트림 API를 사용하면 복잡한 데이터 처리 질의를 할수 있다.</li>
+      <li>filter, distinct, takeWhile(java 9), skip, limit, 메서드로 스트림을 필터링 하거나 자를 수 있다.</li>
+      <li>소스가 정렬되어 있는 가정하에 takeWhile, dropWhile 메서드를 효과적으로 사용할 수있다.</li>
+      <li>map, flatMap 메서드로 스트림의 요소를 추출하거나 변환 할 수있다.</li>
+      <li>findFirst, findAny 메서드로 스트림의 요소를 검색할 수 있다.</li>
+      <li>allMatch, anyMatch, noneMatch 메서드를 이용해서 주어진 프레디케이트와 일치하는 요소를 스트림에서 검색할 수 있다.
+        <ul>
+          <li>이들 메서드는 쇼트 서킷(short circuit)으로 결과를 찾는 즉시 반환하며, 전체 스트림을 처리하지 않는다.</li>
+        </ul>
+      </li>
+      <li>reduce 메서드로 스트림의 모든 요소를 반복 조합하며 값을 도출할 수 있다.</li>
+      <li>filter, map 등은 상태를 저장하지 않는 상태 없는 연산(stateless operation)이다. reduce 같은 연산은 값을 계산하는데 필요한 상태를 저장한다.<br />
+sorted, distinct 등의 메서드는 새로운 스트림을 반환하기에 앞서 스트림의 모든 요소를 버퍼에 저장해야한다. 이런 메서드들을 stateful operation 이라고 부른다.</li>
+      <li>IntStream, LongStream, DoubleStream은 기본형 특화 스트림이다. 이들 연산은 각각의 기본형에 맞게 특화 되어 있다.</li>
+      <li>컬렉션뿐 아니라 값, 배열, 파일, iterate와 generate 같은 메서드로도 스트림을 만들 수 있다.</li>
     </ul>
   </li>
 </ul>
