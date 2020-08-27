@@ -1,10 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-08-28T00:31:53+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">모던 자바 인 액션 - 스트림 활용</title><link href="http://localhost:4000/dev/2020/08/25/modern-java02/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 스트림 활용" /><published>2020-08-25T00:00:00+09:00</published><updated>2020-08-25T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/08/25/modern-java02</id><content type="html" xml:base="http://localhost:4000/dev/2020/08/25/modern-java02/">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-08-28T00:33:17+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">모던 자바 인 액션 - 5장 스트림 활용 정리</title><link href="http://localhost:4000/dev/2020/08/25/modern-java02/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 5장 스트림 활용 정리" /><published>2020-08-25T00:00:00+09:00</published><updated>2020-08-25T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/08/25/modern-java02</id><content type="html" xml:base="http://localhost:4000/dev/2020/08/25/modern-java02/">&lt;blockquote&gt;
   &lt;p&gt;Modern Java In Action 정리 - 스트림 활용&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;모던 자바 인 액션 책을 보고 정리한 글입니다.&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;작성중인 글입니다. :)&lt;/p&gt;
 
 &lt;h2 id=&quot;스트림-활용&quot;&gt;스트림 활용&lt;/h2&gt;
 &lt;ul&gt;
