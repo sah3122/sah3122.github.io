@@ -83,7 +83,7 @@
 <link href="/assets/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="TDD,Clean Code,Java," />
+  <meta name="keywords" content="java," />
 
 
 
@@ -111,17 +111,19 @@
 
 
 
-<meta name="description" content="TDD, CleanCode, Refactoring 2주차 정리">
-<meta name="keywords" content="TDD, Clean Code, Java">
+<meta name="description" content="Spring Cloud Zuul">
+<meta name="keywords" content="java">
 <meta property="og:type" content="article">
-<meta property="og:title" content="TDD, CleanCode, Refactoring 2주차 정리">
-<meta property="og:url" content="http://localhost:4000/dev/2020/04/04/tdd-clean-code-2w/">
+<meta property="og:title" content="스프링 클라우드 서비스 이해 - Zuul Proxy">
+<meta property="og:url" content="http://localhost:4000/dev/spring/cloud/2020/09/12/spring-cloud-zuul/">
 <meta property="og:site_name" content="천천히 걷는 방법">
-<meta property="og:description" content="TDD, CleanCode, Refactoring 2주차 정리">
+<meta property="og:description" content="Spring Cloud Zuul">
 <meta property="og:locale" content="ko">
+<meta property="og:image" content="/assets/images/post/spring-cloud-zuul/zuul-example1.png">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="TDD, CleanCode, Refactoring 2주차 정리">
-<meta name="twitter:description" content="TDD, CleanCode, Refactoring 2주차 정리">
+<meta name="twitter:title" content="스프링 클라우드 서비스 이해 - Zuul Proxy">
+<meta name="twitter:description" content="Spring Cloud Zuul">
+<meta name="twitter:image" content="/assets/images/post/spring-cloud-zuul/zuul-example1.png">
 
 
 <script type="text/javascript" id="hexo.configurations">
@@ -154,7 +156,7 @@
 
 
 
-  <title>TDD, CleanCode, Refactoring 2주차 정리 | 천천히 걷는 방법</title>
+  <title>스프링 클라우드 서비스 이해 - Zuul Proxy | 천천히 걷는 방법</title>
   
 
 
@@ -280,7 +282,7 @@
   
 
   <article class="post post-type- " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://localhost:4000/dev/2020/04/04/tdd-clean-code-2w/">
+    <link itemprop="mainEntityOfPage" href="http://localhost:4000/dev/spring/cloud/2020/09/12/spring-cloud-zuul/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="DongChul Lee">
@@ -300,7 +302,7 @@
           <h1 class="post-title" itemprop="name headline">
           
           
-            TDD, CleanCode, Refactoring 2주차 정리
+            스프링 클라우드 서비스 이해 - Zuul Proxy
           
         </h1>
         
@@ -314,8 +316,8 @@
               
                 <span class="post-meta-item-text">작성일</span>
               
-              <time title="" itemprop="dateCreated datePublished" datetime="2020-04-04T00:00:00+09:00">
-                2020-04-04
+              <time title="" itemprop="dateCreated datePublished" datetime="2020-09-12T00:00:00+09:00">
+                2020-09-12
               </time>
             
 
@@ -345,6 +347,30 @@
 
                 
                 
+                  , 
+                
+              
+                
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/category/#/spring" itemprop="url" rel="index">
+                    <span itemprop="name">spring</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/category/#/cloud" itemprop="url" rel="index">
+                    <span itemprop="name">cloud</span>
+                  </a>
+                </span>
+
+                
+                
               
             </span>
           
@@ -363,7 +389,7 @@
           
             
                 <div class="post-description">
-                    TDD, CleanCode, Refactoring 2주차 정리
+                    Spring Cloud Zuul
                 </div>
             
           
@@ -394,64 +420,121 @@
 
 
   <blockquote>
-  <p>TDD, CleanCode, Refactoring 2주차 정리</p>
+  <p>Spring Cloud Zuul에 대해서 간단히 알아보자.</p>
 </blockquote>
 
-<h3 id="코드-컨벤션을-지켜라">코드 컨벤션을 지켜라</h3>
-<p>다른 개발자와 협업이나 미래의 나를 위해서라도.</p>
+<p>작성중인 글입니다.</p>
 
-<p>공백 라인을 의미있게 사용해라.<br />
-공백 라인이 메소드의 기능을 나누게 되는 기준이 된다. <br />
-추후 리펙토링 시 메소드 기준으로 기능이 나뉜다는것을 알고 공백기준으로 메소드 리펙토링이 가능하다.</p>
+<h1 id="spring-cloud-zuul-이란-">Spring Cloud Zuul 이란 ?</h1>
 
-<h3 id="네이밍">네이밍</h3>
-<p>객체지향 생활 체조 규칙 5 : 축약하지 말라.<br />
-적당한 길이의 이름을 찾는데 집중해라.</p>
+<p>Netflix에서 개발한 MSA 환경에서 Routing 과 Filtering 을 위한 서비스 라고 이해 하면 될것 같다.<br />
+Zuul을 사용하면 아래와 같은 기능들을 설정할 수 있다고 합니다.</p>
+<ul>
+  <li>Authentication</li>
+  <li>Insights</li>
+  <li>Stress Testing</li>
+  <li>Canary Testing</li>
+  <li>Dynamic Routing</li>
+  <li>Service Migration</li>
+  <li>Load Shedding</li>
+  <li>Security</li>
+  <li>Static Response handling</li>
+  <li>Active/Active traffic management</li>
+</ul>
 
-<p>인스턴스 변수의 중복을 줄이고, 개수를 최소화 해라.<br />
-데이터를 꺼내려고 하지않고 메시지를 던져라<br />
-비지니스 로직과 ui로직의 분리.<br />
-테스트 가능한 코드와 불가능한 코드가 섞여 있으면 분리를 해야 한다.<br />
-어느 부분을 테스트 할 것인가 ?<br />
-경계값을 기준으로 테스트해야 한다.<br />
-Test Fixture를 위해서 생성자를 추가하는것이 옳은 일인가 ? <br />
-도메인이 DTO역할을 하는 경우라면 생성자를 추가하는것이 허용된다. <br />
-해당 경우에는 허용하는 것으로 .. <br />
-역할이 여러개이면 클래스 분리.<br />
-private메소드가 많아지면 테스트를 해야 하는것인가 ? <br />
-Private 메소드가 중요한 비지니스 역할을 한다면 새로운 클래스로 분리 되어야 한다. <br />
-분리 된다면 다른 클래스에서 접근 가능한 메소드가 되기때문에 테스트가 가능하다.</p>
+<h1 id="개발환경-설정">개발환경 설정</h1>
+<p>기본적으로 아래와 같은 디펜던시를 추가.</p>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10</pre></td><td class="code"><pre class="highlight"><code><span class="n">dependencies</span> <span class="o">{</span>
+    <span class="n">implementation</span> <span class="s1">'org.springframework.boot:spring-boot-starter-web'</span>
+    <span class="n">implementation</span> <span class="s1">'org.springframework.cloud:spring-cloud-starter-netflix-zuul'</span>
+    <span class="n">compileOnly</span> <span class="s1">'org.projectlombok:lombok'</span>
+    <span class="n">annotationProcessor</span> <span class="s1">'org.springframework.boot:spring-boot-configuration-processor'</span>
+    <span class="n">annotationProcessor</span> <span class="s1">'org.projectlombok:lombok'</span>
+    <span class="n">testImplementation</span><span class="o">(</span><span class="s1">'org.springframework.boot:spring-boot-starter-test'</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">exclude</span> <span class="nl">group:</span> <span class="s1">'org.junit.vintage'</span><span class="o">,</span> <span class="nl">module:</span> <span class="s1">'junit-vintage-engine'</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
 
-<h3 id="tdd">TDD</h3>
-<p>이번주 부터는 메소드 분리가 아닌 클래스 분리를 연습 하자<br />
-모든 원시값과 문자열을 포장한다. <br />
-일급 콜렉션을 쓴다.<br />
-생성자를 중복해 정의할 때는 정적 팩토리 메소드를 사용한다.</p>
+<p>ZuulProxy를 사용한다고 선언 해주어야 한다.</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9</pre></td><td class="code"><pre class="highlight"><code><span class="nd">@SpringBootApplication</span>
+<span class="nd">@EnableZuulProxy</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ZuulproxyApplication</span> <span class="o">{</span>
 
-<p>tdd는 리팩토링이 가장 중요하다.<br />
-테스트와 production code를 추가할 때 마다 리팩토링을 해야한다.<br />
-한번에 리팩토링을 하지 않고 테스트 케이스가 추가 될 때 마다 리팩토링을 하는 연습을 해야 한다.<br />
-todo리스트를 제대로 만드는것이 tdd를 잘하는 방법이다.<br />
-설게를 안하는것이 아니고 초반에 대략적인 설계가 필요하다.<br />
-초반 설계시 테스트 가능한 부분과 힘든 부분까지 설계를 한다면 설계를 잘한 것이다.</p>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">SpringApplication</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">ZuulproxyApplication</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+    <span class="o">}</span>
 
-<p>tdd 시작시 인풋과 아웃풋을 결정해야 한다.<br />
-Getter 를 쓰는순간 없애려고 노력해라 (상태를 가진 데이터를 꺼내는것보다 객체에 메시지를 보내서 일을 시켜라)</p>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
 
-<p>접근 제어자를 잘 사용해서 클래스 및 메소드의 접근 범위를 한정하는것도 도메인을 지키는 방법이다.   특히 default 접근 제어자는 도메인을 지키는 좋은 방법중 하나이다.</p>
+<h1 id="zuul-proxy-설정">Zuul Proxy 설정</h1>
+<p>dean-service 경로로 들어오는 요청에 대해서 지정한 api 서버로의 routing 을 설정해보자.</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5</pre></td><td class="code"><pre class="highlight"><code><span class="na">zuul</span><span class="pi">:</span>
+  <span class="na">routes</span><span class="pi">:</span>
+    <span class="na">dean-service</span><span class="pi">:</span>
+      <span class="na">path</span><span class="pi">:</span> <span class="s">/dean-service/**</span>
+      <span class="na">url</span><span class="pi">:</span> <span class="s">http://localhost:8081/dean-service</span>
+</code></pre></td></tr></tbody></table></div></div>
+<p>path와 같은 경우 /* 와 같이 특정 url 에 한정해서 설정하는 것 보단 /** 와 같이 계층적으로 모든 api가 매칭 될 수 있도록 설정하는것을 권장하고 있다.<br />
+위 설정을 진행하고 미리 만들어둔 서버로 요청이 잘 가는지 테스트 해보자.
+<img src="/assets/images/post/spring-cloud-zuul/zuul-example1.png" alt="Zuul 예제" />
+정상적으로 routing이 되는것을 확인할 수 있습니다 :)</p>
 
-<p>토이 프로젝트에선 최대한 조건을 강제해라<br />
-인덴트 1, 인스턴스 변수 2개 등의 극한의 조건을 걸어라.</p>
+<h1 id="provider-설정">Provider 설정</h1>
+<p>Response에 대한 응답 처리를 하고 싶을때 사용. 공식 문서에 나와 있는 예제는 Timeout, Internal Server Error 가 발생하였을때 Custom 한 응답을 내려 줄 수 있도록 설정하고 있습니다.</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26<br/>27<br/>28<br/>29<br/>30<br/>31<br/>32<br/>33<br/>34<br/>35<br/>36<br/>37<br/>38<br/>39<br/>40<br/>41<br/>42<br/>43<br/>44<br/>45<br/>46<br/>47<br/>48<br/>49<br/>50<br/>51</pre></td><td class="code"><pre class="highlight"><code><span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DeanServiceProvider</span> <span class="kd">implements</span> <span class="n">FallbackProvider</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getRoute</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"dean-service"</span><span class="o">;</span>
+    <span class="o">}</span>
 
-<hr />
-<h3 id="qa">Q&amp;A</h3>
-<p>Void method 는 검증하는것만으로도 의미가 존재 하는지 ?<br />
--&gt; 존재한다.<br />
-Void method 내부에서도 인풋과 아웃풋이 있는 부분을 분리할 수 있을것이다. 그부분을 메소드로 분리해서 테스트 가능하다.</p>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">ClientHttpResponse</span> <span class="nf">fallbackResponse</span><span class="o">(</span><span class="n">String</span> <span class="n">route</span><span class="o">,</span> <span class="n">Throwable</span> <span class="n">cause</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">cause</span> <span class="k">instanceof</span> <span class="n">HystrixTimeoutException</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="nf">response</span><span class="o">(</span><span class="n">HttpStatus</span><span class="o">.</span><span class="na">GATEWAY_TIMEOUT</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="nf">response</span><span class="o">(</span><span class="n">HttpStatus</span><span class="o">.</span><span class="na">INTERNAL_SERVER_ERROR</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
 
-<h3 id="유효성-검사">유효성 검사</h3>
-<p>도메인은 반드시 유효성 검사를 해야 하는것이 맞다. <br />
-그렇다고 controller나 다른 레이어에서 유효성검사를 안해도 된다는것은 아니다.</p>
+    <span class="kd">private</span> <span class="n">ClientHttpResponse</span> <span class="nf">response</span><span class="o">(</span><span class="kd">final</span> <span class="n">HttpStatus</span> <span class="n">status</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">ClientHttpResponse</span><span class="o">()</span> <span class="o">{</span>
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="n">HttpStatus</span> <span class="nf">getStatusCode</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="n">status</span><span class="o">;</span>
+            <span class="o">}</span>
+
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getRawStatusCode</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="n">status</span><span class="o">.</span><span class="na">value</span><span class="o">();</span>
+            <span class="o">}</span>
+
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="n">String</span> <span class="nf">getStatusText</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="n">status</span><span class="o">.</span><span class="na">getReasonPhrase</span><span class="o">();</span>
+            <span class="o">}</span>
+
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">close</span><span class="o">()</span> <span class="o">{</span>
+            <span class="o">}</span>
+
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="n">InputStream</span> <span class="nf">getBody</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="k">new</span> <span class="nf">ByteArrayInputStream</span><span class="o">(</span><span class="s">"fallback"</span><span class="o">.</span><span class="na">getBytes</span><span class="o">());</span>
+            <span class="o">}</span>
+
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="n">HttpHeaders</span> <span class="nf">getHeaders</span><span class="o">()</span> <span class="o">{</span>
+                <span class="n">HttpHeaders</span> <span class="n">headers</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HttpHeaders</span><span class="o">();</span>
+                <span class="n">headers</span><span class="o">.</span><span class="na">setContentType</span><span class="o">(</span><span class="n">MediaType</span><span class="o">.</span><span class="na">APPLICATION_JSON</span><span class="o">);</span>
+                <span class="k">return</span> <span class="n">headers</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">};</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
 
 
       
@@ -483,13 +566,7 @@ Void method 내부에서도 인풋과 아웃풋이 있는 부분을 분리할 �
         <div class="post-tags">
           
             
-            <a href="/tag/#/TDD" rel="tag"># TDD</a>
-          
-            
-            <a href="/tag/#/Clean%20Code" rel="tag"># Clean Code</a>
-          
-            
-            <a href="/tag/#/Java" rel="tag"># Java</a>
+            <a href="/tag/#/java" rel="tag"># java</a>
           
         </div>
       
@@ -505,18 +582,14 @@ Void method 내부에서도 인풋과 아웃풋이 있는 부분을 분리할 �
         <div class="post-nav" id="post-nav-id">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/dev/2020/04/11/tdd-clean-code-3w/" rel="next" title="TDD, CleanCode, Refactoring 3주차 정리">
-                <i class="fa fa-chevron-left"></i> TDD, CleanCode, Refactoring 3주차 정리
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/dev/2020/04/02/checked-exception-unchecked-exception/" rel="prev" title="Checked Exception과 UnCheckedException의 차이">
-                Checked Exception과 UnCheckedException의 차이 <i class="fa fa-chevron-right"></i>
+              <a href="/dev/2020/08/31/modern-java03/" rel="prev" title="모던 자바 인 액션 - 6장 스트림으로 데이터 수집 정리">
+                모던 자바 인 액션 - 6장 스트림으로 데이터 수집 정리 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -687,7 +760,7 @@ Void method 내부에서도 인풋과 아웃풋이 있는 부분을 분리할 �
             
               <div class="post-toc-content">
     <ol class=nav>
-      <li class="nav-item nav-level-3"> <a class="nav-link" href="#코드-컨벤션을-지켜라"> <span class="nav-number">1</span> <span class="nav-text">코드 컨벤션을 지켜라</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#네이밍"> <span class="nav-number">2</span> <span class="nav-text">네이밍</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#tdd"> <span class="nav-number">3</span> <span class="nav-text">TDD</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#qa"> <span class="nav-number">4</span> <span class="nav-text">Q&amp;A</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#유효성-검사"> <span class="nav-number">5</span> <span class="nav-text">유효성 검사</span> </a> </li>
+      <li class="nav-item nav-level-1"> <a class="nav-link" href="#spring-cloud-zuul-이란-"> <span class="nav-number">1</span> <span class="nav-text">Spring Cloud Zuul 이란 ?</span> </a> </li> <li class="nav-item nav-level-1"> <a class="nav-link" href="#개발환경-설정"> <span class="nav-number">2</span> <span class="nav-text">개발환경 설정</span> </a> </li> <li class="nav-item nav-level-1"> <a class="nav-link" href="#zuul-proxy-설정"> <span class="nav-number">3</span> <span class="nav-text">Zuul Proxy 설정</span> </a> </li> <li class="nav-item nav-level-1"> <a class="nav-link" href="#provider-설정"> <span class="nav-number">4</span> <span class="nav-text">Provider 설정</span> </a> </li>
     </ol>
   </div>
             
