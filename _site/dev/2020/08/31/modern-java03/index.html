@@ -496,6 +496,74 @@ Integer totalCalories = menu.stream().collect(summingInt(Dish::getCalories));
   </li>
 </ul>
 
+<h3 id="범용-리듀싱-요약-연산">범용 리듀싱 요약 연산</h3>
+<ul>
+  <li>컬렉터는 reducing 팩토리 메서드로도 정의할 수 있다.
+    <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2</pre></td><td class="code"><pre class="highlight"><code><span class="n">Integer</span> <span class="n">total</span> <span class="o">=</span> <span class="n">menu</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+              <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">reducing</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="nl">Dish:</span><span class="o">:</span><span class="n">getCalories</span><span class="o">,</span> <span class="o">(</span><span class="n">i</span><span class="o">,</span> <span class="n">j</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="o">));</span>
+</code></pre></td></tr></tbody></table></div>    </div>
+  </li>
+  <li>리듀싱 연산은 세가지 인수를 받는다.
+    <ol>
+      <li>첫번쨰 인수는 시작값이거나 스트림이 비엇을 때 반환값</li>
+      <li>변환 함수</li>
+      <li>BinaryOperator</li>
+    </ol>
+  </li>
+  <li>다음 처럼 한 개의 인수를 가진 reducing 버전을 이용해 가장 칼로리가 높은 요리를 찾을 수도 있다.
+    <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2</pre></td><td class="code"><pre class="highlight"><code><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Dish</span><span class="o">&gt;</span> <span class="n">collect1</span> <span class="o">=</span> <span class="n">menu</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+              <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">reducing</span><span class="o">((</span><span class="n">d1</span><span class="o">,</span> <span class="n">d2</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">d1</span><span class="o">.</span><span class="na">getCalories</span><span class="o">()</span> <span class="o">&gt;</span> <span class="n">d2</span><span class="o">.</span><span class="na">getCalories</span><span class="o">()</span> <span class="o">?</span> <span class="n">d1</span> <span class="o">:</span> <span class="n">d2</span><span class="o">));</span>
+</code></pre></td></tr></tbody></table></div>    </div>
+  </li>
+</ul>
+
+<h2 id="그룹화">그룹화</h2>
+<ul>
+  <li>데이터를 하나 이상의 집합으로 분류하여 그룹화 하는것도 데이터 베이스에서 많이 사용되는 작업이다.</li>
+  <li>스트림에서 제공하는 팩토리 메서드 (Collectors.gruopingBy)를 사용하여 메뉴를 그룹화 해보자.
+```java
+Map&lt;DishType, List<Dish>&gt; dishByType = menu.stream()
+              .collect(groupingBy(Dish::getDishType));</Dish></li>
+</ul>
+
+<p>Map&lt;CaloricLevel, List<Dish>&gt; dishByCaloricLevel = menu.stream()
+                .collect(groupingBy(dish -&gt; {
+                    if (dish.getCalories() &lt;= 400) return CaloricLevel.DIET;
+                    else if (dish.getCalories() &lt;= 700) return CaloricLevel.NORMAL;
+                    else return CaloricLevel.FAT;
+                }));</Dish></p>
+<div class="highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7</pre></td><td class="code"><pre class="highlight"><code>
+### 그룹화된 요소 조작
+* 500 칼로리가 넘는 요리들만 필터링 한다고 가정할때 아래와 같은 코드를 작성할 수 있다.
+```java
+Map&lt;DishType, List&lt;Dish&gt;&gt; dishByType = menu.stream()
+                .filter(dish -&gt; dish.getCalories() &gt; 500)
+                .collect(groupingBy(Dish::getDishType));
+</code></pre></td></tr></tbody></table></div></div>
+<ul>
+  <li>위와 같이 작성시 조건에 맞는 요소가 하나도 존재하지 않을시 Map의 key가 존재 하지 않는다. 이러한 경우 아래와 같이 작성
+    <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2</pre></td><td class="code"><pre class="highlight"><code><span class="n">Map</span><span class="o">&lt;</span><span class="n">DishType</span><span class="o">,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Dish</span><span class="o">&gt;&gt;</span> <span class="n">dishByType</span> <span class="o">=</span> <span class="n">menu</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+              <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">groupingBy</span><span class="o">(</span><span class="nl">Dish:</span><span class="o">:</span><span class="n">getDishType</span><span class="o">,</span> <span class="n">filtering</span><span class="o">(</span><span class="n">dish</span> <span class="o">-&gt;</span> <span class="n">dish</span><span class="o">.</span><span class="na">getCalories</span><span class="o">()</span> <span class="o">&gt;</span> <span class="mi">500</span><span class="o">,</span> <span class="n">toList</span><span class="o">())));</span>
+</code></pre></td></tr></tbody></table></div>    </div>
+  </li>
+  <li>그룹화된 항목을 조작하는 다른 유용한 기능 중 하나로 맵핑 함수를 이용해 요소를 변환하는 작업이 있다.<br />
+filtering 컬렉터와 같은 이유로 Collectors 클래스는 매핑 함수와 각 항목에 적용한 함수를 모으는 데 사용하는 또 다른 컬렉터를 인수로 받는 mapping 메서드를 제공
+    <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code><span class="c1">// Name List 로 그룹화</span>
+<span class="n">Map</span><span class="o">&lt;</span><span class="n">DishType</span><span class="o">,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">dishByName</span> <span class="o">=</span> <span class="n">menu</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+              <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">groupingBy</span><span class="o">(</span><span class="nl">Dish:</span><span class="o">:</span><span class="n">getDishType</span><span class="o">,</span> <span class="n">mapping</span><span class="o">(</span><span class="nl">Dish:</span><span class="o">:</span><span class="n">getName</span><span class="o">,</span> <span class="n">toList</span><span class="o">())));</span>
+</code></pre></td></tr></tbody></table></div>    </div>
+  </li>
+  <li>컬렉터를 사용하면 일반 맵이 아닌 flatMap 변환을 수행할 수 있다.
+    <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6</pre></td><td class="code"><pre class="highlight"><code><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">dishTags</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
+      <span class="n">dishTags</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"pork"</span><span class="o">,</span> <span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="s">"greasy"</span><span class="o">,</span> <span class="s">"salty"</span><span class="o">));</span>
+
+      <span class="n">Map</span><span class="o">&lt;</span><span class="n">DishType</span><span class="o">,</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">dishByDishTag</span> <span class="o">=</span> <span class="n">menu</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+              <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">groupingBy</span><span class="o">(</span><span class="nl">Dish:</span><span class="o">:</span><span class="n">getDishType</span><span class="o">,</span>
+                      <span class="n">flatMapping</span><span class="o">(</span><span class="n">dish</span> <span class="o">-&gt;</span> <span class="n">dishTags</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">dish</span><span class="o">.</span><span class="na">getName</span><span class="o">()).</span><span class="na">stream</span><span class="o">(),</span> <span class="n">toSet</span><span class="o">())));</span>
+</code></pre></td></tr></tbody></table></div>    </div>
+  </li>
+</ul>
+
 
       
     </div>
@@ -724,7 +792,7 @@ Integer totalCalories = menu.stream().collect(summingInt(Dish::getCalories));
             
               <div class="post-toc-content">
     <ol class=nav>
-      <li class="nav-item nav-level-1"> <a class="nav-link" href="#스트림으로-데이터-수집"> <span class="nav-number">1</span> <span class="nav-text">스트림으로 데이터 수집</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-2"> <a class="nav-link" href="#컬렉터란-무엇인가-"> <span class="nav-number">1.1</span> <span class="nav-text">컬렉터란 무엇인가 ?</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#고급-리듀싱-기능을-수행하는-컬렉터"> <span class="nav-number">1.1.1</span> <span class="nav-text">고급 리듀싱 기능을 수행하는 컬렉터</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#미리-정의된-컬렉터"> <span class="nav-number">1.1.2</span> <span class="nav-text">미리 정의된 컬렉터</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#리듀싱과-요약"> <span class="nav-number">1.2</span> <span class="nav-text">리듀싱과 요약</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#스트림-값에서-최댓값과-최솟값-검색"> <span class="nav-number">1.2.1</span> <span class="nav-text">스트림 값에서 최댓값과 최솟값 검색</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#문자열-연결"> <span class="nav-number">1.2.2</span> <span class="nav-text">문자열 연결</span> </a> </li> </ol> </li> </ol> </li>
+      <li class="nav-item nav-level-1"> <a class="nav-link" href="#스트림으로-데이터-수집"> <span class="nav-number">1</span> <span class="nav-text">스트림으로 데이터 수집</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-2"> <a class="nav-link" href="#컬렉터란-무엇인가-"> <span class="nav-number">1.1</span> <span class="nav-text">컬렉터란 무엇인가 ?</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#고급-리듀싱-기능을-수행하는-컬렉터"> <span class="nav-number">1.1.1</span> <span class="nav-text">고급 리듀싱 기능을 수행하는 컬렉터</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#미리-정의된-컬렉터"> <span class="nav-number">1.1.2</span> <span class="nav-text">미리 정의된 컬렉터</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#리듀싱과-요약"> <span class="nav-number">1.2</span> <span class="nav-text">리듀싱과 요약</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#스트림-값에서-최댓값과-최솟값-검색"> <span class="nav-number">1.2.1</span> <span class="nav-text">스트림 값에서 최댓값과 최솟값 검색</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#문자열-연결"> <span class="nav-number">1.2.2</span> <span class="nav-text">문자열 연결</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#범용-리듀싱-요약-연산"> <span class="nav-number">1.2.3</span> <span class="nav-text">범용 리듀싱 요약 연산</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#그룹화"> <span class="nav-number">1.3</span> <span class="nav-text">그룹화</span> </a> </li> </ol> </li>
     </ol>
   </div>
             
