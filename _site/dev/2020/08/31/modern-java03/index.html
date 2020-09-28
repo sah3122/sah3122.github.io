@@ -635,17 +635,17 @@ List&lt;Dish&gt; vegetarianDishes = menu.stream()
 <h3 id="분할의-장점">분할의 장점</h3>
 <ul>
   <li>분할 함수를 사용하면 참, 거짓 두가지 요소의 스트림 리스트를 모두 유지할 수 있다는것이 장점이다.</li>
-  <li>컬렉터를 두번째 인수로 전달할 수 있는 오버로드된 partioningBy 메서드도 존재한다.
-```java
-Map&lt;Boolean, Map&lt;DishType, List<Dish>&gt;&gt; vegetarianDishesByType = menu.stream()
-              .collect(partitioningBy(Dish::isVegetarian, groupingBy(Dish::getDishType)));</Dish></li>
+  <li>컬렉터를 두번째 인수로 전달할 수 있는 오버로드된 partioningBy 메서드도 존재한다.</li>
 </ul>
 
-<p>// 채식 중 가장 높은 칼로리의 음식과 채식이 아닌 음식중 가장 높은 칼로리의 음식
-Map&lt;Boolean, Dish&gt; mostCaloricPartitionedByVegetarian = menu.stream()
-                .collect(partitioningBy(Dish::isVegetarian,
-                        collectingAndThen(maxBy(Comparator.comparingInt(Dish::getCalories)), Optional::get)));
-```</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7</pre></td><td class="code"><pre class="highlight"><code><span class="n">Map</span><span class="o">&lt;</span><span class="n">Boolean</span><span class="o">,</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">DishType</span><span class="o">,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Dish</span><span class="o">&gt;&gt;&gt;</span> <span class="n">vegetarianDishesByType</span> <span class="o">=</span> <span class="n">menu</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+                <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">partitioningBy</span><span class="o">(</span><span class="nl">Dish:</span><span class="o">:</span><span class="n">isVegetarian</span><span class="o">,</span> <span class="n">groupingBy</span><span class="o">(</span><span class="nl">Dish:</span><span class="o">:</span><span class="n">getDishType</span><span class="o">)));</span>
+
+<span class="c1">// 채식 중 가장 높은 칼로리의 음식과 채식이 아닌 음식중 가장 높은 칼로리의 음식</span>
+<span class="n">Map</span><span class="o">&lt;</span><span class="n">Boolean</span><span class="o">,</span> <span class="n">Dish</span><span class="o">&gt;</span> <span class="n">mostCaloricPartitionedByVegetarian</span> <span class="o">=</span> <span class="n">menu</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+                <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">partitioningBy</span><span class="o">(</span><span class="nl">Dish:</span><span class="o">:</span><span class="n">isVegetarian</span><span class="o">,</span>
+                        <span class="n">collectingAndThen</span><span class="o">(</span><span class="n">maxBy</span><span class="o">(</span><span class="n">Comparator</span><span class="o">.</span><span class="na">comparingInt</span><span class="o">(</span><span class="nl">Dish:</span><span class="o">:</span><span class="n">getCalories</span><span class="o">)),</span> <span class="nl">Optional:</span><span class="o">:</span><span class="n">get</span><span class="o">)));</span>
+</code></pre></td></tr></tbody></table></div></div>
 
 <h3 id="정리">정리</h3>
 <ul>
@@ -796,7 +796,7 @@ Map&lt;Boolean, Dish&gt; mostCaloricPartitionedByVegetarian = menu.stream()
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-count">28</span>
                 <span class="site-state-item-name">포스트</span>
               </a>
             </div>
