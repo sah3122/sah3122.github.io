@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-21T23:14:36+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">스프링 클라우드 서비스 이해 - Zuul Proxy</title><link href="http://localhost:4000/dev/spring/cloud/2020/09/12/spring-cloud-zuul/" rel="alternate" type="text/html" title="스프링 클라우드 서비스 이해 - Zuul Proxy" /><published>2020-09-12T00:00:00+09:00</published><updated>2020-09-12T00:00:00+09:00</updated><id>http://localhost:4000/dev/spring/cloud/2020/09/12/spring-cloud-zuul</id><content type="html" xml:base="http://localhost:4000/dev/spring/cloud/2020/09/12/spring-cloud-zuul/">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-28T22:42:52+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">스프링 클라우드 서비스 이해 - Zuul Proxy</title><link href="http://localhost:4000/dev/spring/cloud/2020/09/12/spring-cloud-zuul/" rel="alternate" type="text/html" title="스프링 클라우드 서비스 이해 - Zuul Proxy" /><published>2020-09-12T00:00:00+09:00</published><updated>2020-09-12T00:00:00+09:00</updated><id>http://localhost:4000/dev/spring/cloud/2020/09/12/spring-cloud-zuul</id><content type="html" xml:base="http://localhost:4000/dev/spring/cloud/2020/09/12/spring-cloud-zuul/">&lt;blockquote&gt;
   &lt;p&gt;Spring Cloud Zuul에 대해서 간단히 알아보자.&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -124,8 +124,6 @@ Zuul을 사용하면 아래와 같은 기능들을 설정할 수 있다고 합�
     &lt;li&gt;자신만의 커스텀 컬렉터 개발&lt;/li&gt;
   &lt;/ul&gt;
 &lt;/blockquote&gt;
-
-&lt;p&gt;작성중인 글입니다.&lt;/p&gt;
 
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;모던 자바 인 액션 책을 보고 정리한 글입니다.&lt;/code&gt;&lt;/p&gt;
 
@@ -340,8 +338,43 @@ Map&amp;lt;DishType, HashSet&lt;CaloricLevel&gt;&amp;gt; dishTypeHashSetMap = me
                 .collect(groupingBy(Dish::getDishType, mapping(dish -&amp;gt; {
                     if (dish.getCalories() &amp;gt; 400) return CaloricLevel.DIET;
                     else return CaloricLevel.FAT;
-                }, toCollection(HashSet::new))));
-```&lt;/CaloricLevel&gt;&lt;/p&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><summary type="html">Modern Java In Action 정리 - 스트림으로 데이터 수집 목표 Collectors 클래스로 컬렉션을 만들고 사용하기 하나의 값으로 데이터 스트림 리듀스 하기 특별한 리듀싱 요약 연산 데이터 그룹화와 분할 자신만의 커스텀 컬렉터 개발</summary></entry><entry><title type="html">모던 자바 인 액션 - 5장 스트림 활용 정리</title><link href="http://localhost:4000/dev/2020/08/25/modern-java02/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 5장 스트림 활용 정리" /><published>2020-08-25T00:00:00+09:00</published><updated>2020-08-25T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/08/25/modern-java02</id><content type="html" xml:base="http://localhost:4000/dev/2020/08/25/modern-java02/">&lt;blockquote&gt;
+                }, toCollection(HashSet::new))));&lt;/CaloricLevel&gt;&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+## 분할
+* 분할은 분할함수라 불리는 Predicate를 분류 함수로 사용하는 특수한 그룹화 기능이다.
+```java
+Map&amp;lt;Boolean, List&amp;lt;Dish&amp;gt;&amp;gt; partitionedMenu = menu.stream()
+                .collect(partitioningBy(Dish::isVegetarian)); &amp;lt;- 분할 함수
+
+// filter를 사용할 수도 있다.
+List&amp;lt;Dish&amp;gt; vegetarianDishes = menu.stream()
+                .filter(Dish::isVegetarian)
+                .collect(toList()); 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;분할의-장점&quot;&gt;분할의 장점&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;분할 함수를 사용하면 참, 거짓 두가지 요소의 스트림 리스트를 모두 유지할 수 있다는것이 장점이다.&lt;/li&gt;
+  &lt;li&gt;컬렉터를 두번째 인수로 전달할 수 있는 오버로드된 partioningBy 메서드도 존재한다.
+```java
+Map&amp;lt;Boolean, Map&amp;lt;DishType, List&lt;Dish&gt;&amp;gt;&amp;gt; vegetarianDishesByType = menu.stream()
+              .collect(partitioningBy(Dish::isVegetarian, groupingBy(Dish::getDishType)));&lt;/Dish&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;// 채식 중 가장 높은 칼로리의 음식과 채식이 아닌 음식중 가장 높은 칼로리의 음식
+Map&amp;lt;Boolean, Dish&amp;gt; mostCaloricPartitionedByVegetarian = menu.stream()
+                .collect(partitioningBy(Dish::isVegetarian,
+                        collectingAndThen(maxBy(Comparator.comparingInt(Dish::getCalories)), Optional::get)));
+```&lt;/p&gt;
+
+&lt;h3 id=&quot;정리&quot;&gt;정리&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;collect는 스트림의 요소를 요약 결과로 누적하는 다양한 방법을 인수로 갖는 최종연산이다.&lt;/li&gt;
+  &lt;li&gt;스트림의 요소를 하나의 값으로 리듀스 하고 요약하는 컬렉터뿐 아니라 최솟값, 최댓값, 평균값을 계산하는 컬렉터 등이 미리 정의되어 있다.&lt;/li&gt;
+  &lt;li&gt;미리 정의된 컬렉터인 groupingBy로 스트림의 요소를 그룹화 하거나, partitioningBy로 스트림의 요소를 분할 할 수 있다.&lt;/li&gt;
+  &lt;li&gt;컬렉터는 다수준의 그룹화, 분할, 리듀싱 연산에 적합하게 설계되어 있다.&lt;/li&gt;
+  &lt;li&gt;collector 인터페이스에 정의된 메서드를 구현해서 커스텀 컬렉터를 개발할 수 있다.&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><summary type="html">Modern Java In Action 정리 - 스트림으로 데이터 수집 목표 Collectors 클래스로 컬렉션을 만들고 사용하기 하나의 값으로 데이터 스트림 리듀스 하기 특별한 리듀싱 요약 연산 데이터 그룹화와 분할 자신만의 커스텀 컬렉터 개발</summary></entry><entry><title type="html">모던 자바 인 액션 - 5장 스트림 활용 정리</title><link href="http://localhost:4000/dev/2020/08/25/modern-java02/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 5장 스트림 활용 정리" /><published>2020-08-25T00:00:00+09:00</published><updated>2020-08-25T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/08/25/modern-java02</id><content type="html" xml:base="http://localhost:4000/dev/2020/08/25/modern-java02/">&lt;blockquote&gt;
   &lt;p&gt;Modern Java In Action 정리 - 스트림 활용&lt;/p&gt;
 &lt;/blockquote&gt;
 
