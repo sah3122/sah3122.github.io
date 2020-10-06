@@ -4,7 +4,7 @@
     <entry>
       <title><![CDATA[모던 자바 인 액션 - 7장 병렬 데이터 처리와 성능]]></title>
       <url>/dev/2020/09/28/modern-java04/</url>
-      <content type="text"><![CDATA[  Modern Java In Action 정리 - 병렬 데이터 처리와 성능  병렬 스트림으로 데이터를 병렬 처리하기  병렬 스트림의 성능 분석  포크 / 조인 프레임워크  Spliterator로 스트림 데이터 쪼개기모던 자바 인 액션 책을 보고 정리한 글입니다.작성중인 글입니다.]]></content>
+      <content type="text"><![CDATA[  Modern Java In Action 정리 - 병렬 데이터 처리와 성능  병렬 스트림으로 데이터를 병렬 처리하기  병렬 스트림의 성능 분석  포크 / 조인 프레임워크  Spliterator로 스트림 데이터 쪼개기모던 자바 인 액션 책을 보고 정리한 글입니다.작성중인 글입니다.병렬 스트림  병렬 스트림 이란 각각의 스레드에서 처리할 수 있도록 스트림 요소를 여러 청크로 분할한 스트림이다. 따라서 병렬스트림을 이용하면 모든 멀티코어 프로세서가 각각의 청크를 처리하도록 할당할 수 있다.      // 일반적인 숫자 합을 구하는 스트림  public long sequentialSum(long n) {      return Stream.iterate(1L, i -&gt; i +1)              .limit(n)              .reduce(0L, Long::sum);  }      순차 스트림을 병렬 스트림으로 변환  순차 스트림에 parallel 메서드를 호출하면 기존의 함수형 리듀싱 연산이 병렬로 처리된다.      public long parallelSum(long n) {      return Stream.iterate(1L, i -&gt; i +1)              .limit(n)              .parallel()              .reduce(0L, Long::sum);  }        순차 스트림에 parallel을 호출한다고 스트림 자체는 영향을 받지 않는다.  내부적으로 parallel을 호출하면 병렬로 실행을 하도록 boolean 플레그가 설정된다.  반대로 sequential을 호출하여 병렬 스트림을 순차 스트림으로 변경할 수 있다. 두 메서드를 활용해 병렬 연산과 순차연산을 제어 할 수 있다.    stream.parallel()    .filter()    .sequential()    .map()    .parallel()    .reduce();        parallel과 sequential 두 메서드 중 최종적으로 호출된 메서드가 전체 파이프라인에 영향을 미친다.위 예제에서는 마지막이 병렬이기 때문에 파이프라인은 전체적으로 병렬로 실행된다.]]></content>
       <categories>
         
           <category> dev </category>
