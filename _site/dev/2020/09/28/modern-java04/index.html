@@ -406,8 +406,6 @@
 
 <p><code class="highlighter-rouge">모던 자바 인 액션 책을 보고 정리한 글입니다.</code></p>
 
-<p>작성중인 글입니다.</p>
-
 <h1 id="병렬-스트림">병렬 스트림</h1>
 <ul>
   <li>병렬 스트림 이란 각각의 스레드에서 처리할 수 있도록 스트림 요소를 여러 청크로 분할한 스트림이다. 따라서 병렬스트림을 이용하면 모든 멀티코어 프로세서가 각각의 청크를 처리하도록 할당할 수 있다.
@@ -481,27 +479,80 @@ public long sideEffectSum(long n) {
     public void add(long value) {
         total += value;
     }
-}
-```</p>
+}</p>
+<div class="highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26<br/>27</pre></td><td class="code"><pre class="highlight"><code>* 위 코드는 본질적으로 순차 실행할 수 있도록 구현되었고, 병렬로 실행한다면 문제가 발생한다. 
+* 특히 total에 접근할 때 마다 데이터 레이스 문제가 발생한다. (다수의 스레드에서 동시에 데이터에 접근)
+
+### 병렬 스트림을 효과적으로 사용하기
+* 병렬 스트림을 사용한다면 반드시 직접 측정하라.
+* 박싱을 주의하라. 오토 박싱 / 언박싱 과정에서 사용되는 리소스는 상상이상으로 크다. 기본형 특화 스트림을 고민하자.
+* 순차 스트림보다 병렬 스트림을 사용하면 성능이 떨어지는 연산이 존재한다. 특히 limit 이나 findFirst와 같이 요소의 순서에 의존하는 연산은 병렬 스트림과 적합하지 않다.  
+  findFirst 보다 findAny를 사용하고 정렬된 스트림에 unorderd를 호출한다면 비정렬된 스트림을 얻을 수 있다.
+* 스트림에서 수행되는 전체 연산 비용을 고려, 처리할 요소 N 연산 비용 Q라고 가정 N * Q 에서 Q의 비용이 큰 경우 병렬 스트림을 사용한다면 성능을 개선할 가능성이 있다.
+* 소량의 데이터는 병렬 스트림을 사용해도 큰 이점을 얻지 못한다.
+* 적절한 자료구조를 사용하는지 판단하라. 예를 들면 ArrayList를 LinkedList보다 효율적으로 분할 할 수 있다. (전체 탐색을 하지 않고 리스트를 분할 할 수 있기 때문)
+* 스트림의 특성과 파이프라인의 중간 연산이 스트림의 특성을 어떻게 바꾸는지에 따라 분해 과정의 성능이 달라질수 있다. 예를들면 SIZED 스트림은 정확히 같은 크기의 스트림을 분할하는 반면 filter 연산이 있으면 스트림의 크기를 가늠하기 어렵다.
+* 최종 연산의 병합 과정 비용을 살펴보라. 병합 과정의 비용이 비싸다면 병렬 스트림으로 얻은 성능의 이익이 서브스트림의 부분결과를 합치는 과정에서 상쇄될 가능성이 있다.
+* ArrayList, IntSream.range는 병렬 스트림을 사용하기 최적화 되어 있다.
+* HashSet, TreeSet은 병렬 스트림을 사용해도 좋다.
+* LinkedList, Stream.iterate 는 병렬스트림을 사용하면 성능이 떨어질것이다.
+
+## 포크 / 조인 프레임워크
+* 포크 / 조인 프레임워크는 병렬화 할 수 있는 작없을 재귀적으로 작은 작업으로 분할한 다음 서브테스크 각각의 결과를 합쳐 전체 결과를 만들도록 설계되었다.
+* 포크 / 조인 프레임워크에서는 서브테스크를 Thread Pool(ForkJoinPool)의 작업자 스레드에 분산 할당하는 ExecutorService 인터페이스를 구현한다.
+
+### RecursiveTask 활용
+* 스레드풀을 이용하려면 RecursiveTask&lt;R&gt;의 서브클래스를 만들어야 한다. 
+* R은 병렬화된 테스크가 생성하는 결과 형식 또는 결과가 없을때는 RecursiveAction형식이다.
+* RecursiveTask를 정의 하려면 추상메서드 compute를 구현해야 한다.
+```java
+protected abstract R compute();
+</code></pre></td></tr></tbody></table></div></div>
 <ul>
-  <li>위 코드는 본질적으로 순차 실행할 수 있도록 구현되었고, 병렬로 실행한다면 문제가 발생한다.</li>
-  <li>특히 total에 접근할 때 마다 데이터 레이스 문제가 발생한다. (다수의 스레드에서 동시에 데이터에 접근)</li>
+  <li>compute 메서드는 테스크를 서브 테스트로 분할하는 로직과 더이상 분할 할수 없을떄 서브테스트의 결과를 생산할 알고리즘을 정의한다.
+    <div class="highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5</pre></td><td class="code"><pre class="highlight"><code>if (서브테스트 분할불가능) {
+순차적으로 테스트 계산
+} else {
+서브테스크 분할 재귀 호출
+}
+</code></pre></td></tr></tbody></table></div>    </div>
+  </li>
+  <li>분할 정복 알고리즘의 병렬화 버전이라고 볼수 있다.</li>
 </ul>
 
-<h3 id="병렬-스트림을-효과적으로-사용하기">병렬 스트림을 효과적으로 사용하기</h3>
+<h3 id="포크조인-프레임워크를-제대로-사용하는-방법">포크/조인 프레임워크를 제대로 사용하는 방법</h3>
 <ul>
-  <li>병렬 스트림을 사용한다면 반드시 직접 측정하라.</li>
-  <li>박싱을 주의하라. 오토 박싱 / 언박싱 과정에서 사용되는 리소스는 상상이상으로 크다. 기본형 특화 스트림을 고민하자.</li>
-  <li>순차 스트림보다 병렬 스트림을 사용하면 성능이 떨어지는 연산이 존재한다. 특히 limit 이나 findFirst와 같이 요소의 순서에 의존하는 연산은 병렬 스트림과 적합하지 않다.<br />
-findFirst 보다 findAny를 사용하고 정렬된 스트림에 unorderd를 호출한다면 비정렬된 스트림을 얻을 수 있다.</li>
-  <li>스트림에서 수행되는 전체 연산 비용을 고려, 처리할 요소 N 연산 비용 Q라고 가정 N * Q 에서 Q의 비용이 큰 경우 병렬 스트림을 사용한다면 성능을 개선할 가능성이 있다.</li>
-  <li>소량의 데이터는 병렬 스트림을 사용해도 큰 이점을 얻지 못한다.</li>
-  <li>적절한 자료구조를 사용하는지 판단하라. 예를 들면 ArrayList를 LinkedList보다 효율적으로 분할 할 수 있다. (전체 탐색을 하지 않고 리스트를 분할 할 수 있기 때문)</li>
-  <li>스트림의 특성과 파이프라인의 중간 연산이 스트림의 특성을 어떻게 바꾸는지에 따라 분해 과정의 성능이 달라질수 있다. 예를들면 SIZED 스트림은 정확히 같은 크기의 스트림을 분할하는 반면 filter 연산이 있으면 스트림의 크기를 가늠하기 어렵다.</li>
-  <li>최종 연산의 병합 과정 비용을 살펴보라. 병합 과정의 비용이 비싸다면 병렬 스트림으로 얻은 성능의 이익이 서브스트림의 부분결과를 합치는 과정에서 상쇄될 가능성이 있다.</li>
-  <li>ArrayList, IntSream.range는 병렬 스트림을 사용하기 최적화 되어 있다.</li>
-  <li>HashSet, TreeSet은 병렬 스트림을 사용해도 좋다.</li>
-  <li>LinkedList, Stream.iterate 는 병렬스트림을 사용하면 성능이 떨어질것이다.</li>
+  <li>join 메서드를 테스크에 호출시 결과가 준비될때까지 호출자를 블락한다. 따라서 서브텟크가 모두 시작된 다음에 join 메서드를 실행해야 한다.</li>
+  <li>RecursiveTask 내에서는 ForkJoinPool의 invoke 메서드를 사용하지 말아야 한다. 대신 compute나 fork메서드를 직접 호출할 수 있다. 순차 코드에서 병렬 계산을 시작할떄만 invoke를 사용한다.</li>
+  <li>서브테스크에 fork메서드를 호출해 ForkJoinPool의 일정을 조절할 수 있다.</li>
+  <li>포크 / 조인 프레임워크를 이용한 병렬 계산은 디버깅이 어렵다.</li>
+  <li>병렬 스트림에서 살펴본 것처럼 멀티코어에 포크 / 조인 프레임워크를 사용하는 것이 순차 처리보다 무조건 빠를 거라는 생각은 버려야한다.</li>
+</ul>
+
+<h3 id="작업-훔치기">작업 훔치기</h3>
+<ul>
+  <li>포크 / 조인 프레임워크에서는 Work Stealing 이라는 기법으로 작업을 관리한다.</li>
+  <li>Work Stealing에서는 ForkJoinPool의 모든 스레드를 거의 공정하게 분배한다. 각각의 스레드는 자신에게 할당된 테스크를 포함한 이중 연결리스트를 참조하며<br />
+작업이 끝날때 마다 큐의 헤드에서 작업을 가져와 처리한다.</li>
+  <li>하나의 스레드에서 모든 작업이 끝이나면 유휴 상태로 변경하기 보다는 다른 스레드의 큐의 꼬리에서 작업을 훔쳐와 실행하게 된다.</li>
+</ul>
+
+<h2 id="spliterator-인터페이스">Spliterator 인터페이스</h2>
+<ul>
+  <li>자바 8부터 Spliterator 라는 인터페이스가 추가되었다. Spliterator는 분할할 수 있는 반복자란 의미이며 Iterator처럼 소스의 요소 탐색 기능을 제공하며 병렬 작업에 특화 되어 있다.</li>
+  <li>자바 8 은 컬렉션 프레임워크에 포함된 모든 자료구조에 사용할 수 있는 기본 Spliterator 구현을 제공한다.
+    <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Spliterator</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+<span class="kt">boolean</span> <span class="nf">tryAdvance</span><span class="o">(</span><span class="n">Consumer</span><span class="o">&lt;?</span> <span class="kd">super</span> <span class="n">T</span><span class="o">&gt;</span> <span class="n">action</span><span class="o">);</span>
+<span class="n">Spliterator</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">trySplit</span><span class="o">();</span>
+<span class="kt">long</span> <span class="nf">estimateSize</span><span class="o">();</span>
+<span class="kt">int</span> <span class="nf">characteristics</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div>    </div>
+  </li>
+  <li>T는 Spliterator에서 탐색하는 요소의 형식을 가리킨다.</li>
+  <li>tryAdvance 메서드는 Spilterator의 요소를 하나씩 순차적으로 소비하며 탐색해야할 요소가 남아 있으면 True를 리턴한다.</li>
+  <li>trySplit 메서드는 Spliterator의 일부 요소를 분할해서 두번쨰 Spilterator를 생성하는 메서드이다.</li>
+  <li>estimateSize로 탐색해양할 요소의 갯수를 구할수 있다.</li>
 </ul>
 
 
@@ -728,7 +779,7 @@ findFirst 보다 findAny를 사용하고 정렬된 스트림에 unorderd를 호�
             
               <div class="post-toc-content">
     <ol class=nav>
-      <li class="nav-item nav-level-1"> <a class="nav-link" href="#병렬-스트림"> <span class="nav-number">1</span> <span class="nav-text">병렬 스트림</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-2"> <a class="nav-link" href="#순차-스트림을-병렬-스트림으로-변환"> <span class="nav-number">1.1</span> <span class="nav-text">순차 스트림을 병렬 스트림으로 변환</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#스트림-성능-측정"> <span class="nav-number">1.1.1</span> <span class="nav-text">스트림 성능 측정</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#병렬-스트림의-올바른-사용법"> <span class="nav-number">1.1.2</span> <span class="nav-text">병렬 스트림의 올바른 사용법</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#병렬-스트림을-효과적으로-사용하기"> <span class="nav-number">1.1.3</span> <span class="nav-text">병렬 스트림을 효과적으로 사용하기</span> </a> </li> </ol> </li> </ol> </li>
+      <li class="nav-item nav-level-1"> <a class="nav-link" href="#병렬-스트림"> <span class="nav-number">1</span> <span class="nav-text">병렬 스트림</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-2"> <a class="nav-link" href="#순차-스트림을-병렬-스트림으로-변환"> <span class="nav-number">1.1</span> <span class="nav-text">순차 스트림을 병렬 스트림으로 변환</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#스트림-성능-측정"> <span class="nav-number">1.1.1</span> <span class="nav-text">스트림 성능 측정</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#병렬-스트림의-올바른-사용법"> <span class="nav-number">1.1.2</span> <span class="nav-text">병렬 스트림의 올바른 사용법</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#포크조인-프레임워크를-제대로-사용하는-방법"> <span class="nav-number">1.1.3</span> <span class="nav-text">포크/조인 프레임워크를 제대로 사용하는 방법</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#작업-훔치기"> <span class="nav-number">1.1.4</span> <span class="nav-text">작업 훔치기</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#spliterator-인터페이스"> <span class="nav-number">1.2</span> <span class="nav-text">Spliterator 인터페이스</span> </a> </li> </ol> </li>
     </ol>
   </div>
             

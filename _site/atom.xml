@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-10-07T22:38:21+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">모던 자바 인 액션 - 7장 병렬 데이터 처리와 성능</title><link href="http://localhost:4000/dev/2020/09/28/modern-java04/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 7장 병렬 데이터 처리와 성능" /><published>2020-09-28T00:00:00+09:00</published><updated>2020-09-28T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/09/28/modern-java04</id><content type="html" xml:base="http://localhost:4000/dev/2020/09/28/modern-java04/">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-10-10T19:54:58+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">모던 자바 인 액션 - 7장 병렬 데이터 처리와 성능</title><link href="http://localhost:4000/dev/2020/09/28/modern-java04/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 7장 병렬 데이터 처리와 성능" /><published>2020-09-28T00:00:00+09:00</published><updated>2020-09-28T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/09/28/modern-java04</id><content type="html" xml:base="http://localhost:4000/dev/2020/09/28/modern-java04/">&lt;blockquote&gt;
   &lt;p&gt;Modern Java In Action 정리 - 병렬 데이터 처리와 성능&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -10,8 +10,6 @@
 &lt;/ul&gt;
 
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;모던 자바 인 액션 책을 보고 정리한 글입니다.&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;작성중인 글입니다.&lt;/p&gt;
 
 &lt;h1 id=&quot;병렬-스트림&quot;&gt;병렬 스트림&lt;/h1&gt;
 &lt;ul&gt;
@@ -86,27 +84,80 @@ public long sideEffectSum(long n) {
     public void add(long value) {
         total += value;
     }
-}
-```&lt;/p&gt;
+}&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;* 위 코드는 본질적으로 순차 실행할 수 있도록 구현되었고, 병렬로 실행한다면 문제가 발생한다. 
+* 특히 total에 접근할 때 마다 데이터 레이스 문제가 발생한다. (다수의 스레드에서 동시에 데이터에 접근)
+
+### 병렬 스트림을 효과적으로 사용하기
+* 병렬 스트림을 사용한다면 반드시 직접 측정하라.
+* 박싱을 주의하라. 오토 박싱 / 언박싱 과정에서 사용되는 리소스는 상상이상으로 크다. 기본형 특화 스트림을 고민하자.
+* 순차 스트림보다 병렬 스트림을 사용하면 성능이 떨어지는 연산이 존재한다. 특히 limit 이나 findFirst와 같이 요소의 순서에 의존하는 연산은 병렬 스트림과 적합하지 않다.  
+  findFirst 보다 findAny를 사용하고 정렬된 스트림에 unorderd를 호출한다면 비정렬된 스트림을 얻을 수 있다.
+* 스트림에서 수행되는 전체 연산 비용을 고려, 처리할 요소 N 연산 비용 Q라고 가정 N * Q 에서 Q의 비용이 큰 경우 병렬 스트림을 사용한다면 성능을 개선할 가능성이 있다.
+* 소량의 데이터는 병렬 스트림을 사용해도 큰 이점을 얻지 못한다.
+* 적절한 자료구조를 사용하는지 판단하라. 예를 들면 ArrayList를 LinkedList보다 효율적으로 분할 할 수 있다. (전체 탐색을 하지 않고 리스트를 분할 할 수 있기 때문)
+* 스트림의 특성과 파이프라인의 중간 연산이 스트림의 특성을 어떻게 바꾸는지에 따라 분해 과정의 성능이 달라질수 있다. 예를들면 SIZED 스트림은 정확히 같은 크기의 스트림을 분할하는 반면 filter 연산이 있으면 스트림의 크기를 가늠하기 어렵다.
+* 최종 연산의 병합 과정 비용을 살펴보라. 병합 과정의 비용이 비싸다면 병렬 스트림으로 얻은 성능의 이익이 서브스트림의 부분결과를 합치는 과정에서 상쇄될 가능성이 있다.
+* ArrayList, IntSream.range는 병렬 스트림을 사용하기 최적화 되어 있다.
+* HashSet, TreeSet은 병렬 스트림을 사용해도 좋다.
+* LinkedList, Stream.iterate 는 병렬스트림을 사용하면 성능이 떨어질것이다.
+
+## 포크 / 조인 프레임워크
+* 포크 / 조인 프레임워크는 병렬화 할 수 있는 작없을 재귀적으로 작은 작업으로 분할한 다음 서브테스크 각각의 결과를 합쳐 전체 결과를 만들도록 설계되었다.
+* 포크 / 조인 프레임워크에서는 서브테스크를 Thread Pool(ForkJoinPool)의 작업자 스레드에 분산 할당하는 ExecutorService 인터페이스를 구현한다.
+
+### RecursiveTask 활용
+* 스레드풀을 이용하려면 RecursiveTask&amp;lt;R&amp;gt;의 서브클래스를 만들어야 한다. 
+* R은 병렬화된 테스크가 생성하는 결과 형식 또는 결과가 없을때는 RecursiveAction형식이다.
+* RecursiveTask를 정의 하려면 추상메서드 compute를 구현해야 한다.
+```java
+protected abstract R compute();
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;ul&gt;
-  &lt;li&gt;위 코드는 본질적으로 순차 실행할 수 있도록 구현되었고, 병렬로 실행한다면 문제가 발생한다.&lt;/li&gt;
-  &lt;li&gt;특히 total에 접근할 때 마다 데이터 레이스 문제가 발생한다. (다수의 스레드에서 동시에 데이터에 접근)&lt;/li&gt;
+  &lt;li&gt;compute 메서드는 테스크를 서브 테스트로 분할하는 로직과 더이상 분할 할수 없을떄 서브테스트의 결과를 생산할 알고리즘을 정의한다.
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;if (서브테스트 분할불가능) {
+순차적으로 테스트 계산
+} else {
+서브테스크 분할 재귀 호출
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;분할 정복 알고리즘의 병렬화 버전이라고 볼수 있다.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 id=&quot;병렬-스트림을-효과적으로-사용하기&quot;&gt;병렬 스트림을 효과적으로 사용하기&lt;/h3&gt;
+&lt;h3 id=&quot;포크조인-프레임워크를-제대로-사용하는-방법&quot;&gt;포크/조인 프레임워크를 제대로 사용하는 방법&lt;/h3&gt;
 &lt;ul&gt;
-  &lt;li&gt;병렬 스트림을 사용한다면 반드시 직접 측정하라.&lt;/li&gt;
-  &lt;li&gt;박싱을 주의하라. 오토 박싱 / 언박싱 과정에서 사용되는 리소스는 상상이상으로 크다. 기본형 특화 스트림을 고민하자.&lt;/li&gt;
-  &lt;li&gt;순차 스트림보다 병렬 스트림을 사용하면 성능이 떨어지는 연산이 존재한다. 특히 limit 이나 findFirst와 같이 요소의 순서에 의존하는 연산은 병렬 스트림과 적합하지 않다.&lt;br /&gt;
-findFirst 보다 findAny를 사용하고 정렬된 스트림에 unorderd를 호출한다면 비정렬된 스트림을 얻을 수 있다.&lt;/li&gt;
-  &lt;li&gt;스트림에서 수행되는 전체 연산 비용을 고려, 처리할 요소 N 연산 비용 Q라고 가정 N * Q 에서 Q의 비용이 큰 경우 병렬 스트림을 사용한다면 성능을 개선할 가능성이 있다.&lt;/li&gt;
-  &lt;li&gt;소량의 데이터는 병렬 스트림을 사용해도 큰 이점을 얻지 못한다.&lt;/li&gt;
-  &lt;li&gt;적절한 자료구조를 사용하는지 판단하라. 예를 들면 ArrayList를 LinkedList보다 효율적으로 분할 할 수 있다. (전체 탐색을 하지 않고 리스트를 분할 할 수 있기 때문)&lt;/li&gt;
-  &lt;li&gt;스트림의 특성과 파이프라인의 중간 연산이 스트림의 특성을 어떻게 바꾸는지에 따라 분해 과정의 성능이 달라질수 있다. 예를들면 SIZED 스트림은 정확히 같은 크기의 스트림을 분할하는 반면 filter 연산이 있으면 스트림의 크기를 가늠하기 어렵다.&lt;/li&gt;
-  &lt;li&gt;최종 연산의 병합 과정 비용을 살펴보라. 병합 과정의 비용이 비싸다면 병렬 스트림으로 얻은 성능의 이익이 서브스트림의 부분결과를 합치는 과정에서 상쇄될 가능성이 있다.&lt;/li&gt;
-  &lt;li&gt;ArrayList, IntSream.range는 병렬 스트림을 사용하기 최적화 되어 있다.&lt;/li&gt;
-  &lt;li&gt;HashSet, TreeSet은 병렬 스트림을 사용해도 좋다.&lt;/li&gt;
-  &lt;li&gt;LinkedList, Stream.iterate 는 병렬스트림을 사용하면 성능이 떨어질것이다.&lt;/li&gt;
+  &lt;li&gt;join 메서드를 테스크에 호출시 결과가 준비될때까지 호출자를 블락한다. 따라서 서브텟크가 모두 시작된 다음에 join 메서드를 실행해야 한다.&lt;/li&gt;
+  &lt;li&gt;RecursiveTask 내에서는 ForkJoinPool의 invoke 메서드를 사용하지 말아야 한다. 대신 compute나 fork메서드를 직접 호출할 수 있다. 순차 코드에서 병렬 계산을 시작할떄만 invoke를 사용한다.&lt;/li&gt;
+  &lt;li&gt;서브테스크에 fork메서드를 호출해 ForkJoinPool의 일정을 조절할 수 있다.&lt;/li&gt;
+  &lt;li&gt;포크 / 조인 프레임워크를 이용한 병렬 계산은 디버깅이 어렵다.&lt;/li&gt;
+  &lt;li&gt;병렬 스트림에서 살펴본 것처럼 멀티코어에 포크 / 조인 프레임워크를 사용하는 것이 순차 처리보다 무조건 빠를 거라는 생각은 버려야한다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;작업-훔치기&quot;&gt;작업 훔치기&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;포크 / 조인 프레임워크에서는 Work Stealing 이라는 기법으로 작업을 관리한다.&lt;/li&gt;
+  &lt;li&gt;Work Stealing에서는 ForkJoinPool의 모든 스레드를 거의 공정하게 분배한다. 각각의 스레드는 자신에게 할당된 테스크를 포함한 이중 연결리스트를 참조하며&lt;br /&gt;
+작업이 끝날때 마다 큐의 헤드에서 작업을 가져와 처리한다.&lt;/li&gt;
+  &lt;li&gt;하나의 스레드에서 모든 작업이 끝이나면 유휴 상태로 변경하기 보다는 다른 스레드의 큐의 꼬리에서 작업을 훔쳐와 실행하게 된다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;spliterator-인터페이스&quot;&gt;Spliterator 인터페이스&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;자바 8부터 Spliterator 라는 인터페이스가 추가되었다. Spliterator는 분할할 수 있는 반복자란 의미이며 Iterator처럼 소스의 요소 탐색 기능을 제공하며 병렬 작업에 특화 되어 있다.&lt;/li&gt;
+  &lt;li&gt;자바 8 은 컬렉션 프레임워크에 포함된 모든 자료구조에 사용할 수 있는 기본 Spliterator 구현을 제공한다.
+    &lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Spliterator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;boolean&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;tryAdvance&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Consumer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;?&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;super&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Spliterator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;trySplit&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;estimateSize&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;characteristics&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;T는 Spliterator에서 탐색하는 요소의 형식을 가리킨다.&lt;/li&gt;
+  &lt;li&gt;tryAdvance 메서드는 Spilterator의 요소를 하나씩 순차적으로 소비하며 탐색해야할 요소가 남아 있으면 True를 리턴한다.&lt;/li&gt;
+  &lt;li&gt;trySplit 메서드는 Spliterator의 일부 요소를 분할해서 두번쨰 Spilterator를 생성하는 메서드이다.&lt;/li&gt;
+  &lt;li&gt;estimateSize로 탐색해양할 요소의 갯수를 구할수 있다.&lt;/li&gt;
 &lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><summary type="html">Modern Java In Action 정리 - 병렬 데이터 처리와 성능</summary></entry><entry><title type="html">스프링 클라우드 서비스 이해 - Zuul Proxy</title><link href="http://localhost:4000/dev/spring/cloud/2020/09/12/spring-cloud-zuul/" rel="alternate" type="text/html" title="스프링 클라우드 서비스 이해 - Zuul Proxy" /><published>2020-09-12T00:00:00+09:00</published><updated>2020-09-12T00:00:00+09:00</updated><id>http://localhost:4000/dev/spring/cloud/2020/09/12/spring-cloud-zuul</id><content type="html" xml:base="http://localhost:4000/dev/spring/cloud/2020/09/12/spring-cloud-zuul/">&lt;blockquote&gt;
   &lt;p&gt;Spring Cloud Zuul에 대해서 간단히 알아보자.&lt;/p&gt;
 &lt;/blockquote&gt;
