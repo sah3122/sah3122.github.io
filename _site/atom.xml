@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-10-16T00:47:12+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">모던 자바 인 액션 - 8장 컬렉션 API 개선</title><link href="http://localhost:4000/dev/2020/10/13/modern-java05/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 8장 컬렉션 API 개선" /><published>2020-10-13T00:00:00+09:00</published><updated>2020-10-13T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/10/13/modern-java05</id><content type="html" xml:base="http://localhost:4000/dev/2020/10/13/modern-java05/">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-10-18T20:54:20+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">모던 자바 인 액션 - 8장 컬렉션 API 개선</title><link href="http://localhost:4000/dev/2020/10/13/modern-java05/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 8장 컬렉션 API 개선" /><published>2020-10-13T00:00:00+09:00</published><updated>2020-10-13T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/10/13/modern-java05</id><content type="html" xml:base="http://localhost:4000/dev/2020/10/13/modern-java05/">&lt;blockquote&gt;
   &lt;p&gt;Modern Java In Action 정리 - 컬렉션 API 개선&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -9,8 +9,6 @@
 &lt;/ul&gt;
 
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;모던 자바 인 액션 책을 보고 정리한 글입니다.&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;작성중인 글입니다.&lt;/p&gt;
 
 &lt;h1 id=&quot;컬렉션-팩토리&quot;&gt;컬렉션 팩토리&lt;/h1&gt;
 &lt;ul&gt;
@@ -64,31 +62,33 @@
 
 &lt;h3 id=&quot;맵-팩토리&quot;&gt;맵 팩토리&lt;/h3&gt;
 &lt;ul&gt;
-  &lt;li&gt;맵을 만드는것은 리스트나 Set을 만드는것에 비해 조금 복잡하지만 Java 9 에서 두가지 방법으로 맵을 만들수 있도록 제공하고 있다.
-```java
-// Key - Value 를 번갈아 가며 생성
-Map&amp;lt;String, Integer&amp;gt; friendsMap = Map.of(“Raphael”, 30, “Olivia”, 30, “Thibaut”, 30);&lt;/li&gt;
+  &lt;li&gt;맵을 만드는것은 리스트나 Set을 만드는것에 비해 조금 복잡하지만 Java 9 에서 두가지 방법으로 맵을 만들수 있도록 제공하고 있다.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;// Map의 인수가 많을경우 entry를 활용해서 만드는것이 좋다.
-Map&amp;lt;String, Integer&amp;gt; friendsMapEntry = Map.ofEntries(entry(“Raphael”, 30),
-                entry(“Olivia”, 30),
-                entry(“Thibaut”, 30));&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-## 리스트와 집합 처리
-* 자바 8에서는 List, Set 인터페이스에 다음과 같은 메서드를 추가했다. 
-* removeIf : Predicate를 만족하는 요소를 제거한다. List나 Set을 구현하거나 구현을 상속받은 클래스에서 이용할 수 있다
-* replaceAll : 리스트에서 이용할수 있는 기능으로 UnaryOperator 함수를 이용해 요소를 바꾼다.
-* sort : List 인터페이스에서 제공하는 기능으로 리스트를 정렬한다.
-* 위 메서드들은 호출한 컬렉션 자체를 변경하게 된다. 일반적으로 새로운 결과를 만드는 스트림과는 달리 기존 컬렉션에 변화를 주는 기능이 추가된 이유는 무엇일까 ? 
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// Key - Value 를 번갈아 가며 생성&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Map&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;friendsMap&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Map&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Raphael&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;30&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Olivia&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;30&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Thibaut&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;30&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
 
-### removeIf
-```java
-for (Transaction transaction : transactions) {
-  if (True) {
-    transactions.remove(transaction);
-  }
-}
+&lt;span class=&quot;c1&quot;&gt;// Map의 인수가 많을경우 entry를 활용해서 만드는것이 좋다.&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Map&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;friendsMapEntry&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Map&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;ofEntries&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;entry&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Raphael&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;30&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;),&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;entry&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Olivia&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;30&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;),&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;entry&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Thibaut&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;30&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;리스트와-집합-처리&quot;&gt;리스트와 집합 처리&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;자바 8에서는 List, Set 인터페이스에 다음과 같은 메서드를 추가했다.&lt;/li&gt;
+  &lt;li&gt;removeIf : Predicate를 만족하는 요소를 제거한다. List나 Set을 구현하거나 구현을 상속받은 클래스에서 이용할 수 있다&lt;/li&gt;
+  &lt;li&gt;replaceAll : 리스트에서 이용할수 있는 기능으로 UnaryOperator 함수를 이용해 요소를 바꾼다.&lt;/li&gt;
+  &lt;li&gt;sort : List 인터페이스에서 제공하는 기능으로 리스트를 정렬한다.&lt;/li&gt;
+  &lt;li&gt;위 메서드들은 호출한 컬렉션 자체를 변경하게 된다. 일반적으로 새로운 결과를 만드는 스트림과는 달리 기존 컬렉션에 변화를 주는 기능이 추가된 이유는 무엇일까 ?&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;removeif&quot;&gt;removeIf&lt;/h3&gt;
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Transaction&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;transaction&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;transactions&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;transactions&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;remove&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;transaction&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;ul&gt;
   &lt;li&gt;위 코드는 ConcurrentModificationException 에러를 발생시킨다. for - each 루프는 내부적으로 iterator 객체를 사용하므로 아래와 같이 해석된다.
@@ -157,23 +157,26 @@ for (Transaction transaction : transactions) {
 &lt;ul&gt;
   &lt;li&gt;다음 두 개의 새로운 유틸리티를 활용하여 맵의 항목을 key 또는 Value를 기준으로 정렬할 수 있다.&lt;/li&gt;
   &lt;li&gt;Entry.comparingByValue&lt;/li&gt;
-  &lt;li&gt;Entry.comparingByKey
-```java
-Map&amp;lt;String, String&amp;gt; favouriteMovies = Map.ofEntries(entry(“Raphael”, “Star Wars”), entry(“Cristina”, “Matrix”), entry(“Olivia”, “James Bond”));&lt;/li&gt;
+  &lt;li&gt;Entry.comparingByKey&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;favouriteMovies.entrySet()
-               .stream()
-               .sorted(Entry.comparingByKey());&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-### getOrDefault
-* 기존엔 맵에 존재하지 않는 키로 값을 찾으려할때 NPE가 발생할 가능성이 있어 Null 체크가 필요했다.
-* 현재는 getOrDefault 라는 메소드가 지원되니 안전하게 문제를 해결할 수 있습니다. 
-```java
-Map&amp;lt;String, String&amp;gt; favouriteMovies = Map.ofEntries(entry(&quot;Raphael&quot;, &quot;Star Wars&quot;), entry(&quot;Cristina&quot;, &quot;Matrix&quot;), entry(&quot;Olivia&quot;, &quot;James Bond&quot;));
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;Map&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;favouriteMovies&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Map&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;ofEntries&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;entry&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Raphael&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Star Wars&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;entry&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Cristina&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Matrix&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;entry&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Olivia&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;James Bond&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;
 
-favouriteMovies.getOrDefault(&quot;Olivia&quot;, &quot;Matrix&quot;); // James Bond 출력
-favouriteMovies.getOrDefault(&quot;Thibaut&quot;, &quot;Matrix&quot;); // Matrix 출력
+&lt;span class=&quot;n&quot;&gt;favouriteMovies&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;entrySet&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+               &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;stream&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+               &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;sorted&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Entry&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;comparingByKey&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;getordefault&quot;&gt;getOrDefault&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;기존엔 맵에 존재하지 않는 키로 값을 찾으려할때 NPE가 발생할 가능성이 있어 Null 체크가 필요했다.&lt;/li&gt;
+  &lt;li&gt;현재는 getOrDefault 라는 메소드가 지원되니 안전하게 문제를 해결할 수 있습니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;Map&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;favouriteMovies&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Map&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;ofEntries&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;entry&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Raphael&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Star Wars&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;entry&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Cristina&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Matrix&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;entry&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Olivia&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;James Bond&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;favouriteMovies&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getOrDefault&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Olivia&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Matrix&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// James Bond 출력&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;favouriteMovies&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getOrDefault&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Thibaut&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Matrix&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Matrix 출력&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;ul&gt;
   &lt;li&gt;키가 존재하더라도 값이 Nulㅣ인 경우에는 여전히 Null 을 반환하게 되니 주의하자.&lt;/li&gt;
@@ -225,7 +228,32 @@ favouriteMovies.getOrDefault(&quot;Thibaut&quot;, &quot;Matrix&quot;); // Matrix
   &lt;/li&gt;
   &lt;li&gt;지정된 키와 연관된 값이 없거나 값이 Null 일경우 merge는 키를 널이 아닌 값과 연결한다.&lt;/li&gt;
   &lt;li&gt;merge는 연결된 값을 주어진 매핑함수의 결과 값으로 대치하거나 결과가 Null일 경우 항목을 제거한다.&lt;/li&gt;
-  &lt;li&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;concurrenthashmap&quot;&gt;ConcurrentHashMap&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;ConcurrentHashMap은 동시성 친화적이며 최신기술을 반영한 HashMap 버전이다.&lt;/li&gt;
+  &lt;li&gt;ConcurrentHashMap은 스트림에서 봤던것과 비슷한 종류의 세 가지 연산을 지원한다.
+    &lt;ol&gt;
+      &lt;li&gt;forEach : 각 (key, value) 쌍에 주어진 액션을 실행&lt;/li&gt;
+      &lt;li&gt;reduce : 모든 (key, value) 쌍을 제공된 리듀스 함수를 이용해 결과로 합침&lt;/li&gt;
+      &lt;li&gt;search : 널이 아닌 값을 반환할 때 까지 각 (key, value)쌍에 함수를 적용&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;다음처럼 키에 함수 받기, 값, Map.Entry, (key, value)인수를 이용한 네 가지 연산 형태를 지원
+    &lt;ol&gt;
+      &lt;li&gt;key, value로 연산 (forEach, reduce, search)&lt;/li&gt;
+      &lt;li&gt;key로 연산(forEachKey, reduceKeys, searchKeys)&lt;/li&gt;
+      &lt;li&gt;value로 연산(forEachValue, reduceValues, searchValues)&lt;/li&gt;
+      &lt;li&gt;Map.Entry 객체로 연산(forEachEntry, reduceEntries, searchEntries)&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;이들 연산은 ConcurrentHashMap의 상태를 잠그지 않고 연산을 수행한다는 점을 주목하자, 따라서 이들 연산에 제공한 함수는 계산이 진행되는 동안 바뀔 수 있는 객체, 값, 순서 등에 의존하지 않아야 한다.&lt;/li&gt;
+  &lt;li&gt;ConcurrentHashMap은 맵의 매핑 개수를 확인하는 mappingCount 메서드를 제공한다.&lt;/li&gt;
+  &lt;li&gt;기존 size 메서드 대신 새 코드에서는 int를 반환하는 mappingCount 메서드를 사용하는것이 좋다.&lt;/li&gt;
+  &lt;li&gt;ConcurrentHashMap을 집합 뷰로 반환한느 keySet이라는 새로운 메서드도 제공한다.&lt;/li&gt;
+  &lt;li&gt;맵을 바꾸면 집합도 바뀌고 반대로 집합을 바꾸면 맵도 영향을 받는다.&lt;/li&gt;
+  &lt;li&gt;newKeySet이라는 새 메서드를 이용해 ConcurrentHashMap으로 유지되는 집합을 만들 수도 있다.&lt;/li&gt;
 &lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><summary type="html">Modern Java In Action 정리 - 컬렉션 API 개선</summary></entry><entry><title type="html">모던 자바 인 액션 - 7장 병렬 데이터 처리와 성능</title><link href="http://localhost:4000/dev/2020/09/28/modern-java04/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 7장 병렬 데이터 처리와 성능" /><published>2020-09-28T00:00:00+09:00</published><updated>2020-09-28T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/09/28/modern-java04</id><content type="html" xml:base="http://localhost:4000/dev/2020/09/28/modern-java04/">&lt;blockquote&gt;
   &lt;p&gt;Modern Java In Action 정리 - 병렬 데이터 처리와 성능&lt;/p&gt;
 &lt;/blockquote&gt;
