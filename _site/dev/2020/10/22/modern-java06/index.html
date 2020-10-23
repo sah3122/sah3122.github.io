@@ -589,8 +589,30 @@
 <ul>
   <li>log 메서드는 조건에 맞는 경우에만 실행되고 인수로 넘겨진 람다를 내부적으로 실행할 수 있게 변경되었다.</li>
   <li>이러한 방법으로 객체 상태를 자주확인하는 상황이나 객체의 일부 메서드를 확인한 다음에 메서드를 호출하도록 새로운 메서드를 구현하는것이 좋다.</li>
-  <li>코드의 가독성이 좋아질 뿐만 아니라 캡슐화(객체 상태가 클라이언트로 노출되지 않는다.)가 강화 된다.</li>
+  <li>
+    <p>코드의 가독성이 좋아질 뿐만 아니라 캡슐화(객체 상태가 클라이언트로 노출되지 않는다.)가 강화 된다.</p>
+  </li>
+  <li><strong>실행 어라운드</strong></li>
+  <li>매번 같은 준비, 종료 과정을 반복적으로 수행하는 코드를 람다로 리팩토링 해보자.</li>
 </ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12</pre></td><td class="code"><pre class="highlight"><code><span class="n">String</span> <span class="n">oneLine</span> <span class="o">=</span> <span class="n">processFile</span><span class="o">((</span><span class="n">BufferedReader</span> <span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">b</span><span class="o">.</span><span class="na">readLine</span><span class="o">());</span> <span class="c1">// 람다 전달</span>
+<span class="n">String</span> <span class="n">twoLine</span> <span class="o">=</span> <span class="n">processFile</span><span class="o">((</span><span class="n">BufferedReader</span> <span class="n">b</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">b</span><span class="o">.</span><span class="na">readLine</span><span class="o">()</span> <span class="o">+</span> <span class="n">b</span><span class="o">.</span><span class="na">readLine</span><span class="o">());</span> <span class="c1">// 다른 람다 전달</span>
+
+<span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">processLine</span><span class="o">(</span><span class="n">BufferedReaderProcessor</span> <span class="n">p</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+  <span class="k">try</span> <span class="o">(</span><span class="n">BufferdReader</span> <span class="n">br</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="o">(</span><span class="k">new</span> <span class="n">FileReader</span><span class="o">(</span><span class="s">"file.txt"</span><span class="o">)))</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">p</span><span class="o">.</span><span class="na">process</span><span class="o">(</span><span class="n">br</span><span class="o">);</span> <span class="c1">// 인수로 전달된 BufferedReaderProcessor 실행</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">BufferedReaderProcessor</span> <span class="o">{</span>
+  <span class="n">String</span> <span class="nf">process</span><span class="o">(</span><span class="n">BufferedReader</span> <span class="n">b</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+<ul>
+  <li>람다로 BufferedReader 객체의 동작을 결정할 수 있는 것은 함수형 인터페이스 BufferedReaderProcessor 덕분이다.</li>
+</ul>
+
 
 
       
