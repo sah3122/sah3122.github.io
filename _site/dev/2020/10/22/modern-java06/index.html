@@ -629,6 +629,75 @@
   </li>
 </ul>
 
+<h3 id="전략-패턴">전략 패턴</h3>
+<ul>
+  <li>전략 패턴은 한 유형의 알고리즘을 보유한 상태에서 런타임시 적절한 알고리즘을 선택하는 기법이다.</li>
+  <li>전략 패턴은 크게 클라이언트 -&gt; 전략 -&gt; A, B (런타임시 선택) 으로 구성된다.
+    <ul>
+      <li>알고리즘을 나타내는 인터페이스 (Strategy 인터페이스)</li>
+      <li>다양한 알고리즘을 나타내는 한 개 이상의 인터페이스 구현 (StrategyA, StrategyB)</li>
+      <li>전략 객체를 사용하는 한 개 이상의 클라이언트</li>
+    </ul>
+  </li>
+  <li>예시로 오직 소문자 또는 숫자로 이루어져야하는 등 텍스트 입력이 다양한 조건에 맞도록 포맷되어있는지 검증하는 로직이 존재한다고 가정하자.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26<br/>27<br/>28<br/>29<br/>30<br/>31<br/>32<br/>33<br/>34<br/>35<br/>36</pre></td><td class="code"><pre class="highlight"><code><span class="nd">@FunctionalInterface</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">ValidationStrategy</span> <span class="o">{</span>
+    <span class="kt">boolean</span> <span class="nf">execute</span><span class="o">(</span><span class="n">String</span> <span class="n">s</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">IsAllLowerCase</span> <span class="kd">implements</span> <span class="n">ValidationStrategy</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">execute</span><span class="o">(</span><span class="n">String</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="na">matches</span><span class="o">(</span><span class="s">"[a-z]+"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">isNumeric</span> <span class="kd">implements</span> <span class="n">ValidationStrategy</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">execute</span><span class="o">(</span><span class="n">String</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="na">matches</span><span class="o">(</span><span class="s">"\d+"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Validator</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">ValidationStrategy</span> <span class="n">validationStrategy</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">Validator</span><span class="o">(</span><span class="n">ValidationStrategy</span> <span class="n">validationStrategy</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">validationStrategy</span> <span class="o">=</span> <span class="n">validationStrategy</span><span class="o">;</span>
+    <span class="o">}</span>
+    
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">validate</span><span class="o">(</span><span class="n">String</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">validationStrategy</span><span class="o">.</span><span class="na">execute</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="n">Validator</span> <span class="n">numericValidator</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Validator</span><span class="o">(</span><span class="k">new</span> <span class="n">isNumeric</span><span class="o">());</span>
+<span class="n">numericValidator</span><span class="o">.</span><span class="na">validate</span><span class="o">(</span><span class="s">"aaa"</span><span class="o">);</span>
+
+<span class="n">Validator</span> <span class="n">lowerCaseValidator</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Validator</span><span class="o">(</span><span class="k">new</span> <span class="n">IsAllLowerCase</span><span class="o">());</span>
+<span class="n">lowerCaseValidator</span><span class="o">.</span><span class="na">validate</span><span class="o">(</span><span class="s">"bbbb"</span><span class="o">);</span>
+</code></pre></td></tr></tbody></table></div></div>
+<ul>
+  <li>람다를 사용하지 않고 위와 같이 구현할 수 있다.</li>
+  <li>람다를 사용한 코드를 살펴보자.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5</pre></td><td class="code"><pre class="highlight"><code><span class="n">Validator</span> <span class="n">lowerCaseValidator2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Validator</span><span class="o">((</span><span class="n">String</span> <span class="n">s</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">s</span><span class="o">.</span><span class="na">matches</span><span class="o">(</span><span class="s">"[a-z]+"</span><span class="o">));</span>
+<span class="n">lowerCaseValidator2</span><span class="o">.</span><span class="na">validate</span><span class="o">(</span><span class="s">"bbbb"</span><span class="o">);</span>
+
+<span class="n">Validator</span> <span class="n">numericValidator2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Validator</span><span class="o">((</span><span class="n">String</span> <span class="n">s</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">s</span><span class="o">.</span><span class="na">matches</span><span class="o">(</span><span class="s">"\d+"</span><span class="o">));</span>
+<span class="n">numericValidator2</span><span class="o">.</span><span class="na">validate</span><span class="o">(</span><span class="s">"1234"</span><span class="o">);</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>ValidationStreategy는 함수형 인터페이스이며 Predicate<String>과 같은 함수 디스크럼터를 갖고 있음을 파악했을것이다.</String></li>
+  <li>따라서 잔략을 구현하는 새로운 클래스를 만드는것보다 람다 표현식을 전달하여 간결하게 나타낼 수 있다.</li>
+  <li>위 코드에서 확인할 수 있듯이 람다 표현식을 전달하면 전략 패턴에서 발생하는 자잘한 코드를 제거할 수 있다.</li>
+  <li>추가적으로 람다 표현식은 전략을 캡슐화 하는 효과도 존재한다.</li>
+</ul>
+
 
       
     </div>
@@ -853,7 +922,7 @@
             
               <div class="post-toc-content">
     <ol class=nav>
-      <li class="nav-item nav-level-2"> <a class="nav-link" href="#가독성과-유연성을-개선하는-리팩토링"> <span class="nav-number">1</span> <span class="nav-text">가독성과 유연성을 개선하는 리팩토링</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#코드-가독성-개선"> <span class="nav-number">1.1</span> <span class="nav-text">코드 가독성 개선</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#익명-클래스를-람다-표현식으로-리팩토링"> <span class="nav-number">1.2</span> <span class="nav-text">익명 클래스를 람다 표현식으로 리팩토링</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#람다-표현식을-메서드-참조로-리펙토링-하기"> <span class="nav-number">1.3</span> <span class="nav-text">람다 표현식을 메서드 참조로 리펙토링 하기</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#명령형-데이터-처리를-스트림으로-리팩토링하기"> <span class="nav-number">1.4</span> <span class="nav-text">명령형 데이터 처리를 스트림으로 리팩토링하기</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#코드-유연성-개선"> <span class="nav-number">1.5</span> <span class="nav-text">코드 유연성 개선</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#람다로-객체지향-디자인-패턴-리팩터링-하기"> <span class="nav-number">2</span> <span class="nav-text">람다로 객체지향 디자인 패턴 리팩터링 하기</span> </a> </li>
+      <li class="nav-item nav-level-2"> <a class="nav-link" href="#가독성과-유연성을-개선하는-리팩토링"> <span class="nav-number">1</span> <span class="nav-text">가독성과 유연성을 개선하는 리팩토링</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#코드-가독성-개선"> <span class="nav-number">1.1</span> <span class="nav-text">코드 가독성 개선</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#익명-클래스를-람다-표현식으로-리팩토링"> <span class="nav-number">1.2</span> <span class="nav-text">익명 클래스를 람다 표현식으로 리팩토링</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#람다-표현식을-메서드-참조로-리펙토링-하기"> <span class="nav-number">1.3</span> <span class="nav-text">람다 표현식을 메서드 참조로 리펙토링 하기</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#명령형-데이터-처리를-스트림으로-리팩토링하기"> <span class="nav-number">1.4</span> <span class="nav-text">명령형 데이터 처리를 스트림으로 리팩토링하기</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#코드-유연성-개선"> <span class="nav-number">1.5</span> <span class="nav-text">코드 유연성 개선</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#람다로-객체지향-디자인-패턴-리팩터링-하기"> <span class="nav-number">2</span> <span class="nav-text">람다로 객체지향 디자인 패턴 리팩터링 하기</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#전략-패턴"> <span class="nav-number">2.1</span> <span class="nav-text">전략 패턴</span> </a> </li> </ol> </li>
     </ol>
   </div>
             
