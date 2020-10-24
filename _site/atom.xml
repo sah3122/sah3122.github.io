@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-10-23T22:33:48+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">모던 자바 인 액션 - 9장 리팩터링, 테스팅, 디버깅</title><link href="http://localhost:4000/dev/2020/10/22/modern-java06/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 9장 리팩터링, 테스팅, 디버깅" /><published>2020-10-22T00:00:00+09:00</published><updated>2020-10-22T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/10/22/modern-java06</id><content type="html" xml:base="http://localhost:4000/dev/2020/10/22/modern-java06/">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-10-23T22:47:07+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">모던 자바 인 액션 - 9장 리팩터링, 테스팅, 디버깅</title><link href="http://localhost:4000/dev/2020/10/22/modern-java06/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 9장 리팩터링, 테스팅, 디버깅" /><published>2020-10-22T00:00:00+09:00</published><updated>2020-10-22T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/10/22/modern-java06</id><content type="html" xml:base="http://localhost:4000/dev/2020/10/22/modern-java06/">&lt;blockquote&gt;
   &lt;p&gt;Modern Java In Action 정리 - 리팩터링, 테스팅, 디버깅&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -216,6 +216,22 @@
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;ul&gt;
   &lt;li&gt;람다로 BufferedReader 객체의 동작을 결정할 수 있는 것은 함수형 인터페이스 BufferedReaderProcessor 덕분이다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;람다로-객체지향-디자인-패턴-리팩터링-하기&quot;&gt;람다로 객체지향 디자인 패턴 리팩터링 하기&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;디자인 패턴에 람다 표현식이 더해지면서 색다른 기능을 발휘 하게 되었다.&lt;/li&gt;
+  &lt;li&gt;즉, 람다를 이용하여 이전에 디자인 패턴으로 해결하던 문제를 더 쉽게 간단하게 해결할 수 있다.&lt;/li&gt;
+  &lt;li&gt;람다 표현식으로 기존의 많은 객체지향 디자인 패턴을 제거하거나 간결하게 재 구현할 수 있다.&lt;/li&gt;
+  &lt;li&gt;이절에선 다섯 가지 패턴을 살펴본다.
+    &lt;ul&gt;
+      &lt;li&gt;전략(Strategy)&lt;/li&gt;
+      &lt;li&gt;템플릿 메서드(Template Method)&lt;/li&gt;
+      &lt;li&gt;옵저버(Observer)&lt;/li&gt;
+      &lt;li&gt;의무 체인(Chain of Responsibility)&lt;/li&gt;
+      &lt;li&gt;팩토리(Factory)&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
 &lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><summary type="html">Modern Java In Action 정리 - 리팩터링, 테스팅, 디버깅</summary></entry><entry><title type="html">모던 자바 인 액션 - 8장 컬렉션 API 개선</title><link href="http://localhost:4000/dev/2020/10/13/modern-java05/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 8장 컬렉션 API 개선" /><published>2020-10-13T00:00:00+09:00</published><updated>2020-10-13T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/10/13/modern-java05</id><content type="html" xml:base="http://localhost:4000/dev/2020/10/13/modern-java05/">&lt;blockquote&gt;
   &lt;p&gt;Modern Java In Action 정리 - 컬렉션 API 개선&lt;/p&gt;
 &lt;/blockquote&gt;
