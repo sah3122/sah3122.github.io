@@ -721,8 +721,85 @@ makeCustomerHappy.accept(c);
 }</Customer></li>
 </ul>
 
-<p>new OnlineBankingLambda().processCustomer(1337, (Customer c) -&gt; print(“hello” + c.getName()));
-```</p>
+<p>new OnlineBankingLambda().processCustomer(1337, (Customer c) -&gt; print(“hello” + c.getName()));</p>
+<div class="highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26<br/>27<br/>28<br/>29<br/>30<br/>31<br/>32<br/>33<br/>34<br/>35<br/>36<br/>37<br/>38<br/>39<br/>40<br/>41<br/>42<br/>43<br/>44<br/>45<br/>46<br/>47<br/>48<br/>49<br/>50<br/>51<br/>52<br/>53<br/>54<br/>55<br/>56<br/>57<br/>58<br/>59<br/>60<br/>61</pre></td><td class="code"><pre class="highlight"><code>
+### 옵저버
+* 어떤 이벤트가 발생했을 때 한 객체(Subject)가 다른 객체 리스트(Observer)에 자동으로 알림을 보내야 하는 패턴에서 옵저버 디자인 패턴을 사용한다.
+* notifyObserver() -&gt; notify() &lt;- ObserverA, ObserverB
+
+```java
+interface Observer {
+  void notify(String tweet);
+}
+
+public class NyTimes implements NotiObserver {
+    @Override
+    public void notify(String tweet) {
+        if (tweet != null &amp;&amp; tweet.contains("monety")) {
+            System.out.println("Breaking news in NY ! " + tweet);
+        }
+    }
+}
+
+public class Guardian implements NotiObserver {
+    @Override
+    public void notify(String tweet) {
+        if (tweet != null &amp;&amp; tweet.contains("queen")) {
+            System.out.println("Yet more new from London .. " + tweet);
+        }
+    }
+}
+
+public class LeMonde implements NotiObserver {
+    @Override
+    public void notify(String tweet) {
+        if (tweet != null &amp;&amp; tweet.contains("wine")) {
+            System.out.println("Today cheese, wine and news! " + tweet);
+        }
+    }
+}
+
+
+public interface NotiSubject {
+    void registerObserver(NotiObserver o);
+    void notifyObservers(String tweet);
+}
+
+public class Feed implements NotiSubject {
+    private final List&lt;NotiObserver&gt; observers = new ArrayList&lt;&gt;();
+    @Override
+    public void registerObserver(NotiObserver o) {
+        observers.add(o);
+    }
+
+    @Override
+    public void notifyObservers(String tweet) {
+        observers.forEach(o -&gt; o.notify(tweet));
+    }
+}
+
+Feed f = new Feed();
+f.registerObserver(new NyTimes());
+f.registerObserver(new LeMonde());
+f.registerObserver(new Guardian());
+f.notifyObservers("The Queen ...")
+</code></pre></td></tr></tbody></table></div></div>
+<ul>
+  <li>람다 표현식 사용하기</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6</pre></td><td class="code"><pre class="highlight"><code><span class="n">Feed</span> <span class="n">feed</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Feed</span><span class="o">();</span>
+<span class="n">feed</span><span class="o">.</span><span class="na">registerObserver</span><span class="o">((</span><span class="n">String</span> <span class="n">tweet</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">{</span>
+    <span class="k">if</span><span class="o">(</span><span class="n">tweet</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">tweet</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="s">"money"</span><span class="o">))</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Breaking news in NY ! "</span> <span class="o">+</span> <span class="n">tweet</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">});</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>항상 람다 표현식을 사용하는것은 옳지 않다. 람다 표현식으로 불필요한 코드가 제거 되는것이 바람직하다 할때만 사용하는것을 권장한다.</li>
+  <li>복잡한 로직이나 여러 메서드가 정의된다면 람다 표현식 보다 기존 방식을 고수하는것이 올바르다.</li>
+</ul>
 
 
       
