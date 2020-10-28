@@ -801,6 +801,165 @@ f.notifyObservers("The Queen ...")
   <li>복잡한 로직이나 여러 메서드가 정의된다면 람다 표현식 보다 기존 방식을 고수하는것이 올바르다.</li>
 </ul>
 
+<h3 id="의무-체인">의무 체인</h3>
+<ul>
+  <li>작업 처리 객체를 체이닝 형식으로 구현할 때 사용하는 패턴이다.</li>
+  <li>한 객체가 작업을 처리한 다음 다른 객체로 결과를 전달하고 다음 객체가 작업을 처리후 그 다음 객체로 전달하는 형식</li>
+  <li>일반적으로 작업 처리 추상 클래스를 구현하여 의무 체인 패턴을 구현한다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">ProcessingObject</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="kd">protected</span> <span class="n">ProcessingObject</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">successor</span><span class="o">;</span>
+    
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setSuccessor</span><span class="o">(</span><span class="n">ProcessingObject</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">successor</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">successor</span> <span class="o">=</span> <span class="n">successor</span><span class="o">;</span>
+    <span class="o">}</span>
+    
+    <span class="kd">public</span> <span class="n">T</span> <span class="nf">handle</span><span class="o">(</span><span class="n">T</span> <span class="n">input</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">T</span> <span class="n">r</span> <span class="o">=</span> <span class="n">hadleWork</span><span class="o">(</span><span class="n">input</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">successor</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">successor</span><span class="o">.</span><span class="na">handle</span><span class="o">(</span><span class="n">r</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">r</span><span class="o">;</span>
+    <span class="o">}</span>
+    
+    <span class="kd">abstract</span> <span class="kd">protected</span> <span class="n">T</span> <span class="nf">hadleWork</span><span class="o">(</span><span class="n">T</span> <span class="n">input</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+<ul>
+  <li>코드를 자세히 살펴보면 템플릿 메서드 패턴이 사용되었음을 알 수 있다.</li>
+  <li>handle 메서드는 일부 작업을 어떻게 처리할지 전체적으로 서술한다.</li>
+  <li>ProcessingObject 클래스를 상속받아 handleWork 메서드를 구현하여 다양한 종류의 작업 처리 객체를 만들수 있다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HandleTextProcessing</span> <span class="kd">extends</span> <span class="n">ProcessingObject</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="n">String</span> <span class="nf">hadleWork</span><span class="o">(</span><span class="n">String</span> <span class="n">input</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"From Raoul, Mario and Alan : "</span> <span class="o">+</span> <span class="n">input</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SpellCheckProcessing</span> <span class="kd">extends</span> <span class="n">ProcessingObject</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="n">String</span> <span class="nf">hadleWork</span><span class="o">(</span><span class="n">String</span> <span class="n">input</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">input</span><span class="o">.</span><span class="na">replaceAll</span><span class="o">(</span><span class="s">"labda"</span><span class="o">,</span> <span class="s">"lambda"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+
+<span class="n">ProcessingObject</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">p1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HandleTextProcessing</span><span class="o">();</span>
+<span class="n">ProcessingObject</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">p2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SpellCheckProcessing</span><span class="o">();</span>
+<span class="n">p1</span><span class="o">.</span><span class="na">setSuccessor</span><span class="o">(</span><span class="n">p2</span><span class="o">);</span>
+<span class="n">p1</span><span class="o">.</span><span class="na">handle</span><span class="o">(</span><span class="s">"Aren't ladbas really sexy?"</span><span class="o">);</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>람다 표현식 사용</li>
+  <li>이러한 패턴은 함수 체인과 비슷하다. 람다 표현식을 조합하는 방식으로는 기본적으로 compose, andThen이 있다.</li>
+  <li>andThen메서드로 이들 함수를 조합 해 체인을 만들어 보자.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4</pre></td><td class="code"><pre class="highlight"><code><span class="n">UnaryOperator</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">headerProcessing</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span> <span class="n">text</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="s">"From Raoul, Mario and Alan : "</span> <span class="o">+</span> <span class="n">text</span><span class="o">;</span>
+<span class="n">UnaryOperator</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">spellCheckProcessing</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span> <span class="n">text</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">text</span><span class="o">.</span><span class="na">replaceAll</span><span class="o">(</span><span class="s">"labda"</span><span class="o">,</span> <span class="s">"lambda"</span><span class="o">);</span>
+<span class="n">Function</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">pipeline</span> <span class="o">=</span> <span class="n">headerProcessing</span><span class="o">.</span><span class="na">andThen</span><span class="o">(</span><span class="n">spellCheckProcessing</span><span class="o">);</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="na">apply</span><span class="o">(</span><span class="s">"Aren't ladbas really sexy?"</span><span class="o">);</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<h3 id="팩토리">팩토리</h3>
+<ul>
+  <li>인스턴스화 로직을 클라이언트에 노출하지 않고 객체를 만들기 위해 팩토리 디자인 패턴을 사용한다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ProductFactory</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Product</span> <span class="nf">createProduct</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">switch</span> <span class="o">(</span><span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">case</span> <span class="s">"loan"</span> <span class="o">:</span> <span class="k">return</span> <span class="k">new</span> <span class="n">Loan</span><span class="o">();</span>
+            <span class="k">case</span> <span class="s">"stock"</span> <span class="o">:</span> <span class="k">return</span> <span class="k">new</span> <span class="n">Stock</span><span class="o">();</span>
+            <span class="k">case</span> <span class="s">"bond"</span> <span class="o">:</span> <span class="k">return</span> <span class="k">new</span> <span class="n">Bond</span><span class="o">();</span>
+            <span class="k">default</span><span class="o">:</span> <span class="k">throw</span> <span class="k">new</span> <span class="n">RuntimeException</span><span class="o">(</span><span class="s">""</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="n">Product</span> <span class="n">p</span> <span class="o">=</span> <span class="n">ProductFactory</span><span class="o">.</span><span class="na">createProduct</span><span class="o">(</span><span class="s">"loan"</span><span class="o">);</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>람다 표현식 사용</li>
+  <li>생성자도 메서드 참조 처럼 접근이 가능하다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17</pre></td><td class="code"><pre class="highlight"><code><span class="n">Supplier</span><span class="o">&lt;</span><span class="n">Product</span><span class="o">&gt;</span> <span class="n">loanSupplier</span> <span class="o">=</span> <span class="nl">Loan:</span><span class="o">:</span><span class="k">new</span><span class="o">;</span>
+<span class="n">Loan</span> <span class="n">loan</span> <span class="o">=</span> <span class="n">loanSupplier</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+
+<span class="kd">final</span> <span class="kd">static</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Supplier</span><span class="o">&lt;</span><span class="n">Product</span><span class="o">&gt;&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
+<span class="kd">static</span> <span class="o">{</span>
+  <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"loan"</span><span class="o">,</span> <span class="nl">Loan:</span><span class="o">:</span><span class="k">new</span><span class="o">);</span>
+  <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"stock"</span><span class="o">,</span> <span class="nl">Stock:</span><span class="o">:</span><span class="k">new</span><span class="o">);</span>
+  <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"bond"</span><span class="o">,</span> <span class="nl">Bond:</span><span class="o">:</span><span class="k">new</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">static</span> <span class="n">Product</span> <span class="nf">createProduct</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+  <span class="n">Supplier</span><span class="o">&lt;</span><span class="n">Product</span><span class="o">&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+  <span class="k">if</span> <span class="o">(</span><span class="n">p</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">p</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+  <span class="o">}</span>
+  <span class="o">...</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>팩토리 패턴이 수행하던 기능을 Java8의 새로운 기능으로 깔끔히 정리 했다.</li>
+  <li>하지만 파라미터가 많아질 경우 코드의 복잡도가 올라가니 적절한 상황에서 사용하도록 하자.</li>
+</ul>
+
+<h2 id="람다-테스팅">람다 테스팅</h2>
+<ul>
+  <li>일반적으로 프로그램이 의도대로 동작하는지 확인할 수 있는 방법은 단위 테스트를 작성하는것이다.</li>
+</ul>
+
+<h3 id="보이는-람다-표현식의-동작-테스팅">보이는 람다 표현식의 동작 테스팅</h3>
+<ul>
+  <li>람다의 동작을 테스트 하기 위해 메서드를 정의하는 것 처럼 람다를 정의하여 테스트 가능하다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Comparator</span><span class="o">&lt;</span><span class="n">Point</span><span class="o">&gt;</span> <span class="n">compareByXAndThenY</span> <span class="o">=</span> <span class="n">comparing</span><span class="o">(</span><span class="nl">Point:</span><span class="o">:</span><span class="n">getX</span><span class="o">).</span><span class="na">thenComparing</span><span class="o">(</span><span class="nl">Point:</span><span class="o">:</span><span class="n">getY</span><span class="o">);</span>
+
+<span class="n">Point</span><span class="o">.</span><span class="na">compareByXAndThenY</span><span class="o">.</span><span class="na">compare</span><span class="o">(</span><span class="n">p1</span><span class="o">,</span> <span class="n">p2</span><span class="o">);</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<h3 id="람다를-사용하는-메서드의-동작에-집중">람다를 사용하는 메서드의 동작에 집중</h3>
+<ul>
+  <li>람다의 목표는 정해진 동작을 다른 메서드에서 사용할 수 있도록 하나의 조각으로 캡슐화 하는것이다.</li>
+  <li>람다 표현식을 사용하는 메서드의 동작을 테스트 함으로서 람다 표현식을 검증 할 수 있다.</li>
+</ul>
+
+<h3 id="복잡한-람다를-개별-메서드로-분할">복잡한 람다를 개별 메서드로 분할</h3>
+<ul>
+  <li>복잡한 로직이 포함된 람다를 구현하게 된다면 로직을 분리 하거나 메서드 레퍼런스를 활용하도록 하자.</li>
+</ul>
+
+<h3 id="고차원-함수-테스팅">고차원 함수 테스팅</h3>
+<ul>
+  <li>함수를 인수로 받거나 다른 함수를 반환하는 메서드는 사용하기도, 테스트하기도 어렵다.</li>
+  <li>메서드가 람다를 인수로 받는다면 다른 람다로 메서드의 동작을 테스트 할 수 있다.</li>
+  <li>테스트해야하는 함수가 다른 함수를 반환한다면 앞서 Comparator와 비슷하게 함수형 인터페이스의 인스턴스로 간주하고 테스트 할 수 있다.</li>
+</ul>
+
+<h2 id="디버깅">디버깅</h2>
+<ul>
+  <li>문제가 발생하느 코드를 디버깅할때는 다음 두가지를 가장 먼저 확인해야한다.
+    <ul>
+      <li>스택 트레이스</li>
+      <li>로깅
+        <ul>
+          <li>로그를 찍어야 하는 상황이라면 스트림을 소비하지 않는 peek을 사용하도록 하자.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
 
       
     </div>
@@ -1025,7 +1184,7 @@ f.notifyObservers("The Queen ...")
             
               <div class="post-toc-content">
     <ol class=nav>
-      <li class="nav-item nav-level-2"> <a class="nav-link" href="#가독성과-유연성을-개선하는-리팩토링"> <span class="nav-number">1</span> <span class="nav-text">가독성과 유연성을 개선하는 리팩토링</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#코드-가독성-개선"> <span class="nav-number">1.1</span> <span class="nav-text">코드 가독성 개선</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#익명-클래스를-람다-표현식으로-리팩토링"> <span class="nav-number">1.2</span> <span class="nav-text">익명 클래스를 람다 표현식으로 리팩토링</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#람다-표현식을-메서드-참조로-리펙토링-하기"> <span class="nav-number">1.3</span> <span class="nav-text">람다 표현식을 메서드 참조로 리펙토링 하기</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#명령형-데이터-처리를-스트림으로-리팩토링하기"> <span class="nav-number">1.4</span> <span class="nav-text">명령형 데이터 처리를 스트림으로 리팩토링하기</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#코드-유연성-개선"> <span class="nav-number">1.5</span> <span class="nav-text">코드 유연성 개선</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#람다로-객체지향-디자인-패턴-리팩터링-하기"> <span class="nav-number">2</span> <span class="nav-text">람다로 객체지향 디자인 패턴 리팩터링 하기</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#전략-패턴"> <span class="nav-number">2.1</span> <span class="nav-text">전략 패턴</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#템플릿-메서드"> <span class="nav-number">2.2</span> <span class="nav-text">템플릿 메서드</span> </a> </li> </ol> </li>
+      <li class="nav-item nav-level-2"> <a class="nav-link" href="#가독성과-유연성을-개선하는-리팩토링"> <span class="nav-number">1</span> <span class="nav-text">가독성과 유연성을 개선하는 리팩토링</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#코드-가독성-개선"> <span class="nav-number">1.1</span> <span class="nav-text">코드 가독성 개선</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#익명-클래스를-람다-표현식으로-리팩토링"> <span class="nav-number">1.2</span> <span class="nav-text">익명 클래스를 람다 표현식으로 리팩토링</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#람다-표현식을-메서드-참조로-리펙토링-하기"> <span class="nav-number">1.3</span> <span class="nav-text">람다 표현식을 메서드 참조로 리펙토링 하기</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#명령형-데이터-처리를-스트림으로-리팩토링하기"> <span class="nav-number">1.4</span> <span class="nav-text">명령형 데이터 처리를 스트림으로 리팩토링하기</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#코드-유연성-개선"> <span class="nav-number">1.5</span> <span class="nav-text">코드 유연성 개선</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#람다로-객체지향-디자인-패턴-리팩터링-하기"> <span class="nav-number">2</span> <span class="nav-text">람다로 객체지향 디자인 패턴 리팩터링 하기</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#전략-패턴"> <span class="nav-number">2.1</span> <span class="nav-text">전략 패턴</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#템플릿-메서드"> <span class="nav-number">2.2</span> <span class="nav-text">템플릿 메서드</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#의무-체인"> <span class="nav-number">2.3</span> <span class="nav-text">의무 체인</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#팩토리"> <span class="nav-number">2.4</span> <span class="nav-text">팩토리</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#람다-테스팅"> <span class="nav-number">3</span> <span class="nav-text">람다 테스팅</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#보이는-람다-표현식의-동작-테스팅"> <span class="nav-number">3.1</span> <span class="nav-text">보이는 람다 표현식의 동작 테스팅</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#람다를-사용하는-메서드의-동작에-집중"> <span class="nav-number">3.2</span> <span class="nav-text">람다를 사용하는 메서드의 동작에 집중</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#복잡한-람다를-개별-메서드로-분할"> <span class="nav-number">3.3</span> <span class="nav-text">복잡한 람다를 개별 메서드로 분할</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#고차원-함수-테스팅"> <span class="nav-number">3.4</span> <span class="nav-text">고차원 함수 테스팅</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#디버깅"> <span class="nav-number">4</span> <span class="nav-text">디버깅</span> </a> </li>
     </ol>
   </div>
             
