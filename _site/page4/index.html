@@ -83,7 +83,7 @@
 <link href="/assets/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="TDD,Clean Code,Java," />
+  <meta name="keywords" content="Jekyll, NexT" />
 
 
 
@@ -111,17 +111,17 @@
 
 
 
-<meta name="description" content="TDD, CleanCode, Refactoring 1주차 정리">
-<meta name="keywords" content="TDD, Clean Code, Java">
-<meta property="og:type" content="article">
-<meta property="og:title" content="TDD, CleanCode, Refactoring 1주차 정리">
-<meta property="og:url" content="http://localhost:4000/dev/2020/03/29/tdd-clean-code-1w/">
+<meta name="description" content="사내 공유, 개인의 경험을 기록하는 블로그입니다.">
+<meta name="keywords" content="Jekyll, NexT">
+<meta property="og:type" content="website">
+<meta property="og:title" content="천천히 걷는 방법">
+<meta property="og:url" content="http://localhost:4000/page4/">
 <meta property="og:site_name" content="천천히 걷는 방법">
-<meta property="og:description" content="TDD, CleanCode, Refactoring 1주차 정리">
+<meta property="og:description" content="사내 공유, 개인의 경험을 기록하는 블로그입니다.">
 <meta property="og:locale" content="ko">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="TDD, CleanCode, Refactoring 1주차 정리">
-<meta name="twitter:description" content="TDD, CleanCode, Refactoring 1주차 정리">
+<meta name="twitter:title" content="천천히 걷는 방법">
+<meta name="twitter:description" content="사내 공유, 개인의 경험을 기록하는 블로그입니다.">
 
 
 <script type="text/javascript" id="hexo.configurations">
@@ -154,7 +154,7 @@
 
 
 
-  <title>TDD, CleanCode, Refactoring 1주차 정리 | 천천히 걷는 방법</title>
+  <title>천천히 걷는 방법</title>
   
 
 
@@ -179,7 +179,7 @@
   
   
 
-  <div class="container sidebar-position-left page-post-detail ">
+  <div class="container sidebar-position-left page-home ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -269,9 +269,12 @@
           <div id="content" class="content">
             
 
-<div id="posts" class="posts-expand">
+
+
+<section id="posts" class="posts-expand">
   
-  
+    
+    
 
   
 
@@ -280,7 +283,7 @@
   
 
   <article class="post post-type- " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://localhost:4000/dev/2020/03/29/tdd-clean-code-1w/">
+    <link itemprop="mainEntityOfPage" href="http://localhost:4000/dev/2020/01/24/jpa-replication-issue/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="DongChul Lee">
@@ -300,7 +303,12 @@
           <h1 class="post-title" itemprop="name headline">
           
           
-            TDD, CleanCode, Refactoring 1주차 정리
+            
+                
+                <a class="post-title-link" href="/dev/2020/01/24/jpa-replication-issue/" itemprop="url">
+                Spring JPA DB Master / Slave 적용시 주의할 점
+              </a>
+            
           
         </h1>
         
@@ -314,8 +322,8 @@
               
                 <span class="post-meta-item-text">작성일</span>
               
-              <time title="" itemprop="dateCreated datePublished" datetime="2020-03-29T00:00:00+09:00">
-                2020-03-29
+              <time title="" itemprop="dateCreated datePublished" datetime="2020-01-24T00:00:00+09:00">
+                2020-01-24
               </time>
             
 
@@ -361,12 +369,6 @@
           
 
           
-            
-                <div class="post-description">
-                    TDD, CleanCode, Refactoring 1주차 정리
-                </div>
-            
-          
 
         </div>
       </header>
@@ -379,130 +381,63 @@
 
       
         
-  
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  <blockquote>
-  <p>TDD, CleanCode, Refactoring 1주차 정리</p>
-</blockquote>
-
-<h1 id="tdd---프로그래밍-의사결정과-피드백-사이의-간극을-의식-제어하는-기술">TDD - 프로그래밍 의사결정과 피드백 사이의 간극을 의식. 제어하는 기술</h1>
-<p>TDD는 분석기술이며 설계 기술이기도 하다.</p>
-
-<p><strong>TDD는 분석과 설계를 잘 해야 한다.</strong></p>
-<ul>
-  <li>TDD = Test First Development + Refactoring</li>
-  <li>TDD는 테스트를 먼저 개발하는것이 주된 목적이 아니고 리팩토링이 주된 목적이다.</li>
-  <li>짧고 작은 단위의 설계를 지속하여 개발하는 방법.</li>
-  <li>
-    <h2 id="한번에-모든걸-만들지-않고-작은-단위를-만들어-간다">한번에 모든걸 만들지 않고 작은 단위를 만들어 간다.</h2>
-  </li>
-  <li>TDD는 한번에 한가지 만 고민하여 기능을 우선 개발한다.</li>
-  <li>이후 개발된 기능을 바탕으로 refactoring을 진행한다.</li>
-  <li>
-    <h2 id="이때-테스트-코드나-테스트-케이스는-추가되거나-수정되지-않아야-한다">이때 테스트 코드나 테스트 케이스는 추가되거나 수정되지 않아야 한다.</h2>
-  </li>
-  <li>큰단위를 작은 단위로 나눠 빠르게 실패.</li>
-  <li>피드백을 통해 지속적 개선</li>
-  <li>달성하기 힘들 것으로 생각하는 일에 도전할 수 있는 용기</li>
-  <li>의식적인 연습이 필요하다.
-    <ul>
-      <li>학습테스트</li>
-      <li>단위테스트</li>
-    </ul>
-  </li>
-</ul>
-
-
+          JPA환경 DB Replication 설정시 이슈 정리.
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/dev/2020/01/24/jpa-replication-issue/">
+              더 읽어보기 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
       
     </div>
 
     <div>
       
-        
-
-      
     </div>
 
     <div>
       
-        
-
-      
     </div>
 
     <div>
-      
-        
-
       
     </div>
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            
-            <a href="/tag/#/TDD" rel="tag"># TDD</a>
-          
-            
-            <a href="/tag/#/Clean%20Code" rel="tag"># Clean Code</a>
-          
-            
-            <a href="/tag/#/Java" rel="tag"># Java</a>
-          
-        </div>
+
       
 
       
-      
-      
-      
-      
 
       
-      
-        <div class="post-nav" id="post-nav-id">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/dev/2020/04/02/checked-exception-unchecked-exception/" rel="next" title="Checked Exception과 UnCheckedException의 차이">
-                <i class="fa fa-chevron-left"></i> Checked Exception과 UnCheckedException의 차이
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/dev/2020/03/27/java-clean-code/" rel="prev" title="Java Clean Code 작성법">
-                Java Clean Code 작성법 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-      
-
+        
+        
+        
+        
+          <div class="post-eof"></div>
+        
       
     </footer>
   </article>
 
-  <div class="post-spread">
+  
+</section>
+
+
+  <nav class="pagination">
     
-  </div>
-</div>
+    
+    
+
+
+
+    <a class="extend prev" rel="prev" href="/page3"><i class="fa fa-angle-left"></i></a> <a class="page-number" href="/">1</a> <span class="space">&hellip;</span> <a class="page-number" href="/page3">3</a> <span class="page-number current">4</span>
+  </nav>
+
+
 
 
           </div>
@@ -510,10 +445,6 @@
 
 
           
-  <div class="comments" id="comments">
-    
-  </div>
-
 
         </div>
         
@@ -531,30 +462,10 @@
     <div class="sidebar-inner">
 
       
-        
-        
-        
-
-
-
-
-
-
 
       
 
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            목차
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            흝어보기
-          </li>
-        </ul>
-      
-
-      <section class="site-overview sidebar-panel">
+      <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/assets/images/avatar.gif"
@@ -639,34 +550,6 @@
       </section>
 
       
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-            
-            
-            
-
-
-
-
-
-
-
-
-            
-              <div class="post-toc-content">
-    <ol class=nav>
-      <li class="nav-item nav-level-1"> <a class="nav-link" href="#tdd---프로그래밍-의사결정과-피드백-사이의-간극을-의식-제어하는-기술"> <span class="nav-number">1</span> <span class="nav-text">TDD - 프로그래밍 의사결정과 피드백 사이의 간극을 의식. 제어하는 기술</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-2"> <a class="nav-link" href="#한번에-모든걸-만들지-않고-작은-단위를-만들어-간다"> <span class="nav-number">1.1</span> <span class="nav-text">한번에 모든걸 만들지 않고 작은 단위를 만들어 간다.</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#이때-테스트-코드나-테스트-케이스는-추가되거나-수정되지-않아야-한다"> <span class="nav-number">1.2</span> <span class="nav-text">이때 테스트 코드나 테스트 케이스는 추가되거나 수정되지 않아야 한다.</span> </a> </li> </ol> </li>
-    </ol>
-  </div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
 
       
 
@@ -674,28 +557,7 @@
   </aside>
 
         
-        
-      <div id="disqus_thread"></div>
-      <script>
-
-      /**
-      *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-      *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
-      /*
-      var disqus_config = function () {
-      this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
-      this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
-      };
-      */
-      (function() { // DON'T EDIT BELOW THIS LINE
-      var d = document, s = d.createElement('script');
-      s.src = 'https://sah3122.disqus.com/embed.js';
-      s.setAttribute('data-timestamp', +new Date());
-      (d.head || d.body).appendChild(s);
-      })();
-      </script>
-      <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-          
+              
       </div>
     </main>       
 

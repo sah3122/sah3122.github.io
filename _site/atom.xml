@@ -1,4 +1,105 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-10-29T00:16:41+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">모던 자바 인 액션 - 9장 리팩터링, 테스팅, 디버깅</title><link href="http://localhost:4000/dev/2020/10/22/modern-java06/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 9장 리팩터링, 테스팅, 디버깅" /><published>2020-10-22T00:00:00+09:00</published><updated>2020-10-22T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/10/22/modern-java06</id><content type="html" xml:base="http://localhost:4000/dev/2020/10/22/modern-java06/">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-11-03T21:28:22+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">모던 자바 인 액션 - 10장 람다를 이용한 도메인 전용 언어</title><link href="http://localhost:4000/dev/2020/11/03/modern-java07/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 10장 람다를 이용한 도메인 전용 언어" /><published>2020-11-03T00:00:00+09:00</published><updated>2020-11-03T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/11/03/modern-java07</id><content type="html" xml:base="http://localhost:4000/dev/2020/11/03/modern-java07/">&lt;blockquote&gt;
+  &lt;p&gt;Modern Java In Action 정리 - 람다를 이용한 도메인 전용 언어&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;도메인 전용 언어(Domain-Specific Languages, DSL)란 무엇이며 어떤 형식으로 구성되는가 ?&lt;/li&gt;
+  &lt;li&gt;DSL을 API에 추가할 때의 장단점&lt;/li&gt;
+  &lt;li&gt;JVM에서 활용할 수 있는 자바 기반 DSL을 깔끔하게 만드는 대안&lt;/li&gt;
+  &lt;li&gt;최신 자바 인터페이스와 클래스에 적용된 DSL에서 배움&lt;/li&gt;
+  &lt;li&gt;효과적인 자바 기반 DSL을 구현하는 패턴과 기법&lt;/li&gt;
+  &lt;li&gt;이들 패턴을 자바 라이브러리와 도구에서 얼마나 흔히 사용하는가 ?&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;모던 자바 인 액션 책을 보고 정리한 글입니다.&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;작성중인 글입니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;도메인-전용-언어&quot;&gt;도메인 전용 언어&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;DSL은 특정 비즈니스 도메인의 문제를 해결하려고 만든 언어다. 예를 들어 회계전용 소프트웨어 애플리케이션을 개발한다고 가정, 이 상황에서 비즈니스 도메인에는 통장 입출금 내역, 계좌 와 같은 개념이 포함&lt;br /&gt;
+이런 문제를 표현할 수 있는 DSL을 만들수 있다. (DDD의 유비쿼터스 언어와 유사한것 같다.)&lt;/li&gt;
+  &lt;li&gt;DSL 이란 특정 비즈니스 도메인을 인터페이스로 만든 API라고 생각할 수 있다.&lt;/li&gt;
+  &lt;li&gt;DSL은 평문 언어가 아니며, 도메인 전문가가 저수준 비즈니스 로직을 구현하기 위해 사용하는것이 아니다. 다음 뚜 가지 필요성을 생각하며 DSL을 개발해야 한다.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;의사소통의 왕&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;코드의 의도가 분명히 전달되어야 하며 개발자가 아닌 사람들도 이해할수 있어야 한다.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;한 번 코드를 구현하지만 여러 번 읽는다.&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;가독성은 유지보수의 핵심이다. 항상 다른 개발자 또는 팀원들이 이해할 수 있도록 코드를 구현해야한다.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;dsl의-장점과-단점&quot;&gt;DSL의 장점과 단점&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;DSL은 만병 통치약이 아니다. DSL은 코드의 비즈니스 의도를 분명히 드러내고 가독성을 높인다는점에서 약이 되지만 그에 따른 유지보수의 책임이 생긴다.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;DSL의 장점&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;간결함
+        &lt;ul&gt;
+          &lt;li&gt;API는 비즈니스 로직을 간편하게 캡슐화 하여 코드가 간결해지며 중복을 줄일수 있다.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;가독성
+        &lt;ul&gt;
+          &lt;li&gt;도메인 영역의 용어를 사용하므로 비 도메인 전문가도 코드를 쉽게 이해할 수 있다.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;유지보수
+        &lt;ul&gt;
+          &lt;li&gt;잘 설계된 DSL로 구현한 코드는 쉽게 유지보수하고 바꿀수 있다. 유지보수는 비즈늬스 관련 코드, 즉 가장 빈번히 바뀌는 애플리케이션 부분에 특히 중요하다.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;높은 수준의 추상화
+        &lt;ul&gt;
+          &lt;li&gt;DSL은 도메인과 같은 추상화 수준에서 동작하므로 도메인의 문제와 직접적으로 관련되지 않은 세부 사항을 숨긴다.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;집중
+        &lt;ul&gt;
+          &lt;li&gt;비즈니스 도메인의 규칙을 표현할 목적으로 설계된 언어이므로 프로그래머가 특정 코드에 집중할 수 있다.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;관심사분리
+        &lt;ul&gt;
+          &lt;li&gt;지정된 언어로 비즈니스 로직을 표한함으로 애플리케이션의 인프라 구조와 관련된 문제, 독립적으로 비즈니스 관련된 코드에 집중하기가 용이하다.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;DSL의 단점&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;DSL 설계의 어려움
+        &lt;ul&gt;
+          &lt;li&gt;간결하게 제한적인 언어에 도메인 지식을 담는 것이 쉬운 작업은 아니다.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;개발 비용
+        &lt;ul&gt;
+          &lt;li&gt;코드에 DSL을 추가하는 작업은 초기 프로젝트에 많은 비용과 시간이 소모되는 작업이다. 또한 DSL 유지보수와 변경은 프로젝트에 부담을 주는 요소이다.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;추가 우회 계층
+        &lt;ul&gt;
+          &lt;li&gt;DSL은 추가적은 계층으로 도메인 모델을 감싸며 이 때 계층을 최대한 작게 만들어 성능 문제를 회피한다.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;새로 배워야 하는 언어
+        &lt;ul&gt;
+          &lt;li&gt;요즘 추세는 하나의 프로젝트에도 여러가지 언어를 사용한다. DSL을 프로젝트에 추가하며 배워야 하는 언어가 늘어난다는 부담이 생긴다.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;호스팅 언어 한계
+        &lt;ul&gt;
+          &lt;li&gt;자바 같은 언어는 장황하고 엄격한 문법을 가졌다. 이런 언어의 특성상 사용자 친화적 DSL을 만들기가 힘들다. Java8의 람다 표현식은 이 문제를 해결할 강력한 도구이다.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><summary type="html">Modern Java In Action 정리 - 람다를 이용한 도메인 전용 언어</summary></entry><entry><title type="html">모던 자바 인 액션 - 9장 리팩터링, 테스팅, 디버깅</title><link href="http://localhost:4000/dev/2020/10/22/modern-java06/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 9장 리팩터링, 테스팅, 디버깅" /><published>2020-10-22T00:00:00+09:00</published><updated>2020-10-22T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/10/22/modern-java06</id><content type="html" xml:base="http://localhost:4000/dev/2020/10/22/modern-java06/">&lt;blockquote&gt;
   &lt;p&gt;Modern Java In Action 정리 - 리팩터링, 테스팅, 디버깅&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -10,8 +111,6 @@
 &lt;/ul&gt;
 
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;모던 자바 인 액션 책을 보고 정리한 글입니다.&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;작성중인 글입니다.&lt;/p&gt;
 
 &lt;h2 id=&quot;가독성과-유연성을-개선하는-리팩토링&quot;&gt;가독성과 유연성을 개선하는 리팩토링&lt;/h2&gt;
 &lt;ul&gt;
@@ -2590,92 +2689,4 @@ reversed() 함수는 시작값과 끝나는 값이 바뀐 새로운 범위를 �
   &lt;li&gt;Any 타입은 toString, hashCode, equals 메소드를 정의하고 있다. 또한 apply, let, to와 같은 확장 함수도 정의하고 있다.&lt;/li&gt;
   &lt;li&gt;Unit 타입은 자바의 void 와 유사하다. 유닛은 싱글톤 인스턴스와 함께 적절한 타입 Unit이나 ()로 나타낸다. 함수가 유닛을 반환하도록 정의되어 있다면, 이 함수는 싱글톤 유닛 인스턴스를 반환할것이다.&lt;/li&gt;
   &lt;li&gt;Nothing은 값을 지니지 않는 타입이다. Any가 모든 타입의 슈퍼클래스이고 Nothing은 모든 타입의 서브클래스이다.&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="kotlin" /><summary type="html">Kotlin Study - 코틀린 기본기</summary></entry><entry><title type="html">Azure API Management Service 활용법</title><link href="http://localhost:4000/dev/2020/06/17/azure-api-managerment-service/" rel="alternate" type="text/html" title="Azure API Management Service 활용법" /><published>2020-06-17T00:00:00+09:00</published><updated>2020-06-17T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/06/17/azure-api-managerment-service</id><content type="html" xml:base="http://localhost:4000/dev/2020/06/17/azure-api-managerment-service/">&lt;blockquote&gt;
-  &lt;p&gt;Azure API Management Service를 사용한 API 응답 캐싱&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Azure API Management Service 캐싱을 활용한 글로벌 서비스 성능 최적화 방법을 간단하게 공유드립니다. 
-해당 방식은 정적인 응답을 반환하는 경우에 사용할 수 있으며 실시간으로 응답이 변경되거나 조건에 따라 다른 응답을 반환하는 경우에는 목적에 맞지 않을수 있습니다.&lt;/p&gt;
-
-&lt;h2 id=&quot;api-management-service란-&quot;&gt;API Management Service란 ?&lt;/h2&gt;
-&lt;p&gt;APIM(API Management)은 기존 백 엔드 서비스를 위해 일관된 최신 API 게이트웨이를 빠르게 만드는 방법입니다.
-API Management를 사용하여 조직은 외부, 파트너 및 내부의 개발자에게 API를 게시하여 데이터 및 서비스의 잠재성을 활용할 수 있습니다. 모든 곳의 비즈니스는 디지털 플랫폼으로 운영을 확장함으로써 새로운 채널을 생성하고, 새로운 고객을 찾고, 기존 고객과 더 깊은 관계를 구축하고자 합니다. API Management는 개발자 참여, 비즈니스 통찰력, 분석, 보안과 보호 등을 통해 성공적인 API 프로그램을 보장하는 핵심적인 역량을 제공합니다. Azure API Management를 통해 원하는 백 엔드를 사용하고 해당 백 엔드에 따라 모든 기능을 갖춘 API 프로그램을 시작할 수 있습니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;API 게이트웨이&lt;/strong&gt; 는 다음 작업을 수행하는 엔드포인트입니다.&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;API 호출 수락 후 백 엔드로 라우팅합니다.&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;API 키, JWT 토큰, 인증서 및 기타 자격 증명을 확인합니다.&lt;/li&gt;
-  &lt;li&gt;사용 할당량 및 속도 제한을 적용합니다.&lt;/li&gt;
-  &lt;li&gt;코드 수정 없이 즉석에서 API를 변환합니다.&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;설정된 위치에 백 엔드 응답을 캐시합니다.&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;분석용으로 호출 메타데이터를 기록합니다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;공식 문서에 따르면 위와 같은 기능들을 제공하는 서비스라고 설명되어 있습니다. 
-위 기능을 포함하여 많은 기능들을 제공하니 공식 문서를 확인해주시길 바랍니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;API 호출 수락 후 백 엔드로 라우팅, 설정된 위치에 백 엔드 응답을 캐시&lt;/code&gt; 두가지 기능을 사용하여 기존에 사용되고 있던 API를 글로벌 환경에서 효율적으로 서비스 하기 위해 테스트를 진행 하였습니다.&lt;/p&gt;
-
-&lt;h2 id=&quot;사용-배경&quot;&gt;사용 배경&lt;/h2&gt;
-&lt;p&gt;현재 사용하고 있는 API서버는 홍콩 리전에 배포되어 있으며 미국 버지니아 기준 간단한 GET 요청을 보낼 시 약 1초 정도의 응답시간이 소요되고 있었습니다. &lt;br /&gt;
-트래픽이 많은 서비스는 아니지만 페이지 접근 시 1초 이상의 응답시간이 걸리는 API를 개선하고 준비하고 있는 이벤트 서비스를 사용자 친화적으로 제공하기 위하여 응답시간을 줄이기 위한 작업을 시작하였습니다.&lt;/p&gt;
-
-&lt;h2 id=&quot;설정&quot;&gt;설정&lt;/h2&gt;
-&lt;ol&gt;
-  &lt;li&gt;
-    &lt;p&gt;API Management 서비스를 생성합니다.&lt;br /&gt;
-이때 주의 할 점은 다수의 Location 설정을 위하여 프리미엄 이상의 서비스를 선택해야 합니다. 
-&lt;img src=&quot;/assets/images/post/azure-api-management-service/azure-api-management-service-1.png&quot; alt=&quot;서비스 생성&quot; /&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;API 연동
-API Management 서비스가 활성화 되면 연동할 API의 정보를 추가해줘야 합니다.&lt;br /&gt;
-OpenAPI 등록서비스를 사용하여 추가할 수 있습니다.&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/post/azure-api-management-service/azure-api-management-service-2.png&quot; alt=&quot;API 연동&quot; /&gt;
-OpenAPI Spec에 맞춘 json파일을 업로드 하여 API Gateway와 연동합니다.&lt;br /&gt;
-json파일은 Swagger2.0 기반 api 문서를 그대로 사용할 수 있게 되어있습니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/post/azure-api-management-service/azure-api-management-service-3.png&quot; alt=&quot;API 결과&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;정상적으로 API연동을 마치면 위와 같이 API목록을 확인 할 수 있습니다.&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;캐시 설정 및 지역 추가
-API 요청시 응답값을 캐싱하여 빠르게 응답을 전달해주기 위하여 적절한 캐시 설정이 필요합니다. 
-공식 문서에서 제공하고 있는 캐시 설정을 적용해보았습니다.&lt;br /&gt;
-&lt;a href=&quot;https://docs.microsoft.com/ko-kr/azure/api-management/api-management-howto-cache&quot;&gt;Azure API Management에서 캐싱을 추가하여 성능 향상 | Microsoft Docs&lt;/a&gt; 
-&lt;img src=&quot;/assets/images/post/azure-api-management-service/azure-api-management-service-4.png&quot; alt=&quot;캐싱 전략&quot; /&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;문서를 참고하여 미국 지역에 새로운 API GW를 추가를 끝으로 캐싱을 위한 설정은 끝이 납니다.&lt;br /&gt;
-&lt;a href=&quot;https://docs.microsoft.com/ko-kr/azure/api-management/api-management-howto-deploy-multi-region&quot;&gt;Azure API Management 서비스를 여러 Azure 지역에 배포 - Azure API Management | Microsoft Docs&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;테스트&quot;&gt;테스트&lt;/h2&gt;
-&lt;p&gt;API GW와 캐싱을 사용하여 어느 정도의 성능 향상이 있었는지 정리한 결과입니다. 
-테스트는 AWS EC2(버지니아)에서 진행하였습니다.&lt;/p&gt;
-
-&lt;h3 id=&quot;기존-api-요청-응답시간&quot;&gt;기존 API 요청 응답시간&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;0.961115&lt;/li&gt;
-  &lt;li&gt;0.929669&lt;/li&gt;
-  &lt;li&gt;0.920897&lt;/li&gt;
-  &lt;li&gt;0.912583&lt;/li&gt;
-  &lt;li&gt;0.921966&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;api-gw-요청-응답시간&quot;&gt;API GW 요청 응답시간&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;0.058033&lt;/li&gt;
-  &lt;li&gt;0.059246&lt;/li&gt;
-  &lt;li&gt;0.065591&lt;/li&gt;
-  &lt;li&gt;0.057714&lt;/li&gt;
-  &lt;li&gt;0.057355&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;결과와 같이 대략 15배 이상 응답시간이 단축된것을 확인할 수 있습니다.&lt;/p&gt;
-
-&lt;p&gt;위 설정만으로 완전한 최적화가 이루어지지는 않겠지만 글로벌 서비스를 운영하는 경우 API GW를 사용한 캐싱은
-성능 최적화를 위하여 고려해볼 가치가 있는것 같습니다.&lt;/p&gt;</content><author><name>DongChul Lee</name></author><category term="azure" /><category term="cloud" /><summary type="html">Azure API Management Service를 사용한 API 응답 캐싱</summary></entry></feed>
+&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="kotlin" /><summary type="html">Kotlin Study - 코틀린 기본기</summary></entry></feed>
