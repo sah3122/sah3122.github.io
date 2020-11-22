@@ -408,8 +408,6 @@
 
 <p><code class="highlighter-rouge">모던 자바 인 액션 책을 보고 정리한 글입니다.</code></p>
 
-<p>작성중인 글입니다.</p>
-
 <h2 id="도메인-전용-언어">도메인 전용 언어</h2>
 <ul>
   <li>DSL은 특정 비즈니스 도메인의 문제를 해결하려고 만든 언어다. 예를 들어 회계전용 소프트웨어 애플리케이션을 개발한다고 가정, 이 상황에서 비즈니스 도메인에는 통장 입출금 내역, 계좌 와 같은 개념이 포함<br />
@@ -494,6 +492,146 @@
       </li>
     </ul>
   </li>
+</ul>
+
+<h3 id="jvm에서-이용할-수-있는-다른-dsl-해결책">JVM에서 이용할 수 있는 다른 DSL 해결책</h3>
+<ul>
+  <li><strong>내부 DSL</strong> (순수 자바로 구현한 DSL)
+    <ul>
+      <li>기존 자바 언어를 이용해 외부 DSL에 비해 새로운 패턴과 기술을 배워 DSL을 구현하는 노력이 현저히 줄어든다.</li>
+      <li>순수 자바로 DSL을 구현하면 나머지 코드와 함께 DSL을 컴파일 할 수 있다. 따라서 다른 언어의 컴파일러를 이용하거나 외부 DSL을 만드는 도구를 사용할 필요가 없으므로 추가 비용이 발생하지 않는다.</li>
+      <li>개발 팀이 새로운 언어를 배우거나 또는 익숙하지 않고 복잡한 외부 도구를 배울 필요가 없다.</li>
+      <li>DSL 사용자는 기존의 자바 IDE를 이용해 자동 완성, 리팩터링과 같은 기능을 사용할 수 있다.</li>
+      <li>한개의 언어로 하나 또는 여러 도메인을 대응하지 못해 추가 DSL을 개발해야 하는 상황에서 자바를 이용하여 추가 DSL을 쉽게 합칠수 있다.</li>
+    </ul>
+  </li>
+  <li><strong>다중 DSL</strong>
+    <ul>
+      <li>새로운 프로그래밍 언어를 배우거나 또는 팀의 누군가가 리딩 할 수 있어야 한다.</li>
+      <li>두 개 이상의 언어가 혼재하므로 여러 컴파일러로 소스를 빌드 하도록 빌드 과정의 개선이 필요하다.</li>
+      <li>JVM에서 실행되는 거의 모든 언어가 자바와 호환된다고 하지만 모든 것이 호환되지 않을 때가 있다.</li>
+    </ul>
+  </li>
+  <li><strong>외부 DSL</strong>
+    <ul>
+      <li>자신만의 문법과 구문으로 새로운 언어를 설계해야 한다.</li>
+      <li>외부 DSL을 개발하는 가장 큰 장점은 외부 DSL이 제공하는 무한한 유연성 때문이다.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="최신-자바-api의-작은-dsl">최신 자바 API의 작은 DSL</h2>
+<ul>
+  <li>자바의 새로운 기능의 장점을 적용한 첫 API는 네이티브 자바 API 자신이다.</li>
+  <li>사람들을 가지고 있는 리스트에서 나이순으로 객체를 정렬하는 예제를 보자.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code><span class="n">Collections</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">persons</span><span class="o">,</span> <span class="k">new</span> <span class="n">Comparator</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;()</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kt">int</span> <span class="nf">compare</span><span class="o">()</span> <span class="o">...</span>
+<span class="o">})</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>Java8 이전에는 위와 같이 익명 클래스를 활용하여 구현해야 했다.</li>
+  <li>내부 클래스를 간단한 람다 표현식으로 바꿀수 있다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1</pre></td><td class="code"><pre class="highlight"><code><span class="n">Collections</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">persons</span><span class="o">,</span> <span class="o">(</span><span class="n">p1</span><span class="o">,</span> <span class="n">p2</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">p1</span><span class="o">.</span><span class="na">getAge</span><span class="o">()</span> <span class="o">-</span> <span class="n">p2</span><span class="o">.</span><span class="na">getAge</span><span class="o">())</span>
+</code></pre></td></tr></tbody></table></div></div>
+<ul>
+  <li>위와 같은 구현은 코드를 간결하게 만들었지만 정적 유틸리티 메서드를 활용하여 좀 더 가똑성 있게 개선할 수 있다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2</pre></td><td class="code"><pre class="highlight"><code><span class="c1">// Comparator.comparing</span>
+<span class="n">Collections</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">persons</span><span class="o">,</span> <span class="n">comparing</span><span class="o">(</span><span class="n">p</span> <span class="o">-&gt;</span> <span class="n">p</span><span class="o">.</span><span class="na">getAge</span><span class="o">()))</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>람다를 메서드 참조로 변경하여 코드를 개선할 수 있다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10</pre></td><td class="code"><pre class="highlight"><code><span class="c1">// Comparator.comparing</span>
+<span class="n">Collections</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">persons</span><span class="o">,</span> <span class="n">comparing</span><span class="o">(</span><span class="nl">Person:</span><span class="o">:</span><span class="n">getAge</span><span class="o">))</span>
+
+<span class="n">Collections</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">persons</span><span class="o">,</span> <span class="n">comparing</span><span class="o">(</span><span class="nl">Person:</span><span class="o">:</span><span class="n">getAge</span><span class="o">).</span><span class="na">reverse</span><span class="o">())</span> <span class="c1">// 역순 정렬</span>
+
+<span class="n">Collections</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">persons</span><span class="o">,</span> <span class="n">comparing</span><span class="o">(</span><span class="nl">Person:</span><span class="o">:</span><span class="n">getAge</span><span class="o">)</span>
+                          <span class="o">.</span><span class="na">thenComparing</span><span class="o">(</span><span class="nl">Person:</span><span class="o">:</span><span class="n">getName</span><span class="o">))</span> <span class="c1">// 나이 정렬 후 이름 정렬</span>
+
+<span class="n">persons</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">comparing</span><span class="o">(</span><span class="nl">Person:</span><span class="o">:</span><span class="n">getAge</span><span class="o">)</span>
+                          <span class="o">.</span><span class="na">thenComparing</span><span class="o">(</span><span class="nl">Person:</span><span class="o">:</span><span class="n">getName</span><span class="o">))</span> <span class="c1">// List 에 추가된 sort 메서드 이용하여 마지막 리팩토링</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>이 작은 예시는 컬렉션 정렬 도메인의 최소 DSL이다. 작은 영역에 국한된 예제지만 이미 람다와 메서드 참조를 이용한 DSL이 코드의 가독성, 재사용성, 결합성을 높일수 있는지 보여준다.</li>
+</ul>
+
+<h3 id="스트림-api는-컬렉션을-조작하는-dsl">스트림 API는 컬렉션을 조작하는 DSL</h3>
+<ul>
+  <li>Stream 인터페이슨느 네이티브 자바 API에 작은 내부 DSL을 적용한 좋은 예다.
+    <h3 id="데이터를-수집하는-dsl인-collectors">데이터를 수집하는 DSL인 Collectors</h3>
+  </li>
+  <li>Stream 인터페이스를 데이터 리스트를 조작하는 DSL 로 간주할 수 있음을 확인했다.</li>
+</ul>
+
+<h2 id="자바로-dsl을-만드는-패턴과-기법">자바로 DSL을 만드는 패턴과 기법</h2>
+<ul>
+  <li>DSL은 특정 도메인 모델에 적용할 친하적이고 가독성 높은 API를 제공한다.</li>
+</ul>
+
+<h3 id="메서드-체인을-이용">메서드 체인을 이용</h3>
+<ul>
+  <li>메서드 체인을 이용하여 DSL을 구현해보자.</li>
+  <li>플루언트 API로 도메인 객체를 만드는 몇개의 빌더를 구현해야 한다.</li>
+  <li>최상위 빌더를 만들고 도메인 객체를 감싼 다음 빌더를 구가할 수 있는 구조가 되어야 한다.</li>
+  <li>빌더를 구현해야하는것이 메서드 체인 방법의 단점이다.</li>
+  <li>상위 수준의 빌더를 하위 수준의 빌더와 연결할 많은 접착 코드가 필요하다.</li>
+</ul>
+
+<h3 id="중첩된-함수-이용">중첩된 함수 이용</h3>
+<ul>
+  <li>중첩된 함수 DSL 패턴은 이름에서도 알 수 있듯이 다른 함수 안에 함수를 이용해 도메인 모델을 만든다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5</pre></td><td class="code"><pre class="highlight"><code><span class="n">Order</span> <span class="n">order</span> <span class="o">=</span> <span class="n">order</span><span class="o">(</span><span class="s">"BigBank"</span><span class="o">,</span> 
+                      <span class="n">buy</span><span class="o">(</span><span class="mi">80</span><span class="o">,</span> <span class="n">stock</span><span class="o">(</span><span class="s">"IBM"</span><span class="o">,</span> <span class="n">on</span><span class="o">(</span><span class="s">"NYSE"</span><span class="o">)),</span> <span class="n">at</span><span class="o">(</span><span class="mf">125.00</span><span class="o">)),</span>
+                    <span class="n">sell</span><span class="o">(</span><span class="mi">50</span><span class="o">,</span> 
+                      <span class="n">stock</span><span class="o">(...))</span>
+                    <span class="o">);</span>
+</code></pre></td></tr></tbody></table></div></div>
+<ul>
+  <li>메서드 체인에 비해 함수의 중첩 방식이 도메인 객체 계층 구조에 그대로 반영된다는 것이 장점이다.</li>
+  <li>결과 DSL에 더 많은 괄호를 사용해야 한다는 것이 단점이다.</li>
+</ul>
+
+<h3 id="람다-표현식을-이용한-함수-시퀀싱">람다 표현식을 이용한 함수 시퀀싱</h3>
+<ul>
+  <li>다음 DSL 패턴은 람다 표현식으로 정의한 함수 시퀀스를 사용한다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13</pre></td><td class="code"><pre class="highlight"><code><span class="n">Order</span> <span class="n">order</span> <span class="o">=</span> <span class="n">order</span><span class="o">(</span><span class="mi">0</span> <span class="o">-&gt;</span> <span class="o">{</span>
+  <span class="n">o</span><span class="o">.</span><span class="na">forCustomer</span><span class="o">(...);</span>
+  <span class="n">o</span><span class="o">.</span><span class="na">buy</span><span class="o">(</span><span class="n">t</span> <span class="o">-&gt;</span> <span class="o">{</span>
+    <span class="n">t</span><span class="o">.</span><span class="na">quantity</span><span class="o">(</span><span class="mi">80</span><span class="o">);</span>
+    <span class="n">t</span><span class="o">.</span><span class="na">price</span><span class="o">(</span><span class="mi">132</span><span class="o">);</span>
+    <span class="o">...</span>
+  <span class="o">});</span>
+  <span class="n">o</span><span class="o">.</span><span class="na">sell</span><span class="o">(</span><span class="n">t</span> <span class="o">-&gt;</span> <span class="o">{</span>
+    <span class="n">t</span><span class="o">.</span><span class="na">quantity</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>
+    <span class="n">t</span><span class="o">.</span><span class="na">price</span><span class="o">(</span><span class="mi">12</span><span class="o">);</span>
+    <span class="o">...</span>
+  <span class="o">})</span>
+<span class="o">})</span>
+</code></pre></td></tr></tbody></table></div></div>
+<ul>
+  <li>이런 DSL 을 만드려면 람다 표현식을 받아 실행해 도메인 모델을 만들어 내는 여러 빌더를 구현해야 한다.</li>
+  <li>DSL 구현에서 했던 방식과 마찬가지로 이들 빌더는 메서드 체인 패턴을 이용해 만들려는 객체의 중간 상태를 유지한다.</li>
+</ul>
+
+<h3 id="조합하기">조합하기</h3>
+<ul>
+  <li>지금까지 살펴본 세가지 DSL 패턴 각자가 장단점을 갖고 있다.</li>
+  <li>세가지 DSL 패턴을 혼용하여 가독성 있는 DSL을 만드는 방법 을 사용할 수 있다.</li>
 </ul>
 
 
@@ -720,7 +858,7 @@
             
               <div class="post-toc-content">
     <ol class=nav>
-      <li class="nav-item nav-level-2"> <a class="nav-link" href="#도메인-전용-언어"> <span class="nav-number">1</span> <span class="nav-text">도메인 전용 언어</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#dsl의-장점과-단점"> <span class="nav-number">1.1</span> <span class="nav-text">DSL의 장점과 단점</span> </a> </li> </ol> </li>
+      <li class="nav-item nav-level-2"> <a class="nav-link" href="#도메인-전용-언어"> <span class="nav-number">1</span> <span class="nav-text">도메인 전용 언어</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#dsl의-장점과-단점"> <span class="nav-number">1.1</span> <span class="nav-text">DSL의 장점과 단점</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#jvm에서-이용할-수-있는-다른-dsl-해결책"> <span class="nav-number">1.2</span> <span class="nav-text">JVM에서 이용할 수 있는 다른 DSL 해결책</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#최신-자바-api의-작은-dsl"> <span class="nav-number">2</span> <span class="nav-text">최신 자바 API의 작은 DSL</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#스트림-api는-컬렉션을-조작하는-dsl"> <span class="nav-number">2.1</span> <span class="nav-text">스트림 API는 컬렉션을 조작하는 DSL</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#데이터를-수집하는-dsl인-collectors"> <span class="nav-number">2.2</span> <span class="nav-text">데이터를 수집하는 DSL인 Collectors</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#자바로-dsl을-만드는-패턴과-기법"> <span class="nav-number">3</span> <span class="nav-text">자바로 DSL을 만드는 패턴과 기법</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#메서드-체인을-이용"> <span class="nav-number">3.1</span> <span class="nav-text">메서드 체인을 이용</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#중첩된-함수-이용"> <span class="nav-number">3.2</span> <span class="nav-text">중첩된 함수 이용</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#람다-표현식을-이용한-함수-시퀀싱"> <span class="nav-number">3.3</span> <span class="nav-text">람다 표현식을 이용한 함수 시퀀싱</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#조합하기"> <span class="nav-number">3.4</span> <span class="nav-text">조합하기</span> </a> </li> </ol> </li>
     </ol>
   </div>
             

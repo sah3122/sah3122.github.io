@@ -711,76 +711,78 @@
 <span class="o">}</span>
 </code></pre></td></tr></tbody></table></div></div>
 <ul>
-  <li>람다 표현식 사용
-```java
-public void processCustomer(int id, Cusumer<Customer> makeCustomerHappy) {
-Customer c = Database.getCustomerWithId(id);
-makeCustomerHappy.accept(c);
-}</Customer></li>
+  <li>람다 표현식 사용</li>
 </ul>
 
-<p>new OnlineBankingLambda().processCustomer(1337, (Customer c) -&gt; print(“hello” + c.getName()));</p>
-<div class="highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26<br/>27<br/>28<br/>29<br/>30<br/>31<br/>32<br/>33<br/>34<br/>35<br/>36<br/>37<br/>38<br/>39<br/>40<br/>41<br/>42<br/>43<br/>44<br/>45<br/>46<br/>47<br/>48<br/>49<br/>50<br/>51<br/>52<br/>53<br/>54<br/>55<br/>56<br/>57<br/>58<br/>59<br/>60<br/>61</pre></td><td class="code"><pre class="highlight"><code>
-### 옵저버
-* 어떤 이벤트가 발생했을 때 한 객체(Subject)가 다른 객체 리스트(Observer)에 자동으로 알림을 보내야 하는 패턴에서 옵저버 디자인 패턴을 사용한다.
-* notifyObserver() -&gt; notify() &lt;- ObserverA, ObserverB
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">processCustomer</span><span class="o">(</span><span class="kt">int</span> <span class="n">id</span><span class="o">,</span> <span class="n">Cusumer</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span> <span class="n">makeCustomerHappy</span><span class="o">)</span> <span class="o">{</span>
+  <span class="n">Customer</span> <span class="n">c</span> <span class="o">=</span> <span class="n">Database</span><span class="o">.</span><span class="na">getCustomerWithId</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
+  <span class="n">makeCustomerHappy</span><span class="o">.</span><span class="na">accept</span><span class="o">(</span><span class="n">c</span><span class="o">);</span>
+<span class="o">}</span>
 
-```java
-interface Observer {
-  void notify(String tweet);
-}
+<span class="k">new</span> <span class="nf">OnlineBankingLambda</span><span class="o">().</span><span class="na">processCustomer</span><span class="o">(</span><span class="mi">1337</span><span class="o">,</span> <span class="o">(</span><span class="n">Customer</span> <span class="n">c</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">print</span><span class="o">(</span><span class="s">"hello"</span> <span class="o">+</span> <span class="n">c</span><span class="o">.</span><span class="na">getName</span><span class="o">()));</span>
+</code></pre></td></tr></tbody></table></div></div>
 
-public class NyTimes implements NotiObserver {
-    @Override
-    public void notify(String tweet) {
-        if (tweet != null &amp;&amp; tweet.contains("monety")) {
-            System.out.println("Breaking news in NY ! " + tweet);
-        }
-    }
-}
+<h3 id="옵저버">옵저버</h3>
+<ul>
+  <li>어떤 이벤트가 발생했을 때 한 객체(Subject)가 다른 객체 리스트(Observer)에 자동으로 알림을 보내야 하는 패턴에서 옵저버 디자인 패턴을 사용한다.</li>
+  <li>notifyObserver() -&gt; notify() &lt;- ObserverA, ObserverB</li>
+</ul>
 
-public class Guardian implements NotiObserver {
-    @Override
-    public void notify(String tweet) {
-        if (tweet != null &amp;&amp; tweet.contains("queen")) {
-            System.out.println("Yet more new from London .. " + tweet);
-        }
-    }
-}
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26<br/>27<br/>28<br/>29<br/>30<br/>31<br/>32<br/>33<br/>34<br/>35<br/>36<br/>37<br/>38<br/>39<br/>40<br/>41<br/>42<br/>43<br/>44<br/>45<br/>46<br/>47<br/>48<br/>49<br/>50<br/>51<br/>52<br/>53<br/>54<br/>55</pre></td><td class="code"><pre class="highlight"><code><span class="kd">interface</span> <span class="nc">Observer</span> <span class="o">{</span>
+  <span class="kt">void</span> <span class="nf">notify</span><span class="o">(</span><span class="n">String</span> <span class="n">tweet</span><span class="o">);</span>
+<span class="o">}</span>
 
-public class LeMonde implements NotiObserver {
-    @Override
-    public void notify(String tweet) {
-        if (tweet != null &amp;&amp; tweet.contains("wine")) {
-            System.out.println("Today cheese, wine and news! " + tweet);
-        }
-    }
-}
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">NyTimes</span> <span class="kd">implements</span> <span class="n">NotiObserver</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">notify</span><span class="o">(</span><span class="n">String</span> <span class="n">tweet</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">tweet</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">tweet</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="s">"monety"</span><span class="o">))</span> <span class="o">{</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Breaking news in NY ! "</span> <span class="o">+</span> <span class="n">tweet</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Guardian</span> <span class="kd">implements</span> <span class="n">NotiObserver</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">notify</span><span class="o">(</span><span class="n">String</span> <span class="n">tweet</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">tweet</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">tweet</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="s">"queen"</span><span class="o">))</span> <span class="o">{</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Yet more new from London .. "</span> <span class="o">+</span> <span class="n">tweet</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">LeMonde</span> <span class="kd">implements</span> <span class="n">NotiObserver</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">notify</span><span class="o">(</span><span class="n">String</span> <span class="n">tweet</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">tweet</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">tweet</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="s">"wine"</span><span class="o">))</span> <span class="o">{</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Today cheese, wine and news! "</span> <span class="o">+</span> <span class="n">tweet</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
 
 
-public interface NotiSubject {
-    void registerObserver(NotiObserver o);
-    void notifyObservers(String tweet);
-}
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">NotiSubject</span> <span class="o">{</span>
+    <span class="kt">void</span> <span class="nf">registerObserver</span><span class="o">(</span><span class="n">NotiObserver</span> <span class="n">o</span><span class="o">);</span>
+    <span class="kt">void</span> <span class="nf">notifyObservers</span><span class="o">(</span><span class="n">String</span> <span class="n">tweet</span><span class="o">);</span>
+<span class="o">}</span>
 
-public class Feed implements NotiSubject {
-    private final List&lt;NotiObserver&gt; observers = new ArrayList&lt;&gt;();
-    @Override
-    public void registerObserver(NotiObserver o) {
-        observers.add(o);
-    }
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Feed</span> <span class="kd">implements</span> <span class="n">NotiSubject</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">NotiObserver</span><span class="o">&gt;</span> <span class="n">observers</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">registerObserver</span><span class="o">(</span><span class="n">NotiObserver</span> <span class="n">o</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">observers</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">o</span><span class="o">);</span>
+    <span class="o">}</span>
 
-    @Override
-    public void notifyObservers(String tweet) {
-        observers.forEach(o -&gt; o.notify(tweet));
-    }
-}
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">notifyObservers</span><span class="o">(</span><span class="n">String</span> <span class="n">tweet</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">observers</span><span class="o">.</span><span class="na">forEach</span><span class="o">(</span><span class="n">o</span> <span class="o">-&gt;</span> <span class="n">o</span><span class="o">.</span><span class="na">notify</span><span class="o">(</span><span class="n">tweet</span><span class="o">));</span>
+    <span class="o">}</span>
+<span class="o">}</span>
 
-Feed f = new Feed();
-f.registerObserver(new NyTimes());
-f.registerObserver(new LeMonde());
-f.registerObserver(new Guardian());
-f.notifyObservers("The Queen ...")
+<span class="n">Feed</span> <span class="n">f</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Feed</span><span class="o">();</span>
+<span class="n">f</span><span class="o">.</span><span class="na">registerObserver</span><span class="o">(</span><span class="k">new</span> <span class="n">NyTimes</span><span class="o">());</span>
+<span class="n">f</span><span class="o">.</span><span class="na">registerObserver</span><span class="o">(</span><span class="k">new</span> <span class="n">LeMonde</span><span class="o">());</span>
+<span class="n">f</span><span class="o">.</span><span class="na">registerObserver</span><span class="o">(</span><span class="k">new</span> <span class="n">Guardian</span><span class="o">());</span>
+<span class="n">f</span><span class="o">.</span><span class="na">notifyObservers</span><span class="o">(</span><span class="s">"The Queen ..."</span><span class="o">)</span>
 </code></pre></td></tr></tbody></table></div></div>
 <ul>
   <li>람다 표현식 사용하기</li>
@@ -1186,7 +1188,7 @@ f.notifyObservers("The Queen ...")
             
               <div class="post-toc-content">
     <ol class=nav>
-      <li class="nav-item nav-level-2"> <a class="nav-link" href="#가독성과-유연성을-개선하는-리팩토링"> <span class="nav-number">1</span> <span class="nav-text">가독성과 유연성을 개선하는 리팩토링</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#코드-가독성-개선"> <span class="nav-number">1.1</span> <span class="nav-text">코드 가독성 개선</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#익명-클래스를-람다-표현식으로-리팩토링"> <span class="nav-number">1.2</span> <span class="nav-text">익명 클래스를 람다 표현식으로 리팩토링</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#람다-표현식을-메서드-참조로-리펙토링-하기"> <span class="nav-number">1.3</span> <span class="nav-text">람다 표현식을 메서드 참조로 리펙토링 하기</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#명령형-데이터-처리를-스트림으로-리팩토링하기"> <span class="nav-number">1.4</span> <span class="nav-text">명령형 데이터 처리를 스트림으로 리팩토링하기</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#코드-유연성-개선"> <span class="nav-number">1.5</span> <span class="nav-text">코드 유연성 개선</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#람다로-객체지향-디자인-패턴-리팩터링-하기"> <span class="nav-number">2</span> <span class="nav-text">람다로 객체지향 디자인 패턴 리팩터링 하기</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#전략-패턴"> <span class="nav-number">2.1</span> <span class="nav-text">전략 패턴</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#템플릿-메서드"> <span class="nav-number">2.2</span> <span class="nav-text">템플릿 메서드</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#의무-체인"> <span class="nav-number">2.3</span> <span class="nav-text">의무 체인</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#팩토리"> <span class="nav-number">2.4</span> <span class="nav-text">팩토리</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#람다-테스팅"> <span class="nav-number">3</span> <span class="nav-text">람다 테스팅</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#보이는-람다-표현식의-동작-테스팅"> <span class="nav-number">3.1</span> <span class="nav-text">보이는 람다 표현식의 동작 테스팅</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#람다를-사용하는-메서드의-동작에-집중"> <span class="nav-number">3.2</span> <span class="nav-text">람다를 사용하는 메서드의 동작에 집중</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#복잡한-람다를-개별-메서드로-분할"> <span class="nav-number">3.3</span> <span class="nav-text">복잡한 람다를 개별 메서드로 분할</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#고차원-함수-테스팅"> <span class="nav-number">3.4</span> <span class="nav-text">고차원 함수 테스팅</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#디버깅"> <span class="nav-number">4</span> <span class="nav-text">디버깅</span> </a> </li>
+      <li class="nav-item nav-level-2"> <a class="nav-link" href="#가독성과-유연성을-개선하는-리팩토링"> <span class="nav-number">1</span> <span class="nav-text">가독성과 유연성을 개선하는 리팩토링</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#코드-가독성-개선"> <span class="nav-number">1.1</span> <span class="nav-text">코드 가독성 개선</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#익명-클래스를-람다-표현식으로-리팩토링"> <span class="nav-number">1.2</span> <span class="nav-text">익명 클래스를 람다 표현식으로 리팩토링</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#람다-표현식을-메서드-참조로-리펙토링-하기"> <span class="nav-number">1.3</span> <span class="nav-text">람다 표현식을 메서드 참조로 리펙토링 하기</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#명령형-데이터-처리를-스트림으로-리팩토링하기"> <span class="nav-number">1.4</span> <span class="nav-text">명령형 데이터 처리를 스트림으로 리팩토링하기</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#코드-유연성-개선"> <span class="nav-number">1.5</span> <span class="nav-text">코드 유연성 개선</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#람다로-객체지향-디자인-패턴-리팩터링-하기"> <span class="nav-number">2</span> <span class="nav-text">람다로 객체지향 디자인 패턴 리팩터링 하기</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#전략-패턴"> <span class="nav-number">2.1</span> <span class="nav-text">전략 패턴</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#템플릿-메서드"> <span class="nav-number">2.2</span> <span class="nav-text">템플릿 메서드</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#옵저버"> <span class="nav-number">2.3</span> <span class="nav-text">옵저버</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#의무-체인"> <span class="nav-number">2.4</span> <span class="nav-text">의무 체인</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#팩토리"> <span class="nav-number">2.5</span> <span class="nav-text">팩토리</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#람다-테스팅"> <span class="nav-number">3</span> <span class="nav-text">람다 테스팅</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#보이는-람다-표현식의-동작-테스팅"> <span class="nav-number">3.1</span> <span class="nav-text">보이는 람다 표현식의 동작 테스팅</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#람다를-사용하는-메서드의-동작에-집중"> <span class="nav-number">3.2</span> <span class="nav-text">람다를 사용하는 메서드의 동작에 집중</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#복잡한-람다를-개별-메서드로-분할"> <span class="nav-number">3.3</span> <span class="nav-text">복잡한 람다를 개별 메서드로 분할</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#고차원-함수-테스팅"> <span class="nav-number">3.4</span> <span class="nav-text">고차원 함수 테스팅</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#디버깅"> <span class="nav-number">4</span> <span class="nav-text">디버깅</span> </a> </li>
     </ol>
   </div>
             
