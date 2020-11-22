@@ -83,7 +83,7 @@
 <link href="/assets/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="JPA,Spring," />
+  <meta name="keywords" content="java," />
 
 
 
@@ -111,17 +111,17 @@
 
 
 
-<meta name="description" content="JPA환경 DB Replication 설정시 이슈 정리.">
-<meta name="keywords" content="JPA, Spring">
+<meta name="description" content="모던 자바 인 액션 - 11장 null 대신 Optional 클래스">
+<meta name="keywords" content="java">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Spring JPA DB Master / Slave 적용시 주의할 점">
-<meta property="og:url" content="http://localhost:4000/dev/2020/01/24/jpa-replication-issue/">
+<meta property="og:title" content="모던 자바 인 액션 - 11장 null 대신 Optional 클래스">
+<meta property="og:url" content="http://localhost:4000/dev/2020/11/18/modern-java08/">
 <meta property="og:site_name" content="천천히 걷는 방법">
-<meta property="og:description" content="JPA환경 DB Replication 설정시 이슈 정리.">
+<meta property="og:description" content="모던 자바 인 액션 - 11장 null 대신 Optional 클래스">
 <meta property="og:locale" content="ko">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Spring JPA DB Master / Slave 적용시 주의할 점">
-<meta name="twitter:description" content="JPA환경 DB Replication 설정시 이슈 정리.">
+<meta name="twitter:title" content="모던 자바 인 액션 - 11장 null 대신 Optional 클래스">
+<meta name="twitter:description" content="모던 자바 인 액션 - 11장 null 대신 Optional 클래스">
 
 
 <script type="text/javascript" id="hexo.configurations">
@@ -154,7 +154,7 @@
 
 
 
-  <title>Spring JPA DB Master / Slave 적용시 주의할 점 | 천천히 걷는 방법</title>
+  <title>모던 자바 인 액션 - 11장 null 대신 Optional 클래스 | 천천히 걷는 방법</title>
   
 
 
@@ -280,7 +280,7 @@
   
 
   <article class="post post-type- " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://localhost:4000/dev/2020/01/24/jpa-replication-issue/">
+    <link itemprop="mainEntityOfPage" href="http://localhost:4000/dev/2020/11/18/modern-java08/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="DongChul Lee">
@@ -300,7 +300,7 @@
           <h1 class="post-title" itemprop="name headline">
           
           
-            Spring JPA DB Master / Slave 적용시 주의할 점
+            모던 자바 인 액션 - 11장 null 대신 Optional 클래스
           
         </h1>
         
@@ -314,8 +314,8 @@
               
                 <span class="post-meta-item-text">작성일</span>
               
-              <time title="" itemprop="dateCreated datePublished" datetime="2020-01-24T00:00:00+09:00">
-                2020-01-24
+              <time title="" itemprop="dateCreated datePublished" datetime="2020-11-18T00:00:00+09:00">
+                2020-11-18
               </time>
             
 
@@ -363,7 +363,7 @@
           
             
                 <div class="post-description">
-                    JPA환경 DB Replication 설정시 이슈 정리.
+                    모던 자바 인 액션 - 11장 null 대신 Optional 클래스
                 </div>
             
           
@@ -393,52 +393,139 @@
 
 
 
-  <p>스프링 JPA를 사용하면서 데이터 베이스 이중화를 하는 경우에 크게 두가지 방법으로 구현한다. <br />
-첫번째는 AOP 를 이용하여 쿼리 타이밍에 특정한 Datasource를 불러오는 방법. <br />
-두번째는 Transaction의 Readonly 속성을 감지하여 이중화. <br /></p>
-
-<p>지금 진행중인 프로젝트에서 두번째 방법으로 데이터베이스 이중화를 설정하였지만 생각하지 못한 문제점이 발생. 원인파악 및 최소한의 해결 방법을 정리.</p>
+  <blockquote>
+  <p>Modern Java In Action 정리 - null 대신 Optional 클래스</p>
+</blockquote>
 
 <ul>
-  <li>문제점
-    <ul>
-      <li>DataSource를 여러개를 사용하기 때문에 일반적으로 스프링 JPA 설정으로 데이터소스를 만들수 없다. 커스텀한 데이터 소스들을 서버가 실행될때 등록하여 실행한다.</li>
-      <li>위 방법을 사용시 스프링에서 제공해주는 기본 설정을 사용하지 못하여 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class}) 와 같이 기본설정을 제거 하는 코드가 필요.</li>
-      <li>기본설정을 제거 하여 Entity Manager룰 새롭게 등록 해주어야 했다.</li>
-      <li>LocalContainerEntityManagerFactoryBean 를 사용하여 EntityManager를 등록 하니 아무런 설정들이 없는상태.</li>
-      <li>스프링 JPA를 사용하면 hibernate naming 전략이 snake case로 설정된다. 하지만 자동설정을 못하니 naming 전략이 camel case로 설정 되어 실행되고 있었다.</li>
-      <li>문제점을 해결하기 위해 property에 naming 전략을 정의 해봤지만 정상적으로 실행되지 않았다. 구글링 결과 아래 코드를 사용하여 해결할 수 있었다.
-        <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7</pre></td><td class="code"><pre class="highlight"><code>    <span class="n">entityManagerFactoryBean</span><span class="o">.</span><span class="na">setDataSource</span><span class="o">(</span><span class="n">dataSource</span><span class="o">());</span>
-    <span class="n">entityManagerFactoryBean</span><span class="o">.</span><span class="na">setPackagesToScan</span><span class="o">(</span><span class="s">"com.my.pakage"</span><span class="o">);</span>
-    <span class="n">entityManagerFactoryBean</span><span class="o">.</span><span class="na">setJpaVendorAdapter</span><span class="o">(</span><span class="n">vendorAdapter</span><span class="o">);</span>
-
-    <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">properties</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
-    <span class="n">properties</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"hibernate.physical_naming_strategy"</span><span class="o">,</span> <span class="s">"org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy"</span><span class="o">);</span>
-    <span class="n">entityManagerFactoryBean</span><span class="o">.</span><span class="na">setJpaPropertyMap</span><span class="o">(</span><span class="n">properties</span><span class="o">);</span>
-</code></pre></td></tr></tbody></table></div>        </div>
-      </li>
-    </ul>
-  </li>
-  <li>남은 문제
-    <ul>
-      <li>스프링 자동 설정이 정확히 어떤것들을 설정해 주는지 모르니 기본적으로 사용하던 설정들중 어떤것들이 빠져 있는지 확인이 필요하다.</li>
-      <li>가능하다면 스프링에서 제동해주는 자동설정을 그대로 사용하고 싶기 때문에 방법을 조금더 찾아 볼 예정.</li>
-    </ul>
-  </li>
-  <li>문제 해결 추가.
-    <ul>
-      <li>스프링 자동 설정중 테이블 네이밍 설정이 빠져 있는것을 확인. <br />
-hibernate.implicit_naming_strategy / org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy 추가.</li>
-      <li>스프링에서 제공하는 자동 설정이 어떤것들이 있는지 라이브러리에서 확인. <br />
-org.springframework.boot.autoconfigure.orm.jpa 해당 패키지 아래 jpa, hibernate autoconfiguration을 확인할 수 있다.</li>
-    </ul>
-  </li>
+  <li>null 참조의 문제점과 null을 멀리해야 하는 이유</li>
+  <li>null 대신 Optional : null로부터 안전한 도메인 모델 재구현하기</li>
+  <li>Optional 활용 : null 확인 코드 제거하기</li>
+  <li>Optinoal에 저장된 값을 확인하는 방법</li>
+  <li>값이 없을 수도 있는 상황을 고려하는 프로그래밍</li>
 </ul>
 
-<p>개발환경</p>
+<p><code class="highlighter-rouge">모던 자바 인 액션 책을 보고 정리한 글입니다.</code></p>
+
+<p>작성중인 글입니다.</p>
+
+<h2 id="값이-없는-상황을-어떻게-처리할까-">값이 없는 상황을 어떻게 처리할까 ?</h2>
+
 <ul>
-  <li>스프링 부트 2.2.2</li>
-  <li>스프링 데이터 JPA 2.2.2</li>
+  <li>다음 처럼 자동차와 자동차 보험을 갖고 있는 사람 객체를 중첩으로 구현했다고 가정</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Person</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">Car</span> <span class="n">car</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="n">Car</span> <span class="nf">getCar</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">car</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Car</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">Insurance</span> <span class="n">insurance</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="n">Insurance</span> <span class="nf">getInsurance</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">insurance</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Insurance</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>다음 코드에서는 어떤 문제가 발생할까 ?</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="n">String</span> <span class="nf">getCarInsuranceName</span><span class="o">(</span><span class="n">Person</span> <span class="n">person</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">person</span><span class="o">.</span><span class="na">getCar</span><span class="o">().</span><span class="na">getInsurance</span><span class="o">().</span><span class="na">getName</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+<ul>
+  <li>코드상 문제는 없어 보이지만 자동차를 소유하지 않은 사람이 있을수도, 보험에 들지 않은 사람이 있을수도 있다.</li>
+</ul>
+
+<h3 id="보수적인-자세로-nullpointerexception-줄이기">보수적인 자세로 NullPointerException 줄이기</h3>
+<ul>
+  <li>예기치 않은 NPE를 피하려면 보수적인 코드를 추가해야 할것이다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="n">String</span> <span class="nf">getCarInsuranceName</span><span class="o">(</span><span class="n">Person</span> <span class="n">person</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">person</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Car</span> <span class="n">car</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="na">getCar</span><span class="o">();</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">car</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">Insurance</span> <span class="n">insurance</span> <span class="o">=</span> <span class="n">car</span><span class="o">.</span><span class="na">getInsurance</span><span class="o">();</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">insurance</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="n">insurance</span><span class="o">.</span><span class="na">getName</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="s">"Unknown"</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>위 예제 에서는 모든 변수가 null 체크를 하기 때문에 코드가 지저부해지고 반복패턴이 많아진다. 이러한 코드를 Deep Doubt 라고 부른다.</li>
+  <li>뭔가 다른 해결 방법이 시급해 보인다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="n">String</span> <span class="nf">getCarInsuranceName</span><span class="o">(</span><span class="n">Person</span> <span class="n">person</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">person</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"Unknown"</span><span class="o">;</span>    
+    <span class="o">}</span>
+
+    <span class="n">Car</span> <span class="n">car</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="na">getCar</span><span class="o">();</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">car</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"Unknown"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="n">Insurance</span> <span class="n">insurance</span> <span class="o">=</span> <span class="n">car</span><span class="o">.</span><span class="na">getInsurance</span><span class="o">();</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">insurance</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"Unknown"</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="n">insurance</span><span class="o">.</span><span class="na">getName</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>위 코드는 null 일 경우 바로 값을 반환 하도록 변경했다. 하지만 return 을 할수 있는 통로가 너무 많기 때문에 유지보수가 어려워지고 다른 누군가가 null일수 있다는 사실을 까먹는 경우 NPE는 여전히 발생할 것이다.</li>
+</ul>
+
+<h3 id="null-때문에-발생하는-문제">null 때문에 발생하는 문제</h3>
+<ul>
+  <li>에러의 근원이다.
+    <ul>
+      <li>NPE는 자바에서 가장 흔히 발생하는 에러이다.</li>
+    </ul>
+  </li>
+  <li>코드를 어지럽힌다.
+    <ul>
+      <li>Null 체크를 빈번히 하게되면 코드가 지저분해진다.</li>
+    </ul>
+  </li>
+  <li>아무 의미가 없다.
+    <ul>
+      <li>Null 은 아무 의미도 표현하지 않는다. 특히 정적 형식 언어에서 값이 없음을 표현하는 방법으로 적합하지 않다.</li>
+    </ul>
+  </li>
+  <li>자바 철학에 위배된다.
+    <ul>
+      <li>자바는 개발자로부터 모든 포인터를 숨겼다. 하지만 예외가 Null이다.</li>
+    </ul>
+  </li>
+  <li>형식 시스템에 구멍을 만든다.
+    <ul>
+      <li>Null은 무형식이며 정보를 포함하지 않고 있기 때문에 모든 참조 형식에 Null을 할당할 수 있다.</li>
+    </ul>
+  </li>
 </ul>
 
 
@@ -471,10 +558,7 @@ org.springframework.boot.autoconfigure.orm.jpa 해당 패키지 아래 jpa, hibe
         <div class="post-tags">
           
             
-            <a href="/tag/#/JPA" rel="tag"># JPA</a>
-          
-            
-            <a href="/tag/#/Spring" rel="tag"># Spring</a>
+            <a href="/tag/#/java" rel="tag"># java</a>
           
         </div>
       
@@ -490,15 +574,15 @@ org.springframework.boot.autoconfigure.orm.jpa 해당 패키지 아래 jpa, hibe
         <div class="post-nav" id="post-nav-id">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/dev/2020/02/14/ddd-serenade-2w/" rel="next" title="DDD 세레나데 2주차 강의 정리">
-                <i class="fa fa-chevron-left"></i> DDD 세레나데 2주차 강의 정리
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/dev/2020/11/03/modern-java07/" rel="prev" title="모던 자바 인 액션 - 10장 람다를 이용한 도메인 전용 언어">
+                모던 자바 인 액션 - 10장 람다를 이용한 도메인 전용 언어 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -554,8 +638,17 @@ org.springframework.boot.autoconfigure.orm.jpa 해당 패키지 아래 jpa, hibe
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            목차
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            흝어보기
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/assets/images/avatar.gif"
@@ -639,6 +732,34 @@ org.springframework.boot.autoconfigure.orm.jpa 해당 패키지 아래 jpa, hibe
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+
+
+
+
+
+
+
+            
+              <div class="post-toc-content">
+    <ol class=nav>
+      <li class="nav-item nav-level-2"> <a class="nav-link" href="#값이-없는-상황을-어떻게-처리할까-"> <span class="nav-number">1</span> <span class="nav-text">값이 없는 상황을 어떻게 처리할까 ?</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#보수적인-자세로-nullpointerexception-줄이기"> <span class="nav-number">1.1</span> <span class="nav-text">보수적인 자세로 NullPointerException 줄이기</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#null-때문에-발생하는-문제"> <span class="nav-number">1.2</span> <span class="nav-text">null 때문에 발생하는 문제</span> </a> </li> </ol> </li>
+    </ol>
+  </div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
