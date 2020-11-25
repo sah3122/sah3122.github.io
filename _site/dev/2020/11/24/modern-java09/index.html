@@ -111,17 +111,17 @@
 
 
 
-<meta name="description" content="모던 자바 인 액션 - 11장 null 대신 Optional 클래스">
+<meta name="description" content="모던 자바 인 액션 - 12장 새로운 날짜와 시간 API">
 <meta name="keywords" content="java">
 <meta property="og:type" content="article">
-<meta property="og:title" content="모던 자바 인 액션 - 11장 null 대신 Optional 클래스">
+<meta property="og:title" content="모던 자바 인 액션 - 12장 새로운 날짜와 시간 API">
 <meta property="og:url" content="http://localhost:4000/dev/2020/11/24/modern-java09/">
 <meta property="og:site_name" content="천천히 걷는 방법">
-<meta property="og:description" content="모던 자바 인 액션 - 11장 null 대신 Optional 클래스">
+<meta property="og:description" content="모던 자바 인 액션 - 12장 새로운 날짜와 시간 API">
 <meta property="og:locale" content="ko">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="모던 자바 인 액션 - 11장 null 대신 Optional 클래스">
-<meta name="twitter:description" content="모던 자바 인 액션 - 11장 null 대신 Optional 클래스">
+<meta name="twitter:title" content="모던 자바 인 액션 - 12장 새로운 날짜와 시간 API">
+<meta name="twitter:description" content="모던 자바 인 액션 - 12장 새로운 날짜와 시간 API">
 
 
 <script type="text/javascript" id="hexo.configurations">
@@ -154,7 +154,7 @@
 
 
 
-  <title>모던 자바 인 액션 - 11장 null 대신 Optional 클래스 | 천천히 걷는 방법</title>
+  <title>모던 자바 인 액션 - 12장 새로운 날짜와 시간 API | 천천히 걷는 방법</title>
   
 
 
@@ -300,7 +300,7 @@
           <h1 class="post-title" itemprop="name headline">
           
           
-            모던 자바 인 액션 - 11장 null 대신 Optional 클래스
+            모던 자바 인 액션 - 12장 새로운 날짜와 시간 API
           
         </h1>
         
@@ -363,7 +363,7 @@
           
             
                 <div class="post-description">
-                    모던 자바 인 액션 - 11장 null 대신 Optional 클래스
+                    모던 자바 인 액션 - 12장 새로운 날짜와 시간 API
                 </div>
             
           
@@ -394,409 +394,135 @@
 
 
   <blockquote>
-  <p>Modern Java In Action 정리 - null 대신 Optional 클래스</p>
+  <p>Modern Java In Action 정리 - 새로운 날짜와 시간 API</p>
 </blockquote>
 
 <ul>
-  <li>null 참조의 문제점과 null을 멀리해야 하는 이유</li>
-  <li>null 대신 Optional : null로부터 안전한 도메인 모델 재구현하기</li>
-  <li>Optional 활용 : null 확인 코드 제거하기</li>
-  <li>Optinoal에 저장된 값을 확인하는 방법</li>
-  <li>값이 없을 수도 있는 상황을 고려하는 프로그래밍</li>
+  <li>Java 8에서 새로운 날짜와 시간 라이브러리를 제공하는 이유</li>
+  <li>사람이나 기계가 이해할 수 있는 날짜와 시간 표현 방법</li>
+  <li>시간의 양 정의하기</li>
+  <li>날짜 조작, 포매팅, 파싱</li>
+  <li>시간대와 캘린더 다루기</li>
 </ul>
 
 <p><code class="highlighter-rouge">모던 자바 인 액션 책을 보고 정리한 글입니다.</code></p>
 
 <p>작성중인 글입니다.</p>
 
-<h2 id="값이-없는-상황을-어떻게-처리할까-">값이 없는 상황을 어떻게 처리할까 ?</h2>
-
+<h2 id="localdate-localtime-instant-duration-period-클래스">LocalDate, LocalTime, Instant, Duration, Period 클래스</h2>
 <ul>
-  <li>다음 처럼 자동차와 자동차 보험을 갖고 있는 사람 객체를 중첩으로 구현했다고 가정</li>
+  <li>LocalDate, LocalTime, Instant, Duration, Period를 활용하여 간단한 날짜와 시간 간격을 정의해보자.</li>
 </ul>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Person</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="n">Car</span> <span class="n">car</span><span class="o">;</span>
+<h3 id="localdate와-localtime-사용">LocalDate와 LocalTime 사용</h3>
+<ul>
+  <li>LocalDate 인스턴스는 시간을 제외한 날짜를 표현하는 불변객체이다.</li>
+  <li>LocalDate 객체는 어떤 시간대 정보도 포함하지 않는다.</li>
+  <li>정적 팩토리 메소드 of를 활용하여 LocalDate 인스턴스를 만들 수 있다.</li>
+  <li>팩토리 메소드 now()는 시스템 시계의 정보를 이용해 현재 날짜 정보를 얻는다.</li>
+</ul>
 
-    <span class="kd">public</span> <span class="n">Car</span> <span class="nf">getCar</span><span class="o">()</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="n">car</span><span class="o">;</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Car</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="n">Insurance</span> <span class="n">insurance</span><span class="o">;</span>
-
-    <span class="kd">public</span> <span class="n">Insurance</span> <span class="nf">getInsurance</span><span class="o">()</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="n">insurance</span><span class="o">;</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Insurance</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
-
-    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code><span class="n">LocalDate</span> <span class="n">date</span> <span class="o">=</span> <span class="n">LocalDate</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="mi">2017</span><span class="o">,</span> <span class="mi">9</span><span class="o">,</span> <span class="mi">21</span><span class="o">)</span>
+<span class="n">date</span><span class="o">.</span><span class="na">getYear</span><span class="o">()</span>
+<span class="o">...</span>
 </code></pre></td></tr></tbody></table></div></div>
 
 <ul>
-  <li>다음 코드에서는 어떤 문제가 발생할까 ?</li>
+  <li>시간대를 포함한 클래스는 LocalTime을 사용한다.</li>
 </ul>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="n">String</span> <span class="nf">getCarInsuranceName</span><span class="o">(</span><span class="n">Person</span> <span class="n">person</span><span class="o">)</span> <span class="o">{</span>
-    <span class="k">return</span> <span class="n">person</span><span class="o">.</span><span class="na">getCar</span><span class="o">().</span><span class="na">getInsurance</span><span class="o">().</span><span class="na">getName</span><span class="o">();</span>
-<span class="o">}</span>
-</code></pre></td></tr></tbody></table></div></div>
-<ul>
-  <li>코드상 문제는 없어 보이지만 자동차를 소유하지 않은 사람이 있을수도, 보험에 들지 않은 사람이 있을수도 있다.</li>
-</ul>
-
-<h3 id="보수적인-자세로-nullpointerexception-줄이기">보수적인 자세로 NullPointerException 줄이기</h3>
-<ul>
-  <li>예기치 않은 NPE를 피하려면 보수적인 코드를 추가해야 할것이다.</li>
-</ul>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="n">String</span> <span class="nf">getCarInsuranceName</span><span class="o">(</span><span class="n">Person</span> <span class="n">person</span><span class="o">)</span> <span class="o">{</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">person</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">Car</span> <span class="n">car</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="na">getCar</span><span class="o">();</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">car</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">Insurance</span> <span class="n">insurance</span> <span class="o">=</span> <span class="n">car</span><span class="o">.</span><span class="na">getInsurance</span><span class="o">();</span>
-            <span class="k">if</span> <span class="o">(</span><span class="n">insurance</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-                <span class="k">return</span> <span class="n">insurance</span><span class="o">.</span><span class="na">getName</span><span class="o">();</span>
-            <span class="o">}</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-    <span class="k">return</span> <span class="s">"Unknown"</span><span class="o">;</span>
-<span class="o">}</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code><span class="n">LocalTime</span> <span class="n">time</span> <span class="o">=</span> <span class="n">LocalTime</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="mi">13</span><span class="o">,</span> <span class="mi">45</span><span class="o">,</span> <span class="mi">20</span><span class="o">)</span> <span class="c1">// 13:45:20</span>
+<span class="n">time</span><span class="o">.</span><span class="na">getHour</span><span class="o">()</span>
+<span class="o">...</span>
 </code></pre></td></tr></tbody></table></div></div>
 
 <ul>
-  <li>위 예제 에서는 모든 변수가 null 체크를 하기 때문에 코드가 지저부해지고 반복패턴이 많아진다. 이러한 코드를 Deep Doubt 라고 부른다.</li>
-  <li>뭔가 다른 해결 방법이 시급해 보인다.</li>
+  <li>날짜와 시간 문자열로 LocalDate와 LocalTime의 인스턴스를 만드는 방법도 있다.</li>
 </ul>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="n">String</span> <span class="nf">getCarInsuranceName</span><span class="o">(</span><span class="n">Person</span> <span class="n">person</span><span class="o">)</span> <span class="o">{</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">person</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="s">"Unknown"</span><span class="o">;</span>    
-    <span class="o">}</span>
-
-    <span class="n">Car</span> <span class="n">car</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="na">getCar</span><span class="o">();</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">car</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="s">"Unknown"</span><span class="o">;</span>
-    <span class="o">}</span>
-
-    <span class="n">Insurance</span> <span class="n">insurance</span> <span class="o">=</span> <span class="n">car</span><span class="o">.</span><span class="na">getInsurance</span><span class="o">();</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">insurance</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="s">"Unknown"</span><span class="o">;</span>
-    <span class="o">}</span>
-    <span class="k">return</span> <span class="n">insurance</span><span class="o">.</span><span class="na">getName</span><span class="o">();</span>
-<span class="o">}</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2</pre></td><td class="code"><pre class="highlight"><code><span class="n">LocalDate</span> <span class="n">date</span> <span class="o">=</span> <span class="n">LocalDate</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="s">"2017-09-21"</span><span class="o">)</span>
+<span class="n">LocalTime</span> <span class="n">time</span> <span class="o">=</span> <span class="n">LocalTime</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="s">"13:45:20"</span><span class="o">)</span>
 </code></pre></td></tr></tbody></table></div></div>
 
 <ul>
-  <li>위 코드는 null 일 경우 바로 값을 반환 하도록 변경했다. 하지만 return 을 할수 있는 통로가 너무 많기 때문에 유지보수가 어려워지고 다른 누군가가 null일수 있다는 사실을 까먹는 경우 NPE는 여전히 발생할 것이다.</li>
+  <li>parse 메서드에 DateTimeFormatter를 전달할 수 있다.</li>
 </ul>
 
-<h3 id="null-때문에-발생하는-문제">null 때문에 발생하는 문제</h3>
+<h3 id="날짜와-시간-조합">날짜와 시간 조합</h3>
 <ul>
-  <li>에러의 근원이다.
-    <ul>
-      <li>NPE는 자바에서 가장 흔히 발생하는 에러이다.</li>
-    </ul>
-  </li>
-  <li>코드를 어지럽힌다.
-    <ul>
-      <li>Null 체크를 빈번히 하게되면 코드가 지저분해진다.</li>
-    </ul>
-  </li>
-  <li>아무 의미가 없다.
-    <ul>
-      <li>Null 은 아무 의미도 표현하지 않는다. 특히 정적 형식 언어에서 값이 없음을 표현하는 방법으로 적합하지 않다.</li>
-    </ul>
-  </li>
-  <li>자바 철학에 위배된다.
-    <ul>
-      <li>자바는 개발자로부터 모든 포인터를 숨겼다. 하지만 예외가 Null이다.</li>
-    </ul>
-  </li>
-  <li>형식 시스템에 구멍을 만든다.
-    <ul>
-      <li>Null은 무형식이며 정보를 포함하지 않고 있기 때문에 모든 참조 형식에 Null을 할당할 수 있다.</li>
-    </ul>
-  </li>
+  <li>LocalDateTime은 LocalDate와 LocalTime을 갖는다.</li>
+  <li>LocalDateTime은 날짜와 시간을 모두 표현할 수 있다.</li>
 </ul>
 
-<h2 id="optional-클래스-소개">Optional 클래스 소개</h2>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2</pre></td><td class="code"><pre class="highlight"><code><span class="n">LocalDateTime</span> <span class="n">dt1</span> <span class="o">=</span> <span class="n">LocalDateTime</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="mi">2017</span><span class="o">,</span> <span class="n">Month</span><span class="o">.</span><span class="na">SEPTEMBER</span><span class="o">,</span> <span class="mi">21</span><span class="o">,</span> <span class="mi">13</span><span class="o">,</span> <span class="mi">45</span><span class="o">,</span> <span class="mi">20</span><span class="o">);</span>
+<span class="n">LocalDateTime</span> <span class="n">dt2</span> <span class="o">=</span> <span class="n">LocalDateTime</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">date</span><span class="o">,</span> <span class="n">time</span><span class="o">);</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<h3 id="instant-클래스--기계의-날짜와-시간">Instant 클래스 : 기계의 날짜와 시간</h3>
 <ul>
-  <li>Java 8은 하스켈과 스칼라의 영향을 받아 Optional이라는 클래스를 도입했다.</li>
-  <li>Optional은 선택형 값을 캡슐화 하는 클래스이며 값이 있으면 Optional 클래스는 값을 감싸고 값이 없으면 Optional.empty 메서드로 Optional 객체를 반환한다.</li>
+  <li>Instant 클래스는 유닉스 에포크 시간을 기준으로 특정 지점까지의 시간을 초로 표현한다.</li>
+  <li>팩토리 메서드 ofEpochSecond에 초를 넘겨줘서 Instant 클래스 인스턴스를 만들 수 있다.</li>
+  <li>Instant 클래스는 나노초의 정밀도를 제공한다.</li>
 </ul>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Person</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="n">Optional</span><span class="o">&lt;</span><span class="n">Car</span><span class="o">&gt;</span> <span class="n">car</span><span class="o">;</span>
+<h3 id="duration과-period-정의">Duration과 Period 정의</h3>
+<ul>
+  <li>Temporal 인터스페이스는 특정 시간을 모델링하는 객체의 값을 어떻게 읽고 조작할지 정의한다.</li>
+  <li>Duration클래스는 between으로 두시간 객체 사이의 지속시간을 만들수 있다.</li>
+</ul>
 
-    <span class="kd">public</span> <span class="n">Optional</span><span class="o">&lt;</span><span class="n">Car</span><span class="o">&gt;</span> <span class="nf">getCar</span><span class="o">()</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="n">car</span><span class="o">;</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Car</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="n">Optional</span><span class="o">&lt;</span><span class="n">Insurance</span><span class="o">&gt;</span> <span class="n">insurance</span><span class="o">;</span>
-
-    <span class="kd">public</span> <span class="n">Optional</span><span class="o">&lt;</span><span class="n">Insurance</span><span class="o">&gt;</span> <span class="nf">getInsurance</span><span class="o">()</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="n">insurance</span><span class="o">;</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Insurance</span> <span class="o">{</span>
-  <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
-
-  <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
-      <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
-  <span class="o">}</span>
-<span class="o">}</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code><span class="n">Duration</span> <span class="n">d1</span> <span class="o">=</span> <span class="n">Duration</span><span class="o">.</span><span class="na">between</span><span class="o">(</span><span class="n">time1</span><span class="o">,</span> <span class="n">time2</span><span class="o">);</span>
+<span class="n">Duration</span> <span class="n">d1</span> <span class="o">=</span> <span class="n">Duration</span><span class="o">.</span><span class="na">between</span><span class="o">(</span><span class="n">dateTime1</span><span class="o">,</span> <span class="n">dateTime2</span><span class="o">);</span>
+<span class="n">Duration</span> <span class="n">d1</span> <span class="o">=</span> <span class="n">Duration</span><span class="o">.</span><span class="na">between</span><span class="o">(</span><span class="n">instant1</span><span class="o">,</span> <span class="n">instant2</span><span class="o">);</span>
 </code></pre></td></tr></tbody></table></div></div>
 
 <ul>
-  <li>Optional 클래스를 활용하여 의미가 더욱 분명해졌다. 사람은 자동차를 소유했을수도, 아닐수도 있으며 자동차는 보험에 가입되어 있을수도, 없을수도 있다. 반면 보험은 반드시 이름을 가져야 한다고 나타낼수 있다.</li>
+  <li>LocalDateTime은 사람이 사용하도록, Instant는 기계가 사용하도록 만들어졌다.</li>
+  <li>Period 클래스의 팩토리 메서드 between을 이용하면 두 LocalDate의 차이를 확인할 수 있다.</li>
 </ul>
 
-<h2 id="optional-적용-패턴">Optional 적용 패턴</h2>
-<h3 id="optional-객체-만들기">Optional 객체 만들기</h3>
-<ul>
-  <li>Optional을 사용하려면 Optional 객체를 만들어야 한다. 다양한 방법으로 Optional 객체를 만들 수 있다.</li>
-  <li><strong>빈 Optional</strong></li>
-  <li>이전에도 언급했듯이 Optional.emtpy()메소드로 빈 Optional 객체를 얻을 수 있다.
-    <ul>
-      <li>Optiona<Car> optCar = Optional.empty();</Car></li>
-    </ul>
-  </li>
-  <li><strong>null이 아닌 값으로 Optional 만들기</strong>
-    <ul>
-      <li>정적 팩토리 메서드 of를 활용하여 null이 아닌 값을 포함하는 Optional을 만들 수 있다.
-        <ul>
-          <li>Optional<Car> optCar = Optional.of(car)</Car></li>
-        </ul>
-      </li>
-      <li>car가 Null 일 경우 즉시 NPE가 발생한다. (Optional을 사용하지 않았다면 car의 프로퍼티에 접근하는 순간 발생했을것이다.)</li>
-    </ul>
-  </li>
-  <li><strong>Null 값으로 Optional 만들기</strong>
-    <ul>
-      <li>정적 팩토리 메서드 ofNullable로 null 값을 저장할 수 있는 Optional을 만들 수 있다.
-        <ul>
-          <li>Optional<Car> optCar = Optional.ofNullable(car)</Car></li>
-        </ul>
-      </li>
-      <li>car 가 null이면 빈 Optional 객체가 반환된다.</li>
-    </ul>
-  </li>
-</ul>
-
-<h3 id="맵으로-optional의-값을-추출하고-변환하기">맵으로 Optional의 값을 추출하고 변환하기</h3>
-<ul>
-  <li>객체의 정보를 추출할 때는 Optional을 사용할 때가 많다.</li>
-</ul>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4</pre></td><td class="code"><pre class="highlight"><code><span class="n">String</span> <span class="n">name</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-<span class="k">if</span> <span class="o">(</span><span class="n">insurance</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-  <span class="n">name</span> <span class="o">=</span> <span class="n">insurance</span><span class="o">.</span><span class="na">getName</span><span class="o">();</span>
-<span class="o">}</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1</pre></td><td class="code"><pre class="highlight"><code><span class="n">Period</span> <span class="n">tenDays</span> <span class="o">=</span> <span class="n">Period</span><span class="o">.</span><span class="na">between</span><span class="o">(</span><span class="n">LocalDate</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="mi">2017</span><span class="o">,</span> <span class="mi">9</span><span class="o">,</span> <span class="mi">11</span><span class="o">),</span> <span class="n">LocalDate</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="mi">2017</span><span class="o">,</span> <span class="mi">9</span><span class="o">,</span> <span class="mi">21</span><span class="o">));</span>
 </code></pre></td></tr></tbody></table></div></div>
 
 <ul>
-  <li>이런 유형의 패턴에서 Optional을 사용할 수 있도록 map 메서드를 지원한다.</li>
+  <li>Duration과 Period 클래스는 자신의 인스턴스를 만들 수 있도록 다양한 팩토리 메서드를 제공한다.</li>
 </ul>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2</pre></td><td class="code"><pre class="highlight"><code><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Insurance</span><span class="o">&gt;</span> <span class="n">optInsurance</span> <span class="o">=</span> <span class="n">Optional</span><span class="o">.</span><span class="na">ofNullable</span><span class="o">(</span><span class="n">insurance</span><span class="o">);</span>
-<span class="n">Optional</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">name</span> <span class="o">=</span> <span class="n">optInsurance</span><span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="nl">Insurance:</span><span class="o">:</span><span class="n">getName</span><span class="o">);</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5</pre></td><td class="code"><pre class="highlight"><code><span class="n">Duration</span> <span class="n">threeMinutes</span> <span class="o">=</span> <span class="n">Duration</span><span class="o">.</span><span class="na">ofMinutes</span><span class="o">(</span><span class="mi">3</span><span class="o">);</span>
+<span class="n">Duration</span> <span class="n">threeMinutes</span> <span class="o">=</span> <span class="n">Duration</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="n">ChronoUnit</span><span class="o">.</span><span class="na">MINUTES</span><span class="o">);</span>
+
+<span class="n">Period</span> <span class="n">tenDays</span> <span class="o">=</span> <span class="n">Period</span><span class="o">.</span><span class="na">ofDays</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+<span class="n">Period</span> <span class="n">threeWeeks</span> <span class="o">=</span> <span class="n">Period</span><span class="o">.</span><span class="na">ofWeeks</span><span class="o">(</span><span class="mi">3</span><span class="o">);</span>
 </code></pre></td></tr></tbody></table></div></div>
 
 <ul>
-  <li>Optional의 map 메서드는 4장과 5장에서 살펴본 스트림의 map 메서드와 개념적으로 비슷하다.</li>
-  <li>스트림의 map은 스트림의 각 요소에 제공된 함수를 적용하는 연산이다. 여기서 Optional 객체를 최대 요소의 개수가 한 개 이하인 데이터 컬렉션으로 생각할 수 있다.</li>
+  <li>지금까지 살펴본 모든 클래스는 불변이다. 불변 클래스는 함수형 프로그래밍과 스레드 세이프하여 도메인 모델의 일관성을 유지하는데 좋은 특성이다.</li>
+  <li>새로운 날짜와 시간 API에서는 변경된 객체 버전을 만들 수 있는 메서드를 제공한다.</li>
 </ul>
 
-<h3 id="flatmap으로-optional객체-연결">flatMap으로 Optional객체 연결</h3>
+<h2 id="날짜-조정-파싱-포메팅">날짜 조정, 파싱, 포메팅</h2>
+<ul>
+  <li>withAttribte 메서드로 기존의 LocalDate를 바꾼 버전을 직접 간단히 만들 수 있다.</li>
+  <li>모든 메서드는 기존 객체를 변경하지 않는다.</li>
+</ul>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5</pre></td><td class="code"><pre class="highlight"><code><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">optionalPerson</span> <span class="o">=</span> <span class="n">Optional</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">person</span><span class="o">);</span>
-<span class="n">Optional</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">name</span> <span class="o">=</span> <span class="n">optionalPerson</span><span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="nl">Person:</span><span class="o">:</span><span class="n">getCar</span><span class="o">)</span>
-                                      <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="nl">Car:</span><span class="o">:</span><span class="n">getInsurance</span><span class="o">)</span>
-                                      <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="nl">Insurance:</span><span class="o">:</span><span class="n">getName</span><span class="o">);</span>
-
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5</pre></td><td class="code"><pre class="highlight"><code><span class="c1">//절대적인 방식으로 LocalDate의 속성 바꾸기</span>
+<span class="n">LocalDate</span> <span class="n">date1</span> <span class="o">=</span> <span class="n">LocalDate</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="mi">2017</span><span class="o">,</span> <span class="mi">9</span><span class="o">,</span> <span class="mi">21</span><span class="o">);</span> <span class="c1">// 2017-09-21</span>
+<span class="n">LocalDate</span> <span class="n">date2</span> <span class="o">=</span> <span class="n">date1</span><span class="o">.</span><span class="na">withYear</span><span class="o">(</span><span class="mi">2011</span><span class="o">);</span> <span class="c1">// 2011-09-21</span>
+<span class="n">LocalDate</span> <span class="n">date3</span> <span class="o">=</span> <span class="n">date2</span><span class="o">.</span><span class="na">withDayOfMonth</span><span class="o">(</span><span class="mi">25</span><span class="o">);</span> <span class="c1">// 2011-09-25</span>
+<span class="n">LocalDate</span> <span class="n">date4</span> <span class="o">=</span> <span class="n">date3</span><span class="o">.</span><span class="na">with</span><span class="o">(</span><span class="n">ChronoField</span><span class="o">.</span><span class="na">MONTH_OF_YEAR</span><span class="o">,</span> <span class="mi">2</span><span class="o">);</span> <span class="c1">// 2011-02-25</span>
 </code></pre></td></tr></tbody></table></div></div>
 
 <ul>
-  <li>위 코드는 컴파일 되지 않는다. 중첩된 Optional 객체는 map 연산을 사용할 경우 Optional 객체를 반환하기때문에 <code class="highlighter-rouge">Optional&lt;Optional&lt;Car&gt;&gt; car</code>와 같은 형태가 리턴된다.</li>
-  <li>Optional에서 지원하는 flatMap을 사용하여 평준화 해줘야 한다.</li>
+  <li>마지막 행에서 보여주는 것처럼 첫 번째 인수로 TemporalField를 갖는 메서드를 사용하면 조금더 범용적으로 날짜를 변경할 수 있다.</li>
+  <li>선언형으로 LocalDate를 사용하는 방법도 존재한다.</li>
 </ul>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5</pre></td><td class="code"><pre class="highlight"><code><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">optionalPerson</span> <span class="o">=</span> <span class="n">Optional</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">person</span><span class="o">);</span>
-<span class="n">String</span> <span class="n">name</span> <span class="o">=</span> <span class="n">optionalPerson</span><span class="o">.</span><span class="na">flatMap</span><span class="o">(</span><span class="nl">Person:</span><span class="o">:</span><span class="n">getCar</span><span class="o">)</span>
-                <span class="o">.</span><span class="na">flatMap</span><span class="o">(</span><span class="nl">Car:</span><span class="o">:</span><span class="n">getInsurance</span><span class="o">)</span>
-                <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="nl">Insurance:</span><span class="o">:</span><span class="n">getName</span><span class="o">)</span>
-                <span class="o">.</span><span class="na">orElse</span><span class="o">(</span><span class="s">"UNKNOWN"</span><span class="o">);</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4</pre></td><td class="code"><pre class="highlight"><code><span class="n">LocalDate</span> <span class="n">date1</span> <span class="o">=</span> <span class="n">LocalDate</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="mi">2017</span><span class="o">,</span> <span class="mi">9</span><span class="o">,</span> <span class="mi">21</span><span class="o">);</span> <span class="c1">// 2017-09-21</span>
+<span class="n">LocalDate</span> <span class="n">date2</span> <span class="o">=</span> <span class="n">date1</span><span class="o">.</span><span class="na">plusWeek</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span> <span class="c1">// 2017-09-28</span>
+<span class="n">LocalDate</span> <span class="n">date3</span> <span class="o">=</span> <span class="n">date2</span><span class="o">.</span><span class="na">minusYear</span><span class="o">(</span><span class="mi">6</span><span class="o">);</span> <span class="c1">// 2011-09-28</span>
+<span class="n">LocalDate</span> <span class="n">date4</span> <span class="o">=</span> <span class="n">date3</span><span class="o">.</span><span class="na">plus</span><span class="o">(</span><span class="mi">6</span><span class="o">,</span> <span class="n">ChronoUnit</span><span class="o">.</span><span class="na">MONTHS</span><span class="o">);</span> <span class="c1">// 2012-03-28</span>
 </code></pre></td></tr></tbody></table></div></div>
-
-<ul>
-  <li>Optional을 이용하여 앞선 조건문으로 가득찬 코드를 깔끔하게 처리할 수 있는 방법을 배웠다.</li>
-</ul>
-
-<h3 id="optional-스트림-조작">Optional 스트림 조작</h3>
-<ul>
-  <li>Java 9 에서는 Optional을 포함하는 스트림을 쉽게 처리할 수 있도록 Optional에 stream 메서드를 추가했다.</li>
-</ul>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">getCarInsuranceNames</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">persons</span><span class="o">)</span> <span class="o">{</span>
-    <span class="k">return</span> <span class="n">persons</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
-            <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="nl">Person:</span><span class="o">:</span><span class="n">getCar</span><span class="o">)</span> <span class="c1">// 사람 목록을 각 사람이 보유한 자동차의 Optional&lt;Car&gt; 스트림으로 변환</span>
-            <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">optCar</span> <span class="o">-&gt;</span> <span class="n">optCar</span><span class="o">.</span><span class="na">flatMap</span><span class="o">(</span><span class="nl">Car:</span><span class="o">:</span><span class="n">getInsurance</span><span class="o">))</span> <span class="c1">//flatMap 연산을 통해 Optional&lt;Car&gt;를 해당 Optional&lt;Insurane&gt;로 변환</span>
-            <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">optInsurance</span> <span class="o">-&gt;</span> <span class="n">optInsurance</span><span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="nl">Insurance:</span><span class="o">:</span><span class="n">getName</span><span class="o">))</span> <span class="c1">// Optional&lt;Insuracne&gt;를 해당 이름의 Optional&lt;String&gt;으로 변환</span>
-            <span class="o">.</span><span class="na">flatMap</span><span class="o">(</span><span class="nl">Optional:</span><span class="o">:</span><span class="n">stream</span><span class="o">)</span> <span class="c1">// Stream&lt;Optional&lt;String&gt;&gt;을 이름을 포함하는 Stream&lt;String&gt;으로 변환</span>
-            <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">Collectors</span><span class="o">.</span><span class="na">toSet</span><span class="o">());</span>
-<span class="o">}</span>
-</code></pre></td></tr></tbody></table></div></div>
-
-<ul>
-  <li>위 연산을 거친 결과 <code class="highlighter-rouge">Stream&lt;Optional&lt;String&gt;&gt;</code>형태를 얻는데 중간 객체가 Null 인경우 값이 비어있을수 있다.</li>
-  <li>다음 처럼 filter를 활용해 완전한 결과를 얻을 수 있도록 구현하자.</li>
-</ul>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7</pre></td><td class="code"><pre class="highlight"><code><span class="n">Stream</span><span class="o">&lt;</span><span class="n">Optional</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">optionalStream</span> <span class="o">=</span> <span class="n">persons</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
-                                                <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="nl">Person:</span><span class="o">:</span><span class="n">getCar</span><span class="o">)</span>
-                                                <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">optCar</span> <span class="o">-&gt;</span> <span class="n">optCar</span><span class="o">.</span><span class="na">flatMap</span><span class="o">(</span><span class="nl">Car:</span><span class="o">:</span><span class="n">getInsurance</span><span class="o">))</span>
-                                                <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">optInsurance</span> <span class="o">-&gt;</span> <span class="n">optInsurance</span><span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="nl">Insurance:</span><span class="o">:</span><span class="n">getName</span><span class="o">));</span>
-<span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">collect</span> <span class="o">=</span> <span class="n">optionalStream</span><span class="o">.</span><span class="na">filter</span><span class="o">(</span><span class="nl">Optional:</span><span class="o">:</span><span class="n">isPresent</span><span class="o">)</span>
-                                    <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="nl">Optional:</span><span class="o">:</span><span class="n">get</span><span class="o">)</span>
-                                    <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">Collectors</span><span class="o">.</span><span class="na">toSet</span><span class="o">());</span>
-</code></pre></td></tr></tbody></table></div></div>
-
-<h3 id="디폴트-액션과-optional-언랩">디폴트 액션과 Optional 언랩</h3>
-<ul>
-  <li>get()
-    <ul>
-      <li>get()은 값을 읽는 가장 간단한 메서드 이며 동시에 가장 안전하지 않다.</li>
-      <li>get()을 사용하는 경우 래핑된 값이 있으면 값을 리턴하지만 값이 없으면 NoSuchElementException을 반환 한다.</li>
-      <li>따라서 Optional에 값이 반드시 있다고 가정할 수 있는 상황이 아니라면 get 메서드를 사용하지 않는 것이 바람직하다.</li>
-    </ul>
-  </li>
-  <li>orElse(T other)
-    <ul>
-      <li>orElse를 사용하면 Optional이 값을 포함하지 않을 경우 기본값을 제공할 수 있다.</li>
-    </ul>
-  </li>
-  <li>orElseGet(Supplier&lt;? extends T&gt; other)
-    <ul>
-      <li>orElse 메서드에 대응하는 lazy 버전이다. Optional에 값이 없을때만 Supplier가 실행된다.</li>
-      <li>디폴트 메서드를 만드는데 시간이 걸리거나 Optional이 비어있을때만 기본값을 생성하고 싶은 경우 사용한다.</li>
-    </ul>
-  </li>
-  <li>orElseThrow(Supplier&lt;? extends T&gt; other)
-    <ul>
-      <li>Optional이 비어 있을때 예외를 발생시킨다는 점에서 get메서드와 비스하다.</li>
-    </ul>
-  </li>
-  <li>ifPresent(Consumer&lt;? super T&gt; consumer)
-    <ul>
-      <li>ifPresent를 이용하면 값이 존재할 때 인수로 넘겨준 동작을 실행할 수 있다.</li>
-    </ul>
-  </li>
-  <li>ifPresentOrElse(Consumer&lt;? super T&gt; action, Runnable emptyAction)
-    <ul>
-      <li>Java 9 버전에 추가된 이 메서드는 Optional이 비어있을때 실행할 수 있는 Runnable을 인수로 받는다는 점만 ifPresent와 다르다.</li>
-    </ul>
-  </li>
-</ul>
-
-<h3 id="두-optional-합치기">두 Optional 합치기</h3>
-<ul>
-  <li>두 Optional인수를 활용하여 연산을 해야하는 경우를 살펴보자.</li>
-</ul>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="n">Optional</span><span class="o">&lt;</span><span class="n">Insurance</span><span class="o">&gt;</span> <span class="nf">nullSafeFindCheapestInsurance</span><span class="o">(</span><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">person</span><span class="o">,</span> <span class="n">Optional</span><span class="o">&lt;</span><span class="n">Car</span><span class="o">&gt;</span> <span class="n">car</span><span class="o">)</span> <span class="o">{</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">isPresent</span><span class="o">()</span> <span class="o">&amp;&amp;</span> <span class="n">car</span><span class="o">.</span><span class="na">isPresent</span><span class="o">())</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="n">Optional</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="k">new</span> <span class="n">Insurance</span><span class="o">());</span>
-    <span class="o">}</span>
-    <span class="k">return</span> <span class="n">Optional</span><span class="o">.</span><span class="na">empty</span><span class="o">();</span>
-<span class="o">}</span>
-</code></pre></td></tr></tbody></table></div></div>
-
-<ul>
-  <li>isPresent 메서드를 활용해서 Optional이 비엇는지 확인후 필요한 연산을 진행했다.</li>
-  <li>이 코드는 null 검사 코드와 크게 다를 것 이 없다. 조금더 개선해보자.</li>
-</ul>
-
-<h3 id="필터로-특정-값-거르기">필터로 특정 값 거르기</h3>
-<ul>
-  <li>객체의 프로퍼티를 확인해야 하는 경우 객체가 Null인지 확인한 다음 메서드를 실행해야 한다.</li>
-</ul>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4</pre></td><td class="code"><pre class="highlight"><code><span class="n">Insurance</span> <span class="n">insurance</span> <span class="o">=</span> <span class="o">....;</span>
-<span class="k">if</span> <span class="o">(</span><span class="n">insurance</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="s">"XXX"</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">insurance</span><span class="o">.</span><span class="na">getName</span><span class="o">()))</span> <span class="o">{</span>
-  <span class="o">...</span>
-<span class="o">}</span>
-</code></pre></td></tr></tbody></table></div></div>
-
-<ul>
-  <li>Optional객체에 filter 메서드를 이용해 다음과 같이 코드를 재구현 할 수 있다.</li>
-</ul>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Insurance</span><span class="o">&gt;</span> <span class="n">optInsurance</span> <span class="o">=</span> <span class="o">...;</span>
-<span class="n">optInsurance</span><span class="o">.</span><span class="na">filter</span><span class="o">(</span><span class="n">insurance</span> <span class="o">-&gt;</span> <span class="s">"XXX"</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">insurance</span><span class="o">.</span><span class="na">getName</span><span class="o">()))</span>
-            <span class="o">.</span><span class="na">ifPresent</span><span class="o">(</span><span class="n">x</span> <span class="o">-&gt;</span> <span class="o">...);</span>
-</code></pre></td></tr></tbody></table></div></div>
-
-<ul>
-  <li>Optional에 값이 있으면 filter연산을 실행할 것이고 값이 없으면 아무 연산도 실행하지 않는다.</li>
-</ul>
-
-<h2 id="optional을-사용한-실용-예제">Optional을 사용한 실용 예제</h2>
-<h3 id="잠재적으로-null이-될-수-있는-대상을-optional로-감싸기">잠재적으로 null이 될 수 있는 대상을 Optional로 감싸기</h3>
-<ul>
-  <li>기존 자바 API에서는 null을 반환하며 요청한 값이 없거나 계산이 실패했음을 알렸다.</li>
-  <li><code class="highlighter-rouge">map.get("key")</code> 는 키에 해당하는 값이 map에 없으면 null을 반환하게 되었다.</li>
-  <li>기존처럼 if - then - else를 추가하거나 Optional.ofNullable을 사용할 수 있다.</li>
-</ul>
-
-<h3 id="예외와-optional-클래스">예외와 Optional 클래스</h3>
-<ul>
-  <li>자바 API 에서는 어떤 이유에서 값을 제공할 수 없을때 예외를 발생했다.</li>
-  <li>Integer.parseInt와 같은 예를 보면 문자열을 정수로 반환할수 없는 경우 NumberFormatException을 반환 한다.</li>
-  <li>이러한 경우를 Optional을 활용해 개선해보자</li>
-</ul>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="n">Optional</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="nf">stringToInt</span><span class="o">(</span><span class="n">String</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
-  <span class="k">try</span> <span class="o">{</span>
-    <span class="k">return</span> <span class="n">Optional</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">s</span><span class="o">));</span>
-  <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">NumberForamtException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-    <span class="k">return</span> <span class="n">Optional</span><span class="o">.</span><span class="na">empty</span><span class="o">();</span>
-  <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></td></tr></tbody></table></div></div>
-
-<ul>
-  <li>위와 같은 메서드를 포함하는 유틸리티 클래스를 만들면 거추장 스러운 try/catch로직을 벗어날 수 있을것이다.</li>
-</ul>
-
-<h3 id="기본형-optional을-사용하지-말아야-하는-이유">기본형 Optional을 사용하지 말아야 하는 이유</h3>
-<ul>
-  <li>Optional 도 스트림과 마찬가지로 OptionalInt, OptionalLong, OptionalDouble등의 클래스를 제공한다.</li>
-  <li>스트림ㅇ이 많은 요소를 가질때는 기본형 특화 스트림을 이용해 불필요한 boxing / unboxing을 줄여 성능향상을 할 수 있지만 Optional의 최대요소는 한개이므로 기본형 특화 클래스로 개선할 이유가 없다.</li>
-  <li>기본형 특화 Optional은 map, flatMap, filter등을 지원하지 않고 일반 Optional과 호환 되지 않는다.</li>
-</ul>
-
-<h1 id="정리">정리</h1>
-<ul>
-  <li>역사적으로 프로그래밍 언어에서는 null 참조로 값이 없는 상황을 표현했다.</li>
-  <li>자바 8에서는 값이 있거나 없음을 표현할 수 있는 클래스 Optional을 제공한다.</li>
-  <li>팩토리 메서드 empty, of, ofNullable등을 이용해 Optional 객체를 만들 수 있다.</li>
-  <li>Optional 클래스는 스트림과 비슷한 연산을 수행하는 map, flatMap, filter등의 메소드를 제공한다.</li>
-  <li>Optional로 값이 없는 상황을 적절하게 처리하도록 강제할 수 있다. 즉 Optional로 예상치 못한 NPE를 방지할 수 있다.</li>
-  <li>Optional을 활용하면 더 좋은 API를 설계할 수 있다. 즉 사용자는 메서드의 시그니처만 보고 Optional값이 사용되거나 반환되는지 예측할 수 있다.</li>
-</ul>
-
 
 
       
@@ -1022,7 +748,7 @@
             
               <div class="post-toc-content">
     <ol class=nav>
-      <li class="nav-item nav-level-1"> <a class="nav-link" href="#정리"> <span class="nav-number">1</span> <span class="nav-text">정리</span> </a> </li>
+      <li class="nav-item nav-level-2"> <a class="nav-link" href="#localdate-localtime-instant-duration-period-클래스"> <span class="nav-number">1</span> <span class="nav-text">LocalDate, LocalTime, Instant, Duration, Period 클래스</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#localdate와-localtime-사용"> <span class="nav-number">1.1</span> <span class="nav-text">LocalDate와 LocalTime 사용</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#날짜와-시간-조합"> <span class="nav-number">1.2</span> <span class="nav-text">날짜와 시간 조합</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#instant-클래스--기계의-날짜와-시간"> <span class="nav-number">1.3</span> <span class="nav-text">Instant 클래스 : 기계의 날짜와 시간</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#duration과-period-정의"> <span class="nav-number">1.4</span> <span class="nav-text">Duration과 Period 정의</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#날짜-조정-파싱-포메팅"> <span class="nav-number">2</span> <span class="nav-text">날짜 조정, 파싱, 포메팅</span> </a> </li>
     </ol>
   </div>
             
