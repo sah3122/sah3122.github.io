@@ -1,4 +1,58 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-11-25T23:06:26+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">모던 자바 인 액션 - 12장 새로운 날짜와 시간 API</title><link href="http://localhost:4000/dev/2020/11/24/modern-java09/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 12장 새로운 날짜와 시간 API" /><published>2020-11-24T00:00:00+09:00</published><updated>2020-11-24T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/11/24/modern-java09</id><content type="html" xml:base="http://localhost:4000/dev/2020/11/24/modern-java09/">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-12-01T20:56:58+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">모던 자바 인 액션 - 13장 디폴트 메서드</title><link href="http://localhost:4000/dev/2020/11/24/modern-java10/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 13장 디폴트 메서드" /><published>2020-11-24T00:00:00+09:00</published><updated>2020-11-24T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/11/24/modern-java10</id><content type="html" xml:base="http://localhost:4000/dev/2020/11/24/modern-java10/">&lt;blockquote&gt;
+  &lt;p&gt;Modern Java In Action 정리 - 디폴트 메서드&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;디폴트 메서드란 무엇인가 ?&lt;/li&gt;
+  &lt;li&gt;진화하는 API가 호환성을 유지하는 방법&lt;/li&gt;
+  &lt;li&gt;디폴트 메서드의 활용패턴&lt;/li&gt;
+  &lt;li&gt;해결 규칙&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;모던 자바 인 액션 책을 보고 정리한 글입니다.&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;작성중인 글입니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;변화하는-api&quot;&gt;변화하는 API&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;API를 변경하는것이 왜 어려운지에 대해 예제를 통해 알아보자.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;api-버전-1&quot;&gt;API 버전 1&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Resizable 인터페이스 초기 버전은 다음과 같은 메서드를 지원한다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Resizable&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Drawable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getWidth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getHeight&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setWidth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setHeight&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setAbsoluteSize&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;api-버전-2&quot;&gt;API 버전 2&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;요구사항의 변화로 Resizable 에 메서드가 추가되었다고 가정하자.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Resizable&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Drawable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getWidth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getHeight&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setWidth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setHeight&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setAbsoluteSize&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setRelativeSize&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wFactor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hFactor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;사용자가 겪는 문제&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;Resizable을 고치면 Resizable을 구현하는 모든 클래스는 추가된 메소드 또는 변경된 메소드를 구현해야 한다.&lt;/li&gt;
+  &lt;li&gt;인터페이스에 새로운 메서드를 추가하면 바이너리 호환성은 유지되지만 컴파일 단계에서 에러가 발생할 것이다&lt;/li&gt;
+  &lt;li&gt;공개된 API를 고치면 기존 버전과의 호환성 문제가 발생했다. 디폴트 메서드가 나온 이후로는 이러한 문제들을 해결할 수 있게 되었다.&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><summary type="html">Modern Java In Action 정리 - 디폴트 메서드</summary></entry><entry><title type="html">모던 자바 인 액션 - 12장 새로운 날짜와 시간 API</title><link href="http://localhost:4000/dev/2020/11/24/modern-java09/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 12장 새로운 날짜와 시간 API" /><published>2020-11-24T00:00:00+09:00</published><updated>2020-11-24T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/11/24/modern-java09</id><content type="html" xml:base="http://localhost:4000/dev/2020/11/24/modern-java09/">&lt;blockquote&gt;
   &lt;p&gt;Modern Java In Action 정리 - 새로운 날짜와 시간 API&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -2642,54 +2696,4 @@ sorted, distinct 등의 메서드는 새로운 스트림을 반환하기에 앞�
       &lt;li&gt;컬렉션뿐 아니라 값, 배열, 파일, iterate와 generate 같은 메서드로도 스트림을 만들 수 있다.&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><summary type="html">Modern Java In Action 정리 - 스트림 활용</summary></entry><entry><title type="html">모던 자바 인 액션 - 1,2부 정리</title><link href="http://localhost:4000/dev/2020/07/16/modern-java01/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 1,2부 정리" /><published>2020-07-16T00:00:00+09:00</published><updated>2020-07-16T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/07/16/modern-java01</id><content type="html" xml:base="http://localhost:4000/dev/2020/07/16/modern-java01/">&lt;blockquote&gt;
-  &lt;p&gt;Modern Java In Action 정리&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;모던 자바 인 액션 책을 보고 정리한 글입니다.&lt;/code&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;람다-표현식&quot;&gt;람다 표현식&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;람다 표현식은 익명 함수의 일종이다. 이름은 없지만, 파라미터 리스트, 바디, 반환 형식을 가지며 예외를 던질 수 있다.&lt;/li&gt;
-  &lt;li&gt;람다 표현식으로 간결하고 가독성 좋은 코드를 구현할 수 있다.&lt;/li&gt;
-  &lt;li&gt;함수형 인터페이스는 하나의 추상 메서드만을 정의하는 인터페이스이다. @FunctionalInterface로 나타내어 둘 이상의 추상 메서드를 정의 하지 못하게 막을 수 있다.&lt;br /&gt;
-Default 메서드는 함수형 인터페이스에서도 구현이 가능하다.&lt;/li&gt;
-  &lt;li&gt;함수형 인터페이스를 기대하는 곳에서만 람다 표현식을 사용할 수 있다.&lt;/li&gt;
-  &lt;li&gt;람다 표현식을 이용하여 함수형 인터페이스의 추상 메서드를 즉석으로 제공할 수 있으며, 람다 표현식 전체가 함수형 인터페이스의 인스턴스로 취급된다.&lt;/li&gt;
-  &lt;li&gt;java.util.function 패키지는 Predicate&lt;T&gt;, Function&amp;lt;T, R&amp;gt;, Supplier&lt;T&gt;, Consumer&lt;T&gt;, BinaryOperator&lt;T&gt; 등을 포함하여 자주 사용하는 다양한 함수형 인터페이스를 제공한다.&lt;/T&gt;&lt;/T&gt;&lt;/T&gt;&lt;/T&gt;&lt;/li&gt;
-  &lt;li&gt;자바 8은 Predicate&lt;T&gt;와 Function&amp;lt;T, R&amp;gt;같은 제네릭 함수형 인터페이스와 관련한 박싱 동작을 피할 수 있는 IntPredicate, IntToLongFunction 등과 같은 기본형 특화 인터페이스를 제공한다.  
-기본형 특화 인터페이스를 사용하여 불필요한 박싱, 언박싱 과정을 피할 수 있게 된다.&lt;/T&gt;&lt;/li&gt;
-  &lt;li&gt;실행 어라운드 패턴 (자원할당, 자원 정리 등 코드 중간에 실행해야 하는 로직)을 람다와 함께 활용하여 유연성과 재사용성을 추가로 얻을 수 있다.&lt;/li&gt;
-  &lt;li&gt;람다 표현식의 기대형식(type expected)를 대상형식(target type)이라고 한다.&lt;/li&gt;
-  &lt;li&gt;메서드 참조를 사용하여 기존 메서드 구현을 재사용하고 가독성을 높일 수 있다.&lt;/li&gt;
-  &lt;li&gt;Comparator, Predicate, Function 같은 함수형 인터페이스는 람다 표현식을 조립할 수 있는 다양한 디폴트 메서드를 제공한다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;스트림&quot;&gt;스트림&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;스트림이란 ?
-    &lt;ul&gt;
-      &lt;li&gt;데이터 처리 연산을 지원하도록 소스에서 추출된 연속된 요소이다.&lt;/li&gt;
-      &lt;li&gt;연속된 요소 : 컬렉션과 마찬가지로 스트림은 특정 요소 형식으로 이루어진 연속된 값 집합의 인터페이스를 제공한다.&lt;/li&gt;
-      &lt;li&gt;소스 : 스트림은 컬렉션, 배열, I/O 자원 등의 데이터 제공 소스로부터 데이터를 소비한다.&lt;/li&gt;
-      &lt;li&gt;데이터 처리 연산 : 스트림은 함수형 프로그래밍 언어에서 일반적으로 지원하는 연산과 데이터베이스와 비슷한 연산을 지원&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;스트림의 특징
-    &lt;ul&gt;
-      &lt;li&gt;파이프 라아닝 : 스트림연산은 일반적으로 스트림 연산끼리 연결하여 커다란 파이프라인을 구성할 수 있도록 스트림 자신을 반환한다.&lt;br /&gt;
-그 덕분에 게으름(laziness), 쇼트서킷(short circuting)같은 최적화도 얻을 수 있다,&lt;/li&gt;
-      &lt;li&gt;내부 반복 : 반복자를 이용하여 명시적으로 반복하는 컬렉션과 달리 스트림은 내부 반복을 지원한다.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;정리
-    &lt;ul&gt;
-      &lt;li&gt;스트림은 소스에서 추출된 연속 요소로, 데이터 처리 연산을 지원한다.&lt;/li&gt;
-      &lt;li&gt;스트림은 내부 반복을 지원한다. 내부 반복은 filter, map, sorted등의 연산으로 반복을 추상화 한다.&lt;/li&gt;
-      &lt;li&gt;스트림에는 중간 연산과 최종 연산이 있다.&lt;/li&gt;
-      &lt;li&gt;중간 연산은 filter와 map처럼 스트림을 반환하면서 다른 연산과 연결되는 연산이다. 중간 연산을 이용해서 파이프 라인을 구성할 수 있지만 중간 연산으로는 어떤 결과도 생성할 수 없다.&lt;/li&gt;
-      &lt;li&gt;forEach나 count처럼 스트림 파이프라인을 처리해서 스트림이 아닌 결과를 반환하는 연산을 최종연산이라 한다.&lt;/li&gt;
-      &lt;li&gt;스트림의 요소는 요청할 때 게으른(lazily) 연산을 시도한다.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><summary type="html">Modern Java In Action 정리</summary></entry></feed>
+&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><summary type="html">Modern Java In Action 정리 - 스트림 활용</summary></entry></feed>

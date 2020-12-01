@@ -83,7 +83,7 @@
 <link href="/assets/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="JPA,Spring," />
+  <meta name="keywords" content="java," />
 
 
 
@@ -111,17 +111,17 @@
 
 
 
-<meta name="description" content="JPA환경 DB Replication 설정시 이슈 정리.">
-<meta name="keywords" content="JPA, Spring">
+<meta name="description" content="모던 자바 인 액션 - 13장 디폴트 메서드">
+<meta name="keywords" content="java">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Spring JPA DB Master / Slave 적용시 주의할 점">
-<meta property="og:url" content="http://localhost:4000/dev/2020/01/24/jpa-replication-issue/">
+<meta property="og:title" content="모던 자바 인 액션 - 13장 디폴트 메서드">
+<meta property="og:url" content="http://localhost:4000/dev/2020/11/24/modern-java10/">
 <meta property="og:site_name" content="천천히 걷는 방법">
-<meta property="og:description" content="JPA환경 DB Replication 설정시 이슈 정리.">
+<meta property="og:description" content="모던 자바 인 액션 - 13장 디폴트 메서드">
 <meta property="og:locale" content="ko">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Spring JPA DB Master / Slave 적용시 주의할 점">
-<meta name="twitter:description" content="JPA환경 DB Replication 설정시 이슈 정리.">
+<meta name="twitter:title" content="모던 자바 인 액션 - 13장 디폴트 메서드">
+<meta name="twitter:description" content="모던 자바 인 액션 - 13장 디폴트 메서드">
 
 
 <script type="text/javascript" id="hexo.configurations">
@@ -154,7 +154,7 @@
 
 
 
-  <title>Spring JPA DB Master / Slave 적용시 주의할 점 | 천천히 걷는 방법</title>
+  <title>모던 자바 인 액션 - 13장 디폴트 메서드 | 천천히 걷는 방법</title>
   
 
 
@@ -280,7 +280,7 @@
   
 
   <article class="post post-type- " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://localhost:4000/dev/2020/01/24/jpa-replication-issue/">
+    <link itemprop="mainEntityOfPage" href="http://localhost:4000/dev/2020/11/24/modern-java10/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="DongChul Lee">
@@ -300,7 +300,7 @@
           <h1 class="post-title" itemprop="name headline">
           
           
-            Spring JPA DB Master / Slave 적용시 주의할 점
+            모던 자바 인 액션 - 13장 디폴트 메서드
           
         </h1>
         
@@ -314,8 +314,8 @@
               
                 <span class="post-meta-item-text">작성일</span>
               
-              <time title="" itemprop="dateCreated datePublished" datetime="2020-01-24T00:00:00+09:00">
-                2020-01-24
+              <time title="" itemprop="dateCreated datePublished" datetime="2020-11-24T00:00:00+09:00">
+                2020-11-24
               </time>
             
 
@@ -363,7 +363,7 @@
           
             
                 <div class="post-description">
-                    JPA환경 DB Replication 설정시 이슈 정리.
+                    모던 자바 인 액션 - 13장 디폴트 메서드
                 </div>
             
           
@@ -393,53 +393,62 @@
 
 
 
-  <p>스프링 JPA를 사용하면서 데이터 베이스 이중화를 하는 경우에 크게 두가지 방법으로 구현한다. <br />
-첫번째는 AOP 를 이용하여 쿼리 타이밍에 특정한 Datasource를 불러오는 방법. <br />
-두번째는 Transaction의 Readonly 속성을 감지하여 이중화. <br /></p>
-
-<p>지금 진행중인 프로젝트에서 두번째 방법으로 데이터베이스 이중화를 설정하였지만 생각하지 못한 문제점이 발생. 원인파악 및 최소한의 해결 방법을 정리.</p>
+  <blockquote>
+  <p>Modern Java In Action 정리 - 디폴트 메서드</p>
+</blockquote>
 
 <ul>
-  <li>문제점
-    <ul>
-      <li>DataSource를 여러개를 사용하기 때문에 일반적으로 스프링 JPA 설정으로 데이터소스를 만들수 없다. 커스텀한 데이터 소스들을 서버가 실행될때 등록하여 실행한다.</li>
-      <li>위 방법을 사용시 스프링에서 제공해주는 기본 설정을 사용하지 못하여 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class}) 와 같이 기본설정을 제거 하는 코드가 필요.</li>
-      <li>기본설정을 제거 하여 Entity Manager룰 새롭게 등록 해주어야 했다.</li>
-      <li>LocalContainerEntityManagerFactoryBean 를 사용하여 EntityManager를 등록 하니 아무런 설정들이 없는상태.</li>
-      <li>스프링 JPA를 사용하면 hibernate naming 전략이 snake case로 설정된다. 하지만 자동설정을 못하니 naming 전략이 camel case로 설정 되어 실행되고 있었다.</li>
-      <li>문제점을 해결하기 위해 property에 naming 전략을 정의 해봤지만 정상적으로 실행되지 않았다. 구글링 결과 아래 코드를 사용하여 해결할 수 있었다.
-        <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7</pre></td><td class="code"><pre class="highlight"><code>    <span class="n">entityManagerFactoryBean</span><span class="o">.</span><span class="na">setDataSource</span><span class="o">(</span><span class="n">dataSource</span><span class="o">());</span>
-    <span class="n">entityManagerFactoryBean</span><span class="o">.</span><span class="na">setPackagesToScan</span><span class="o">(</span><span class="s">"com.my.pakage"</span><span class="o">);</span>
-    <span class="n">entityManagerFactoryBean</span><span class="o">.</span><span class="na">setJpaVendorAdapter</span><span class="o">(</span><span class="n">vendorAdapter</span><span class="o">);</span>
-
-    <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">properties</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
-    <span class="n">properties</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"hibernate.physical_naming_strategy"</span><span class="o">,</span> <span class="s">"org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy"</span><span class="o">);</span>
-    <span class="n">entityManagerFactoryBean</span><span class="o">.</span><span class="na">setJpaPropertyMap</span><span class="o">(</span><span class="n">properties</span><span class="o">);</span>
-</code></pre></td></tr></tbody></table></div>        </div>
-      </li>
-    </ul>
-  </li>
-  <li>남은 문제
-    <ul>
-      <li>스프링 자동 설정이 정확히 어떤것들을 설정해 주는지 모르니 기본적으로 사용하던 설정들중 어떤것들이 빠져 있는지 확인이 필요하다.</li>
-      <li>가능하다면 스프링에서 제동해주는 자동설정을 그대로 사용하고 싶기 때문에 방법을 조금더 찾아 볼 예정.</li>
-    </ul>
-  </li>
-  <li>문제 해결 추가.
-    <ul>
-      <li>스프링 자동 설정중 테이블 네이밍 설정이 빠져 있는것을 확인. <br />
-hibernate.implicit_naming_strategy / org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy 추가.</li>
-      <li>스프링에서 제공하는 자동 설정이 어떤것들이 있는지 라이브러리에서 확인. <br />
-org.springframework.boot.autoconfigure.orm.jpa 해당 패키지 아래 jpa, hibernate autoconfiguration을 확인할 수 있다.</li>
-    </ul>
-  </li>
+  <li>디폴트 메서드란 무엇인가 ?</li>
+  <li>진화하는 API가 호환성을 유지하는 방법</li>
+  <li>디폴트 메서드의 활용패턴</li>
+  <li>해결 규칙</li>
 </ul>
 
-<p>개발환경</p>
+<p><code class="highlighter-rouge">모던 자바 인 액션 책을 보고 정리한 글입니다.</code></p>
+
+<p>작성중인 글입니다.</p>
+
+<h2 id="변화하는-api">변화하는 API</h2>
 <ul>
-  <li>스프링 부트 2.2.2</li>
-  <li>스프링 데이터 JPA 2.2.2</li>
+  <li>API를 변경하는것이 왜 어려운지에 대해 예제를 통해 알아보자.</li>
 </ul>
+
+<h3 id="api-버전-1">API 버전 1</h3>
+<ul>
+  <li>Resizable 인터페이스 초기 버전은 다음과 같은 메서드를 지원한다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Resizable</span> <span class="kd">extends</span> <span class="n">Drawable</span> <span class="o">{</span>
+  <span class="kt">int</span> <span class="nf">getWidth</span><span class="o">();</span>
+  <span class="kt">int</span> <span class="nf">getHeight</span><span class="o">();</span>
+  <span class="kt">void</span> <span class="nf">setWidth</span><span class="o">(</span><span class="kt">int</span> <span class="n">width</span><span class="o">);</span>
+  <span class="kt">void</span> <span class="nf">setHeight</span><span class="o">(</span><span class="kt">int</span> <span class="n">height</span><span class="o">);</span>
+  <span class="kt">void</span> <span class="nf">setAbsoluteSize</span><span class="o">(</span><span class="kt">int</span> <span class="n">width</span><span class="o">,</span> <span class="kt">int</span> <span class="n">height</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<h3 id="api-버전-2">API 버전 2</h3>
+<ul>
+  <li>요구사항의 변화로 Resizable 에 메서드가 추가되었다고 가정하자.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Resizable</span> <span class="kd">extends</span> <span class="n">Drawable</span> <span class="o">{</span>
+  <span class="kt">int</span> <span class="nf">getWidth</span><span class="o">();</span>
+  <span class="kt">int</span> <span class="nf">getHeight</span><span class="o">();</span>
+  <span class="kt">void</span> <span class="nf">setWidth</span><span class="o">(</span><span class="kt">int</span> <span class="n">width</span><span class="o">);</span>
+  <span class="kt">void</span> <span class="nf">setHeight</span><span class="o">(</span><span class="kt">int</span> <span class="n">height</span><span class="o">);</span>
+  <span class="kt">void</span> <span class="nf">setAbsoluteSize</span><span class="o">(</span><span class="kt">int</span> <span class="n">width</span><span class="o">,</span> <span class="kt">int</span> <span class="n">height</span><span class="o">);</span>
+  <span class="kt">void</span> <span class="nf">setRelativeSize</span><span class="o">(</span><span class="kt">int</span> <span class="n">wFactor</span><span class="o">,</span> <span class="kt">int</span> <span class="n">hFactor</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li><strong>사용자가 겪는 문제</strong></li>
+  <li>Resizable을 고치면 Resizable을 구현하는 모든 클래스는 추가된 메소드 또는 변경된 메소드를 구현해야 한다.</li>
+  <li>인터페이스에 새로운 메서드를 추가하면 바이너리 호환성은 유지되지만 컴파일 단계에서 에러가 발생할 것이다</li>
+  <li>공개된 API를 고치면 기존 버전과의 호환성 문제가 발생했다. 디폴트 메서드가 나온 이후로는 이러한 문제들을 해결할 수 있게 되었다.</li>
+</ul>
+
 
 
       
@@ -471,10 +480,7 @@ org.springframework.boot.autoconfigure.orm.jpa 해당 패키지 아래 jpa, hibe
         <div class="post-tags">
           
             
-            <a href="/tag/#/JPA" rel="tag"># JPA</a>
-          
-            
-            <a href="/tag/#/Spring" rel="tag"># Spring</a>
+            <a href="/tag/#/java" rel="tag"># java</a>
           
         </div>
       
@@ -490,15 +496,15 @@ org.springframework.boot.autoconfigure.orm.jpa 해당 패키지 아래 jpa, hibe
         <div class="post-nav" id="post-nav-id">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/dev/2020/02/14/ddd-serenade-2w/" rel="next" title="DDD 세레나데 2주차 강의 정리">
-                <i class="fa fa-chevron-left"></i> DDD 세레나데 2주차 강의 정리
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/dev/2020/11/24/modern-java09/" rel="prev" title="모던 자바 인 액션 - 12장 새로운 날짜와 시간 API">
+                모던 자바 인 액션 - 12장 새로운 날짜와 시간 API <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -554,8 +560,17 @@ org.springframework.boot.autoconfigure.orm.jpa 해당 패키지 아래 jpa, hibe
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            목차
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            흝어보기
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/assets/images/avatar.gif"
@@ -639,6 +654,34 @@ org.springframework.boot.autoconfigure.orm.jpa 해당 패키지 아래 jpa, hibe
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+
+
+
+
+
+
+
+            
+              <div class="post-toc-content">
+    <ol class=nav>
+      <li class="nav-item nav-level-2"> <a class="nav-link" href="#변화하는-api"> <span class="nav-number">1</span> <span class="nav-text">변화하는 API</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#api-버전-1"> <span class="nav-number">1.1</span> <span class="nav-text">API 버전 1</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#api-버전-2"> <span class="nav-number">1.2</span> <span class="nav-text">API 버전 2</span> </a> </li> </ol> </li>
+    </ol>
+  </div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
