@@ -3,7 +3,7 @@
   
     <entry>
       <title><![CDATA[모던 자바 인 액션 - 13장 디폴트 메서드]]></title>
-      <url>/dev/2020/11/24/modern-java10/</url>
+      <url>/dev/2020/12/01/modern-java10/</url>
       <content type="text"><![CDATA[  Modern Java In Action 정리 - 디폴트 메서드  디폴트 메서드란 무엇인가 ?  진화하는 API가 호환성을 유지하는 방법  디폴트 메서드의 활용패턴  해결 규칙모던 자바 인 액션 책을 보고 정리한 글입니다.작성중인 글입니다.변화하는 API  API를 변경하는것이 왜 어려운지에 대해 예제를 통해 알아보자.API 버전 1  Resizable 인터페이스 초기 버전은 다음과 같은 메서드를 지원한다.public interface Resizable extends Drawable {  int getWidth();  int getHeight();  void setWidth(int width);  void setHeight(int height);  void setAbsoluteSize(int width, int height);}API 버전 2  요구사항의 변화로 Resizable 에 메서드가 추가되었다고 가정하자.public interface Resizable extends Drawable {  int getWidth();  int getHeight();  void setWidth(int width);  void setHeight(int height);  void setAbsoluteSize(int width, int height);  void setRelativeSize(int wFactor, int hFactor);}  사용자가 겪는 문제  Resizable을 고치면 Resizable을 구현하는 모든 클래스는 추가된 메소드 또는 변경된 메소드를 구현해야 한다.  인터페이스에 새로운 메서드를 추가하면 바이너리 호환성은 유지되지만 컴파일 단계에서 에러가 발생할 것이다  공개된 API를 고치면 기존 버전과의 호환성 문제가 발생했다. 디폴트 메서드가 나온 이후로는 이러한 문제들을 해결할 수 있게 되었다.]]></content>
       <categories>
         
