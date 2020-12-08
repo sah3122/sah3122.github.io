@@ -406,8 +406,6 @@
 
 <p><code class="highlighter-rouge">모던 자바 인 액션 책을 보고 정리한 글입니다.</code></p>
 
-<p>작성중인 글입니다.</p>
-
 <h2 id="변화하는-api">변화하는 API</h2>
 <ul>
   <li>API를 변경하는것이 왜 어려운지에 대해 예제를 통해 알아보자.</li>
@@ -449,6 +447,128 @@
   <li>공개된 API를 고치면 기존 버전과의 호환성 문제가 발생했다. 디폴트 메서드가 나온 이후로는 이러한 문제들을 해결할 수 있게 되었다.</li>
 </ul>
 
+<h2 id="디폴트-메서드란-무엇인가-">디폴트 메서드란 무엇인가 ?</h2>
+<ul>
+  <li>Java8에서는 호환성을 유지하면서 API를 바꿀수 있도록 새로운 기능인 <strong>디폴트 메서드</strong>를 제공한다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Sized</span> <span class="o">{</span> 
+  <span class="kt">int</span> <span class="nf">size</span><span class="o">();</span>
+  <span class="k">default</span> <span class="kt">boolean</span> <span class="nf">isEmpty</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="nf">size</span><span class="o">()</span> <span class="o">==</span> <span class="mi">0</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>@FuntionalInterface는 오직 하나의 <strong>추상 메서드</strong>를 포함한다. 디폴트 메서드는 추상 메서드에 해당하지 않는 사실을 기억하자.</li>
+</ul>
+
+<h2 id="디폴트-메서드-활용-패턴">디폴트 메서드 활용 패턴</h2>
+<ul>
+  <li>디폴트 메서드를 이용하는 두가지 방식, Optional Method와 Multiple Inheritance of Behavior 를 알아보자.</li>
+</ul>
+
+<h3 id="선택형-메서드">선택형 메서드</h3>
+<ul>
+  <li>인터페이스를 구현하는 클래스에서 비어있는 메서드를 확인한 적이 있을것이다. 인터페이스에 정의된 메서드이지만 실제로 사용하지 않는 메서드라 빈 메서드를 정의해야 하는 상황이다.</li>
+  <li>디폴트 메서드를 이용하면 이러한 메서드에 기본 구현을 제공해줄 수 있다. Iterator 인터페이스를 살펴보자.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7</pre></td><td class="code"><pre class="highlight"><code><span class="kd">interface</span> <span class="nc">Iterator</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+  <span class="kt">boolean</span> <span class="nf">hasNext</span><span class="o">();</span>
+  <span class="n">T</span> <span class="nf">next</span><span class="o">();</span>
+  <span class="k">default</span> <span class="kt">void</span> <span class="nf">remove</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nf">UnsupportedOperationException</span><span class="o">();</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<h3 id="동작-다중-상속">동작 다중 상속</h3>
+<ul>
+  <li>디폴트 메서드를 이용하면 기존에는 불가능했던 동작 다중 상속 기능도 구현할 수있다.</li>
+  <li>자바에서는 한개의 클래스 상속만 가능하지만 인터페이스는 여러 개를 구현할 수 있도록 되어 있다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="kd">extends</span> <span class="n">AbstractList</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="kd">implements</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;,</span> <span class="n">RandomAeccess</span><span class="o">,</span> <span class="n">Cloneable</span><span class="o">,</span> <span class="n">Serialiizable</span> <span class="o">{</span>
+
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li><strong>다중 상속 형식</strong></li>
+  <li>ArrayList는 AbstractList, List<E>, RandomAeccess, Cloneable, Serialiizable의 서브 형식이 된다.</E></li>
+  <li>Java8 에서는 인터페이스가 구현을 포함할 수 있으므로 클래스는 여러 인터페이스에서 동작을 상속받을 수 있다. 중복되지 않는 최소한의 인터페이스를 유지한다면 재사용과 조합을 쉽게 할 수 있다.</li>
+  <li><strong>기능이 중복되지 않는 최소의 인터페이스</strong></li>
+  <li>기존의 코드를 재사용하며 새로운 기능을 제공할때 디폴트 메서드를 활용할 수 있다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7</pre></td><td class="code"><pre class="highlight"><code><span class="kd">interface</span> <span class="nc">Rotatable</span> <span class="o">{</span>
+  <span class="kt">void</span> <span class="nf">setAngle</span><span class="o">(</span><span class="kt">int</span> <span class="n">angle</span><span class="o">);</span>
+  <span class="kt">int</span> <span class="nf">getAngle</span><span class="o">();</span>
+  <span class="k">default</span> <span class="kt">void</span> <span class="nf">rotateBy</span><span class="o">(</span><span class="kt">int</span> <span class="n">angle</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">setAngle</span><span class="o">((</span><span class="n">getAngle</span><span class="o">()</span> <span class="o">+</span> <span class="n">angle</span><span class="o">)</span> <span class="o">%</span> <span class="mi">360</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>위 인터페이스는 템플릿 메서드 패턴과 비슷해보인다. 템플릿 메서드 패턴은 추상 클래스를 상속 받아 구현하게 되어 다중상속이 불가능 하다는 차이점이 있다.</li>
+  <li><strong>인터페이스 조합</strong></li>
+  <li>여러 인터페이스를 조합하여 기존 기능들을 재사용할 수 있다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Monster</span> <span class="kd">implements</span> <span class="n">Rotatable</span><span class="o">,</span> <span class="n">Moveable</span><span class="o">,</span> <span class="n">Resizable</span> <span class="o">{</span>
+
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>Monster 클래스는 3가지 인터페이스의 디폴트 메서드를 자동으로 상속 받는다. 움직일수 있고, 회전가능하며 크기도 조절할 수 있는 클래스가 되었다. <br />
+반면 움직일수 있고, 회전 가능하지만 크기는 조절할 수 없는 클래스를 만드려면 2가지 인터페이스만 구현하면 될것이다.</li>
+  <li>인터페이스에 디폴트 구현을 포함하면 또 다른 장점이 생긴다. 특정 요구사항이 변경되었을 경우 해당하는 인터페이스의 디폴트 메서드만 변경하면 상속 받는 모든 클래스에 요구사항이 반영된다.</li>
+</ul>
+
+<h2 id="해석-규칙">해석 규칙</h2>
+<ul>
+  <li>Java 8에는 디폴트 메서드가 추가되어 같은 시그니처를 갖는 디폴트 메서드를 상속받는 상황이 생길 수 있다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">A</span> <span class="o">{</span>
+  <span class="k">default</span> <span class="kt">void</span> <span class="n">hello</span> <span class="o">{</span>
+    <span class="n">print</span> <span class="n">A</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">B</span> <span class="kd">extends</span> <span class="n">A</span> <span class="o">{</span>
+  <span class="k">default</span> <span class="kt">void</span> <span class="n">hello</span> <span class="o">{</span>
+    <span class="n">print</span> <span class="n">B</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">C</span> <span class="kd">implements</span> <span class="n">B</span><span class="o">,</span> <span class="n">A</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">...</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">new</span> <span class="nf">C</span><span class="o">().</span><span class="na">hello</span><span class="o">();</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<h3 id="알아야-할-세-가지-해결-규칙">알아야 할 세 가지 해결 규칙</h3>
+<ol>
+  <li>클래스가 항상 이긴다. 클래스나 슈퍼 클래스에서 정의한 메서드가 디폴트 메서드보다 우선권을 갖는다.</li>
+  <li>1번 규칙 이외의 상황에서는 서브 인터페이스가 이긴다. 상속관계를 갖는 인터페이스에서 같은 시그니처를 갖는 메서드를 정의할 때는 서브 인터페이스가 이긴다. 즉 B가 A를 상속받는다면 B가 A를 이긴다.</li>
+  <li>디폴트 메서드의 우선순위가 결정되지 않았다면 여러 인터페이스를 상속받는 클래스가 명시적으로 디폴트 메서드를 오버라이드하고 호출해야 한다.</li>
+</ol>
+
+<h2 id="정리">정리</h2>
+<ul>
+  <li>Java 8의 인터페이스는 구현 코드를 포함하는 디폴트 메서드, 정적 메서드를 정의할 수 있다.</li>
+  <li>디폴트 메서드의 정의는 defualt 키워드로 시작하며 일반 메서드처럼 바디를 갖는다.</li>
+  <li>공개된 인터페이스에 추상 메서드를 추가하면 소스 호환성이 깨진다.</li>
+  <li>디폴트 메서드를 사용하면 소스 호환성을 유지할 수 있다.</li>
+  <li>선택형 메서드와 동작 다중 상속에도 디폴트 메서드를 사용할 수 있다.</li>
+  <li>클래스가 같은 시그니처를 갖는 여러 디폴트 메서드를 상속하며 생기는 충돌 문제를 해결하는 규칙이 있다.</li>
+</ul>
 
 
       
@@ -495,6 +615,10 @@
       
         <div class="post-nav" id="post-nav-id">
           <div class="post-nav-next post-nav-item">
+            
+              <a href="/dev/2020/12/06/modern-java11/" rel="next" title="모던 자바 인 액션 - 15장 CompletableFuture와 리액티브 프로그래밍 컨셉의 기초">
+                <i class="fa fa-chevron-left"></i> 모던 자바 인 액션 - 15장 CompletableFuture와 리액티브 프로그래밍 컨셉의 기초
+              </a>
             
           </div>
 
@@ -585,7 +709,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-count">35</span>
                 <span class="site-state-item-name">포스트</span>
               </a>
             </div>
@@ -674,7 +798,7 @@
             
               <div class="post-toc-content">
     <ol class=nav>
-      <li class="nav-item nav-level-2"> <a class="nav-link" href="#변화하는-api"> <span class="nav-number">1</span> <span class="nav-text">변화하는 API</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#api-버전-1"> <span class="nav-number">1.1</span> <span class="nav-text">API 버전 1</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#api-버전-2"> <span class="nav-number">1.2</span> <span class="nav-text">API 버전 2</span> </a> </li> </ol> </li>
+      <li class="nav-item nav-level-2"> <a class="nav-link" href="#변화하는-api"> <span class="nav-number">1</span> <span class="nav-text">변화하는 API</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#api-버전-1"> <span class="nav-number">1.1</span> <span class="nav-text">API 버전 1</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#api-버전-2"> <span class="nav-number">1.2</span> <span class="nav-text">API 버전 2</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#디폴트-메서드란-무엇인가-"> <span class="nav-number">2</span> <span class="nav-text">디폴트 메서드란 무엇인가 ?</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#디폴트-메서드-활용-패턴"> <span class="nav-number">3</span> <span class="nav-text">디폴트 메서드 활용 패턴</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#선택형-메서드"> <span class="nav-number">3.1</span> <span class="nav-text">선택형 메서드</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#동작-다중-상속"> <span class="nav-number">3.2</span> <span class="nav-text">동작 다중 상속</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#해석-규칙"> <span class="nav-number">4</span> <span class="nav-text">해석 규칙</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#알아야-할-세-가지-해결-규칙"> <span class="nav-number">4.1</span> <span class="nav-text">알아야 할 세 가지 해결 규칙</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#정리"> <span class="nav-number">5</span> <span class="nav-text">정리</span> </a> </li>
     </ol>
   </div>
             
