@@ -408,8 +408,6 @@
 
 <p><code class="highlighter-rouge">모던 자바 인 액션 책을 보고 정리한 글입니다.</code></p>
 
-<p>작성중인 글입니다.</p>
-
 <h2 id="동시성을-구현하는-자비-지원의-진화">동시성을 구현하는 자비 지원의 진화</h2>
 <ul>
   <li>처음 자바는 Runnable과 Thread를 동기화된 클래스와 메서드를 이용하여 잠궜다, 그 후 조금더 진화된 ExecutorService 인터페이스, 높은 수준의 결과 즉 Runnable, Thread의 변형을 반환하는 Callable<T> and Future<T>, 제네릭 등을 지원했다.</T></T></li>
@@ -641,6 +639,236 @@
 <span class="o">}</span>
 </code></pre></td></tr></tbody></table></div></div>
 
+<ul>
+  <li>위 코드는 f(X)의 실행이 끝나지 않으면 get()을 기다려야 하기 때문에 프로세싱 자원을 낭비할 수 있다. 이러한 문제점을 CompletableFuture를 사용하여 해결할 수 있다.</li>
+  <li>동작을 조합하는 방식은 다른 언어에서는 많이 사용 되지만 자바에서는 자바 8의 람다가 추가되며 겨우 걸음마를 땐 수준이다.</li>
+  <li>stream 연산을 조합하는것과 compose, andThen과 같은 메서드를 두 Function에 이용해 다른 Function을 얻을 수 있다.</li>
+  <li>CompletableFuture의 thenCombine 메서드를 활용하여 두 연산결과를 효과적으로 더할수 있다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1</pre></td><td class="code"><pre class="highlight"><code><span class="n">CompletableFuture</span><span class="o">&lt;</span><span class="n">V</span><span class="o">&gt;</span> <span class="nf">thenCombine</span><span class="o">(</span><span class="n">CompletableFuture</span><span class="o">&lt;</span><span class="n">U</span><span class="o">&gt;</span> <span class="n">other</span><span class="o">,</span> <span class="n">BiFunction</span><span class="o">&lt;</span><span class="n">T</span><span class="o">,</span> <span class="n">U</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">fn</span><span class="o">);</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>이 메서드는 두 개의 CompletableFuture 값 (T, U 결과 형식)을 받아 한 개의 새 값을 만든다. 처음 두 작업이 끝나면 두 결과 모두에 fn을 적용하고 블로하지 않은 상태로 결과 Future를 반환한다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12</pre></td><td class="code"><pre class="highlight"><code><span class="n">main</span><span class="o">()</span> <span class="o">{</span>
+ <span class="n">ExecutorService</span> <span class="n">executorService</span> <span class="o">=</span> <span class="n">Executors</span><span class="o">.</span><span class="na">newFixedThreadPool</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+ <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">1337</span><span class="o">;</span>
+
+ <span class="n">CompletableFuture</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CompletableFuture</span><span class="o">&lt;&gt;();</span>
+ <span class="n">CompletableFuture</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CompletableFuture</span><span class="o">&lt;&gt;();</span>
+ <span class="n">CompletableFuture</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">c</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="na">thenCombine</span><span class="o">(</span><span class="n">b</span><span class="o">,</span> <span class="o">(</span><span class="n">y</span><span class="o">,</span> <span class="n">z</span><span class="o">)</span> <span class="o">+</span> <span class="n">y</span> <span class="o">+</span> <span class="n">z</span><span class="o">);</span>
+ <span class="n">executorService</span><span class="o">.</span><span class="na">submit</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="n">a</span><span class="o">.</span><span class="na">complete</span><span class="o">(</span><span class="n">f</span><span class="o">(</span><span class="n">x</span><span class="o">)));</span>
+ <span class="n">executorService</span><span class="o">.</span><span class="na">submit</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="n">b</span><span class="o">.</span><span class="na">complete</span><span class="o">(</span><span class="n">g</span><span class="o">(</span><span class="n">x</span><span class="o">)));</span>
+
+ <span class="n">print</span><span class="o">(</span><span class="n">c</span><span class="o">.</span><span class="na">get</span><span class="o">());</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>Future a와 Future b의 결과를 알지 못한 상태에서 thenCombine은 두 연산이 끝났을 때 스레드 풀에서 실행된 연산을 만든다.</li>
+  <li>결과를 추가하는 세번째 연산 c는 다른 두작업이 끝나기 전까지 스레드에서 실행되지 않는다.</li>
+</ul>
+
+<h2 id="발행---구독-그리고-리액티브-프로그래밍">발행 - 구독 그리고 리액티브 프로그래밍</h2>
+<ul>
+  <li>Future와 CompletableFuture는 독린적 실행과 병렬성을 가지고 연산이 끝나면 get()으로 Future의 결과를 얻을 수 있다. 정리하자면 Future는 한번만 실행해 결과를 제공한다.</li>
+  <li>반명 리액티브 프로그래밍은 시간이 흐르며 여러 Future 같은 객체를 통해 여러 결과를 제공한다.</li>
+  <li>Java 9 에서는 java.util.concurrent.Flow의 인터페이스에 발행 - 구독 모델(Pub - Sub)을 적용하여 리액티브 프로그래밍을 제공한다.
+    <ul>
+      <li><strong>구독자</strong>가 구독할 수 있는 <strong>발행자</strong></li>
+      <li>이 연결을 <strong>구독</strong>(subscription)이라고 한다.</li>
+      <li>이 연결을 이용해 <strong>메시지</strong>(또는 <strong>이벤트</strong>)를 전송한다.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="두-플로를-합치는-예제">두 플로를 합치는 예제</h3>
+<ul>
+  <li>두 정보 소스로 부터 발생하는 이벤트를 합쳐 다른 구독자가 볼 수 있도록 발행하는 예를 통해 pub - sub의 특징을 간단히 확인할 수 있다.</li>
+  <li>C1 + C2라는 공식을 포함하는 C3를 만들자. C1이나 C2의 값이 변경되면 C3에도 새로운 값이 반영되어야 한다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11</pre></td><td class="code"><pre class="highlight"><code><span class="kd">private</span> <span class="kd">class</span> <span class="nc">SimpleCell</span> <span class="o">{</span>
+  <span class="kd">private</span> <span class="kt">int</span> <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+  <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+
+  <span class="kd">public</span> <span class="nf">SimpleCell</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="n">SimpleCell</span> <span class="n">c2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleCell</span><span class="o">(</span><span class="s">"c2"</span><span class="o">);</span>
+<span class="n">SimpleCell</span> <span class="n">c1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleCell</span><span class="o">(</span><span class="s">"c1"</span><span class="o">);</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>c1 이나 c2의 값이 변경되는 경우 어떻게 c3가 두 값을 더하도록 지정할 수 있을까 ? c1과 c2에 이벤트가 발행 했을때 c3를 구독하도록 만들어야 한다.</li>
+  <li>다음과 같이 Publisher 인터페이스를 활용하여 구현할 수 있다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code><span class="kd">interface</span> <span class="nc">Publisher</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+  <span class="kt">void</span> <span class="nf">subscribe</span><span class="o">(</span><span class="n">Subscriber</span><span class="o">&lt;?</span> <span class="kd">super</span> <span class="n">T</span><span class="o">&gt;</span> <span class="n">subscriber</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>이 인터페이스는 통신할 구독자를 인수로 받는다. Subscriber 인터페이스는 onNext라는 정보를 전달할 단순 메서드를 포함하며 구현자가 필요한 대로 이 메서드를 구현할 수 있다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code><span class="kd">interface</span> <span class="nc">Subscriber</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+  <span class="kt">void</span> <span class="nf">onNext</span><span class="o">(</span><span class="n">T</span> <span class="n">t</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>두 개념을 합친 예시를 보자.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26<br/>27<br/>28<br/>29<br/>30<br/>31<br/>32<br/>33<br/>34<br/>35<br/>36<br/>37<br/>38<br/>39<br/>40<br/>41<br/>42</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleCell</span> <span class="kd">implements</span> <span class="n">Flow</span><span class="o">.</span><span class="na">Publisher</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;,</span> <span class="n">Flow</span><span class="o">.</span><span class="na">Subscriber</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Flow</span><span class="o">.</span><span class="na">Subscriber</span><span class="o">&gt;</span> <span class="n">subscribers</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
+
+    <span class="kd">public</span> <span class="nf">SimpleCell</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+    
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">subscribe</span><span class="o">(</span><span class="n">Flow</span><span class="o">.</span><span class="na">Subscriber</span><span class="o">&lt;?</span> <span class="kd">super</span> <span class="n">Integer</span><span class="o">&gt;</span> <span class="n">subscriber</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">subscribers</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">subscriber</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onNext</span><span class="o">(</span><span class="n">Integer</span> <span class="n">newValue</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">newValue</span><span class="o">;</span>
+        <span class="n">notifyAllSubscribers</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">notifyAllSubscribers</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">subscribers</span><span class="o">.</span><span class="na">forEach</span><span class="o">(</span><span class="n">subscriber</span> <span class="o">-&gt;</span> <span class="n">subscriber</span><span class="o">.</span><span class="na">onNext</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">value</span><span class="o">));</span>
+    <span class="o">}</span>
+
+    <span class="o">...</span>
+<span class="o">}</span>
+
+
+<span class="n">SimpleCell</span> <span class="n">c3</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleCell</span><span class="o">(</span><span class="s">"c3"</span><span class="o">);</span>
+<span class="n">SimpleCell</span> <span class="n">c2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleCell</span><span class="o">(</span><span class="s">"c2"</span><span class="o">);</span>
+<span class="n">SimpleCell</span> <span class="n">c1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleCell</span><span class="o">(</span><span class="s">"c1"</span><span class="o">);</span>
+
+<span class="n">c1</span><span class="o">.</span><span class="na">subscribe</span><span class="o">(</span><span class="n">c3</span><span class="o">);</span>
+
+<span class="n">c1</span><span class="o">.</span><span class="na">onNext</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span> <span class="c1">// c1의 값을 10으로 갱신</span>
+<span class="n">c2</span><span class="o">.</span><span class="na">onNext</span><span class="o">(</span><span class="mi">20</span><span class="o">);</span> <span class="c1">// c2의 값을 20으로 갱신</span>
+
+<span class="n">c3</span><span class="err">는</span> <span class="err">직접</span> <span class="n">c1</span><span class="err">을</span> <span class="err">구독하므로</span> <span class="err">다음과</span> <span class="err">같은</span> <span class="err">결과가</span> <span class="err">출력</span> 
+<span class="n">c1</span> <span class="o">:</span> <span class="mi">10</span>
+<span class="n">c3</span> <span class="o">:</span> <span class="mi">10</span>
+<span class="n">c2</span> <span class="o">:</span> <span class="mi">20</span> 
+
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>C3 = C1 + C2는 어떻게 구현할까 ? 왼쪽 / 오른쪽 계산 결과를 저장할 수 있는 별도의 클래스가 필요하다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26<br/>27<br/>28<br/>29<br/>30<br/>31<br/>32<br/>33<br/>34<br/>35<br/>36<br/>37<br/>38</pre></td><td class="code"><pre class="highlight"><code>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ArithmeticCell</span> <span class="kd">extends</span> <span class="n">SimpleCell</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">left</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">right</span><span class="o">;</span> 
+    
+    <span class="kd">public</span> <span class="nf">ArithmeticCell</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+    <span class="o">}</span>
+    
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setLeft</span><span class="o">(</span><span class="kt">int</span> <span class="n">left</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">left</span> <span class="o">=</span> <span class="n">left</span><span class="o">;</span>
+        <span class="n">onNext</span><span class="o">(</span><span class="n">left</span> <span class="o">+</span> <span class="k">this</span><span class="o">.</span><span class="na">right</span><span class="o">);</span> <span class="c1">// 셀 값을 갱신하고 구독자에게 알림</span>
+    <span class="o">}</span>
+    
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setRight</span><span class="o">(</span><span class="kt">int</span> <span class="n">right</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">right</span> <span class="o">=</span> <span class="n">right</span><span class="o">;</span>
+        <span class="n">onNext</span><span class="o">(</span><span class="n">right</span> <span class="o">+</span> <span class="k">this</span><span class="o">.</span><span class="na">left</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+
+<span class="n">ArithmeticCell</span> <span class="n">c3</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArithmeticCell</span><span class="o">(</span><span class="s">"c3"</span><span class="o">);</span>
+<span class="n">SimpleCell</span> <span class="n">c2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleCell</span><span class="o">(</span><span class="s">"c2"</span><span class="o">);</span>
+<span class="n">SimpleCell</span> <span class="n">c1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleCell</span><span class="o">(</span><span class="s">"c1"</span><span class="o">);</span>
+
+<span class="n">c1</span><span class="o">.</span><span class="na">subscribe</span><span class="o">(</span><span class="nl">c3:</span><span class="o">:</span><span class="n">setLeft</span><span class="o">);</span>
+<span class="n">c2</span><span class="o">.</span><span class="na">subscribe</span><span class="o">(</span><span class="nl">c3:</span><span class="o">:</span><span class="n">setRight</span><span class="o">);</span>
+
+<span class="n">c1</span><span class="o">.</span><span class="na">onNext</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span> <span class="c1">// c1의 값을 10으로 갱신</span>
+<span class="n">c2</span><span class="o">.</span><span class="na">onNext</span><span class="o">(</span><span class="mi">20</span><span class="o">);</span> <span class="c1">// c2의 값을 20으로 갱신</span>
+<span class="n">c1</span><span class="o">.</span><span class="na">onNext</span><span class="o">(</span><span class="mi">15</span><span class="o">);</span> <span class="c1">// c1의 값을 15으로 갱신</span>
+
+<span class="nl">C1:</span> <span class="mi">10</span>
+<span class="nl">C3:</span> <span class="mi">10</span>
+<span class="nl">C2:</span> <span class="mi">20</span>
+<span class="nl">C3:</span> <span class="mi">30</span>
+<span class="nl">C1:</span> <span class="mi">15</span>
+<span class="nl">C3:</span> <span class="mi">35</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>데이터가 발행자에서 구독자로 흐름에 착안해 개발자는 이를 업스트림 또는 다운 스트림이라고 부른다. 위 예제에서 데이터 newValue는 업스트림 onNext()메서드로 전달되고 notifyAllSubscribers() 호출을 통해 다운 스트림 onNext() 호출로 전달된다.</li>
+  <li>실제로 pub-sub 구조를 적용하려면 onError나 onComplete와 같은 메서드를 통해 예외 발생, 종료등을 알수 있어야 한다.</li>
+  <li>만약 수많은 메시지(이벤트)가 onNext로 전달 된다면 어떤일이 일어날까 ? 이런 상황을 <strong>압력</strong>이라고 부른다.</li>
+  <li>이런 상황에서는 전달할 메시지를 제어할 수 있는 역압력 기법이 필요하다.</li>
+</ul>
+
+<h3 id="역압력">역압력</h3>
+<ul>
+  <li>Subscriber 객체를 어떻게 Publisher에게 전달해 발행자가 필요한 메서드를 호출할 수 있는지 알아 보았다. 이 객체는 Publisher에서 Subscriber로 정보를 전달한다.</li>
+  <li>정보의 흐름 속도를 역압력(흐름제어)로 제어 즉 Subscriber에서 Publisehr로 정보를 요청해야할 필요가 있을 수 있다.</li>
+  <li>Java 9 Flow API의 subscriber 인터페이스는 onSubscribe 메서드를 포함한다.</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6</pre></td><td class="code"><pre class="highlight"><code>void onSubscribe(Subscription subscription);
+
+interface Subscription {
+  void cancel();
+  void request(long n);
+}
+</code></pre></td></tr></tbody></table></div></div>
+<ul>
+  <li>Publisher와 Subscriber 사이에 채널이 연결되면 첫 이벤트로 호출된다.</li>
+  <li>Subscription 객체는 다음처럼 Subscriber와 Publisher와 통신할 수 있는 메서드를 포함한다.</li>
+  <li>콜백을 이용한 역방향 소통효과에 주목, Pblisher는 Subscription 객체를 만들어 Subscriber로 전달시 Subscriber는 이를 이용하여 Publisher로 정보를 보낼 수 있다.</li>
+</ul>
+
+<h3 id="실제-역압력의-간단한-형태">실제 역압력의 간단한 형태</h3>
+<ul>
+  <li>한 번에 한개의 이벤트만 처리하도록 구성시 다음과 같은 작업이 필요하다.
+    <ul>
+      <li>Subscriber가 OnSubscribe로 전달된 Subscription객체를 subscription 같은 필드에 로컬로 저장</li>
+      <li>Subscriber가 수많은 이벤트를 받지 않도록 onSubscribe, onNext, onError의 마지막 동작에 channel.request(1)을 추가, 오직 한 이벤트만 요청</li>
+      <li>요청을 보낸 채널에만 onNext, onError 이벤트를 보내도록 Publisher의 notifyAllSubscribers 코드를 수정</li>
+    </ul>
+  </li>
+  <li>구현이 간단해 보일수 있지만 실제로 역압력을 구현시 장단점을 생각해야 한다.
+    <ul>
+      <li>여러 Subscriber가 있을 때 이벤트를 가장 느린 속도로 보낼것인가 ? 아니면 각 Subscriber에게 보내지 않은 데이터를 저장할 별도의 큐를 가질것인가 ?</li>
+      <li>큐가 너무 커지면 어떻게 해야 할까 ?</li>
+      <li>Subscriber가 준비되지 않으면 큐의 데이터를 폐기 할 것인가 ?</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="정리">정리</h2>
+<ul>
+  <li>자바의 동시성 지원은 계속 진화 해왔으며 앞으로도 진화 할 것이다. 스레드 풀은 일반적으로 유용하지만 블록되는 테스크가 많은 경우 문제가 발생한다.</li>
+  <li>메서드를 비동기로 만들면 병렬성을 추가할 수 있고 부수적으로 루프를 최적화 한다.</li>
+  <li>박스와 채널 모델을 이용해 비동기 시스템을 시각화 할 수 있다.</li>
+  <li>CompletableFuture 클래스는 한 번의 비동기 연산을 표현한다. 콤비네이터로 비동기 연산을 조합함으로 Future를 이용할 때 발생한 블로킹 문제를 해결할 수 있다.</li>
+  <li>Flow API는 pub - sub 구조, 역얍력을 이용하면 자바의 리액티브 프로그래밍의 기초를 제공.</li>
+</ul>
+
 
       
     </div>
@@ -865,7 +1093,7 @@
             
               <div class="post-toc-content">
     <ol class=nav>
-      <li class="nav-item nav-level-2"> <a class="nav-link" href="#동시성을-구현하는-자비-지원의-진화"> <span class="nav-number">1</span> <span class="nav-text">동시성을 구현하는 자비 지원의 진화</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#스레드와-높은-수준의-추상화"> <span class="nav-number">1.1</span> <span class="nav-text">스레드와 높은 수준의 추상화</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#executor와-스레드-풀"> <span class="nav-number">1.2</span> <span class="nav-text">Executor와 스레드 풀</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#스레드의-다른-추상화--중첩되지-않은-메서드-호출"> <span class="nav-number">1.3</span> <span class="nav-text">스레드의 다른 추상화 : 중첩되지 않은 메서드 호출</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#동기-api와-비동기-api"> <span class="nav-number">2</span> <span class="nav-text">동기 API와 비동기 API</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#future-형식-api"> <span class="nav-number">2.1</span> <span class="nav-text">Future 형식 API</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#리액티브-형식-api"> <span class="nav-number">2.2</span> <span class="nav-text">리액티브 형식 API</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#sleep또는-blocking은-해롭다"> <span class="nav-number">2.3</span> <span class="nav-text">Sleep(또는 blocking)은 해롭다.</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#비동기-api에서는-예외를-어떻게-처리하는가-"> <span class="nav-number">2.4</span> <span class="nav-text">비동기 API에서는 예외를 어떻게 처리하는가 ?</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#박스와-채널-모델"> <span class="nav-number">3</span> <span class="nav-text">박스와 채널 모델</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#completablefuture와-콤비네이터를-이용한-동시성"> <span class="nav-number">4</span> <span class="nav-text">CompletableFuture와 콤비네이터를 이용한 동시성</span> </a> </li>
+      <li class="nav-item nav-level-2"> <a class="nav-link" href="#동시성을-구현하는-자비-지원의-진화"> <span class="nav-number">1</span> <span class="nav-text">동시성을 구현하는 자비 지원의 진화</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#스레드와-높은-수준의-추상화"> <span class="nav-number">1.1</span> <span class="nav-text">스레드와 높은 수준의 추상화</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#executor와-스레드-풀"> <span class="nav-number">1.2</span> <span class="nav-text">Executor와 스레드 풀</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#스레드의-다른-추상화--중첩되지-않은-메서드-호출"> <span class="nav-number">1.3</span> <span class="nav-text">스레드의 다른 추상화 : 중첩되지 않은 메서드 호출</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#동기-api와-비동기-api"> <span class="nav-number">2</span> <span class="nav-text">동기 API와 비동기 API</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#future-형식-api"> <span class="nav-number">2.1</span> <span class="nav-text">Future 형식 API</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#리액티브-형식-api"> <span class="nav-number">2.2</span> <span class="nav-text">리액티브 형식 API</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#sleep또는-blocking은-해롭다"> <span class="nav-number">2.3</span> <span class="nav-text">Sleep(또는 blocking)은 해롭다.</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#비동기-api에서는-예외를-어떻게-처리하는가-"> <span class="nav-number">2.4</span> <span class="nav-text">비동기 API에서는 예외를 어떻게 처리하는가 ?</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#박스와-채널-모델"> <span class="nav-number">3</span> <span class="nav-text">박스와 채널 모델</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#completablefuture와-콤비네이터를-이용한-동시성"> <span class="nav-number">4</span> <span class="nav-text">CompletableFuture와 콤비네이터를 이용한 동시성</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#발행---구독-그리고-리액티브-프로그래밍"> <span class="nav-number">5</span> <span class="nav-text">발행 - 구독 그리고 리액티브 프로그래밍</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#두-플로를-합치는-예제"> <span class="nav-number">5.1</span> <span class="nav-text">두 플로를 합치는 예제</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#역압력"> <span class="nav-number">5.2</span> <span class="nav-text">역압력</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#실제-역압력의-간단한-형태"> <span class="nav-number">5.3</span> <span class="nav-text">실제 역압력의 간단한 형태</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#정리"> <span class="nav-number">6</span> <span class="nav-text">정리</span> </a> </li>
     </ol>
   </div>
             
