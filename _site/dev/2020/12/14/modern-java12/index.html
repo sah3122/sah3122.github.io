@@ -455,6 +455,62 @@
   <li>셋째. 비동기 동작의 완료에 대응하는 방법을 배운다.</li>
 </ul>
 
+<h2 id="비동기-api-구현">비동기 API 구현</h2>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Shop</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kt">double</span> <span class="nf">getPrice</span><span class="o">(</span><span class="n">String</span> <span class="n">product</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="nf">calculatePrice</span><span class="o">(</span><span class="n">product</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="kd">private</span> <span class="kt">double</span> <span class="nf">calculatePrice</span><span class="o">(</span><span class="n">String</span> <span class="n">product</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">delay</span><span class="o">();</span>
+      <span class="k">return</span> <span class="k">new</span> <span class="nf">Random</span><span class="o">().</span><span class="na">nextDouble</span><span class="o">()</span> <span class="o">*</span> <span class="n">product</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">+</span> <span class="n">product</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+  <span class="o">}</span>
+  
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">delay</span><span class="o">()</span> <span class="o">{</span>
+      <span class="k">try</span> <span class="o">{</span>
+          <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">1000L</span><span class="o">);</span>
+      <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+      <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>getPrice는 외부 요청과 같이 시간이 오래걸리는 작업을 수행 할 수 있으므로 임의로 1초 동안 sleep 메소드를 호출하였다.</li>
+  <li>위 API를 사용자가 호출하는 경우 비동기 동작이 완료될때까지 1초 동안 블록된다.</li>
+  <li>동기 메소드를 비동기 메소드로 소비하는 방법을 알아보자.</li>
+</ul>
+
+<h3 id="동기-메서드를-비동기-메서드로-변환">동기 메서드를 비동기 메서드로 변환</h3>
+<ul>
+  <li>동기 메서드 getPrice를 비동기 메서드로 변환하려면 이름과 반환값을 변경해야 한다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="n">Future</span><span class="o">&lt;</span><span class="n">Double</span><span class="o">&gt;</span> <span class="nf">getPriceAnsync</span><span class="o">(</span><span class="n">String</span> <span class="n">product</span><span class="o">)</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>Future는 결과값의 핸들일 뿐 계산이 완료되면 get 메서들르 통해 결과를 얻을 수 있다. 다시말해 getPriceAnsync 메서드는 즉시 반환되고 호출자 스레드는 다른 작업을 수행할 수 있다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="n">Future</span><span class="o">&lt;</span><span class="n">Double</span><span class="o">&gt;</span> <span class="nf">getPriceAnsync</span><span class="o">(</span><span class="n">String</span> <span class="n">product</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">CompletableFuture</span><span class="o">&lt;</span><span class="n">Double</span><span class="o">&gt;</span> <span class="n">futurePrice</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CompletableFuture</span><span class="o">&lt;&gt;();</span>
+    
+    <span class="k">new</span> <span class="nf">Thread</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="o">{</span>
+        <span class="kt">double</span> <span class="n">price</span> <span class="o">=</span> <span class="n">calculatePrice</span><span class="o">(</span><span class="n">product</span><span class="o">);</span> <span class="c1">// 다른 스레드에서 비동기로 계산 </span>
+        <span class="n">futurePrice</span><span class="o">.</span><span class="na">complete</span><span class="o">(</span><span class="n">price</span><span class="o">);</span> <span class="c1">// 결과값 전달</span>
+    <span class="o">}).</span><span class="na">start</span><span class="o">();</span>
+    
+    <span class="k">return</span> <span class="n">futurePrice</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<ul>
+  <li>상점은 비동기 API를 제공함으로 즉시 Future를 반환한다. 클라이언트는 전달 받은 Future를 이용하여 적절한 시점에 결과를 얻을 수 있고, 그 동안 다른 작업을 수행 가능하다.</li>
+  <li>Future의 get 메서드 호출시 결과값을 가지고 있다면 곧바로 값을 읽지만 그렇지 않으면 계산이 완료될때 까지 블록한다.</li>
+</ul>
+
 
       
     </div>
@@ -679,7 +735,7 @@
             
               <div class="post-toc-content">
     <ol class=nav>
-      <li class="nav-item nav-level-2"> <a class="nav-link" href="#future의-단순활용"> <span class="nav-number">1</span> <span class="nav-text">Future의 단순활용</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#future-제한"> <span class="nav-number">1.1</span> <span class="nav-text">Future 제한</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#completablefuture로-비동기-애플리케이션-만들기"> <span class="nav-number">1.2</span> <span class="nav-text">CompletableFuture로 비동기 애플리케이션 만들기</span> </a> </li> </ol> </li>
+      <li class="nav-item nav-level-2"> <a class="nav-link" href="#future의-단순활용"> <span class="nav-number">1</span> <span class="nav-text">Future의 단순활용</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#future-제한"> <span class="nav-number">1.1</span> <span class="nav-text">Future 제한</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#completablefuture로-비동기-애플리케이션-만들기"> <span class="nav-number">1.2</span> <span class="nav-text">CompletableFuture로 비동기 애플리케이션 만들기</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#비동기-api-구현"> <span class="nav-number">2</span> <span class="nav-text">비동기 API 구현</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#동기-메서드를-비동기-메서드로-변환"> <span class="nav-number">2.1</span> <span class="nav-text">동기 메서드를 비동기 메서드로 변환</span> </a> </li> </ol> </li>
     </ol>
   </div>
             
