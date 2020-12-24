@@ -1,4 +1,45 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-12-23T01:12:26+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">모던 자바 인 액션 - 16장 CompletableFuture - 안정적 비동기 프로그래밍</title><link href="http://localhost:4000/dev/2020/12/14/modern-java12/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 16장 CompletableFuture - 안정적 비동기 프로그래밍" /><published>2020-12-14T00:00:00+09:00</published><updated>2020-12-14T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/12/14/modern-java12</id><content type="html" xml:base="http://localhost:4000/dev/2020/12/14/modern-java12/">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-12-24T17:30:16+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">모던 자바 인 액션 - 17장 리액티브 프로그래밍</title><link href="http://localhost:4000/dev/2020/12/24/modern-java13/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 17장 리액티브 프로그래밍" /><published>2020-12-24T00:00:00+09:00</published><updated>2020-12-24T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/12/24/modern-java13</id><content type="html" xml:base="http://localhost:4000/dev/2020/12/24/modern-java13/">&lt;blockquote&gt;
+  &lt;p&gt;Modern Java In Action 정리 - 리액티브 프로그래밍&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;리액티브 프로그래밍을 정의하고 리액티브 매니패스토를 확인함&lt;/li&gt;
+  &lt;li&gt;애플리케이션 수준, 시스템 수준의 리액티브 프로그래밍&lt;/li&gt;
+  &lt;li&gt;리액티브 스트림, 자바 9 플로 API를 사용한 예제 코드&lt;/li&gt;
+  &lt;li&gt;널리 사용되는 리액티브 라이브러비 RxJava 소개&lt;/li&gt;
+  &lt;li&gt;여러 리액티브 스트림을 변환하고 합치는 RxJava 동작 살펴보기&lt;/li&gt;
+  &lt;li&gt;리액티브 스트림의 동작을 시각적으로 문서화하는 마블 다이어그램&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;모던 자바 인 액션 책을 보고 정리한 글입니다.&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;작성중인 글입니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;리액티브-매니패스토&quot;&gt;리액티브 매니패스토&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;반응성
+    &lt;ul&gt;
+      &lt;li&gt;리액티브 시스템은 빠르면서 일정하고 예상가능한 반응 시간을 제공한다.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;회복성
+    &lt;ul&gt;
+      &lt;li&gt;장애가 발생하여도 시스템은 동작가능해야 한다.&lt;/li&gt;
+      &lt;li&gt;각 컴포넌트가 비동기적으로 작업을 다른 컴포넌트에 위임하는 등 리액티브 매니페스토는 회복성을 달성할 수 있는 다양한 기법을 제시한다.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;탄력성
+    &lt;ul&gt;
+      &lt;li&gt;애플리케이션의 생명주기 동안 다양한 부하가 발생하는데 무거운 작업 부하가 발생할 경우 자동으로 컴포넌트에 할당된 자원 수를 늘린다.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;메시지 주도
+    &lt;ul&gt;
+      &lt;li&gt;회복성과 탄력성을 지원하려면 약 결합, 고립, 위치 투명성등을 지원할 수 있도록 시스템을 구성하는 컴포넌트에 경계를 명확히 정의해야 한다.&lt;/li&gt;
+      &lt;li&gt;비동기 메시지를 전달하여 컴포넌트 끼리의 통신이 이루어진다.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><summary type="html">Modern Java In Action 정리 - 리액티브 프로그래밍</summary></entry><entry><title type="html">모던 자바 인 액션 - 16장 CompletableFuture - 안정적 비동기 프로그래밍</title><link href="http://localhost:4000/dev/2020/12/14/modern-java12/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 16장 CompletableFuture - 안정적 비동기 프로그래밍" /><published>2020-12-14T00:00:00+09:00</published><updated>2020-12-14T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/12/14/modern-java12</id><content type="html" xml:base="http://localhost:4000/dev/2020/12/14/modern-java12/">&lt;blockquote&gt;
   &lt;p&gt;Modern Java In Action 정리 - CompletableFuture - 안정적 비동기 프로그래밍&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -12,8 +53,6 @@
 &lt;/ul&gt;
 
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;모던 자바 인 액션 책을 보고 정리한 글입니다.&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;작성중인 글입니다.&lt;/p&gt;
 
 &lt;h2 id=&quot;future의-단순활용&quot;&gt;Future의 단순활용&lt;/h2&gt;
 &lt;ul&gt;
@@ -2891,119 +2930,4 @@ protected abstract R compute();
   &lt;li&gt;tryAdvance 메서드는 Spilterator의 요소를 하나씩 순차적으로 소비하며 탐색해야할 요소가 남아 있으면 True를 리턴한다.&lt;/li&gt;
   &lt;li&gt;trySplit 메서드는 Spliterator의 일부 요소를 분할해서 두번쨰 Spilterator를 생성하는 메서드이다.&lt;/li&gt;
   &lt;li&gt;estimateSize로 탐색해양할 요소의 갯수를 구할수 있다.&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><summary type="html">Modern Java In Action 정리 - 병렬 데이터 처리와 성능</summary></entry><entry><title type="html">스프링 클라우드 서비스 이해 - Zuul Proxy</title><link href="http://localhost:4000/dev/spring/cloud/2020/09/12/spring-cloud-zuul/" rel="alternate" type="text/html" title="스프링 클라우드 서비스 이해 - Zuul Proxy" /><published>2020-09-12T00:00:00+09:00</published><updated>2020-09-12T00:00:00+09:00</updated><id>http://localhost:4000/dev/spring/cloud/2020/09/12/spring-cloud-zuul</id><content type="html" xml:base="http://localhost:4000/dev/spring/cloud/2020/09/12/spring-cloud-zuul/">&lt;blockquote&gt;
-  &lt;p&gt;Spring Cloud Zuul에 대해서 간단히 알아보자.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;작성중인 글입니다.&lt;/p&gt;
-
-&lt;h1 id=&quot;spring-cloud-zuul-이란-&quot;&gt;Spring Cloud Zuul 이란 ?&lt;/h1&gt;
-
-&lt;p&gt;Netflix에서 개발한 MSA 환경에서 Routing 과 Filtering 을 위한 서비스 라고 이해 하면 될것 같다.&lt;br /&gt;
-Zuul을 사용하면 아래와 같은 기능들을 설정할 수 있다고 합니다.&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;Authentication&lt;/li&gt;
-  &lt;li&gt;Insights&lt;/li&gt;
-  &lt;li&gt;Stress Testing&lt;/li&gt;
-  &lt;li&gt;Canary Testing&lt;/li&gt;
-  &lt;li&gt;Dynamic Routing&lt;/li&gt;
-  &lt;li&gt;Service Migration&lt;/li&gt;
-  &lt;li&gt;Load Shedding&lt;/li&gt;
-  &lt;li&gt;Security&lt;/li&gt;
-  &lt;li&gt;Static Response handling&lt;/li&gt;
-  &lt;li&gt;Active/Active traffic management&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1 id=&quot;개발환경-설정&quot;&gt;개발환경 설정&lt;/h1&gt;
-&lt;p&gt;기본적으로 아래와 같은 디펜던시를 추가.&lt;/p&gt;
-&lt;div class=&quot;language-groovy highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;dependencies&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;implementation&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'org.springframework.boot:spring-boot-starter-web'&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;implementation&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'org.springframework.cloud:spring-cloud-starter-netflix-zuul'&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;compileOnly&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'org.projectlombok:lombok'&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;annotationProcessor&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'org.springframework.boot:spring-boot-configuration-processor'&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;annotationProcessor&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'org.projectlombok:lombok'&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;testImplementation&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'org.springframework.boot:spring-boot-starter-test'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;exclude&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;group:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'org.junit.vintage'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;module:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'junit-vintage-engine'&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;ZuulProxy를 사용한다고 선언 해주어야 한다.&lt;/p&gt;
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nd&quot;&gt;@SpringBootApplication&lt;/span&gt;
-&lt;span class=&quot;nd&quot;&gt;@EnableZuulProxy&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ZuulproxyApplication&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;SpringApplication&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ZuulproxyApplication&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h1 id=&quot;zuul-proxy-설정&quot;&gt;Zuul Proxy 설정&lt;/h1&gt;
-&lt;p&gt;dean-service 경로로 들어오는 요청에 대해서 지정한 api 서버로의 routing 을 설정해보자.&lt;/p&gt;
-&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;zuul&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;routes&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;dean-service&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/dean-service/**&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;http://localhost:8081/dean-service&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;path와 같은 경우 /* 와 같이 특정 url 에 한정해서 설정하는 것 보단 /** 와 같이 계층적으로 모든 api가 매칭 될 수 있도록 설정하는것을 권장하고 있다.&lt;br /&gt;
-위 설정을 진행하고 미리 만들어둔 서버로 요청이 잘 가는지 테스트 해보자.
-&lt;img src=&quot;/assets/images/post/spring-cloud-zuul/zuul-example1.png&quot; alt=&quot;Zuul 예제&quot; /&gt;
-정상적으로 routing이 되는것을 확인할 수 있습니다 :)&lt;/p&gt;
-
-&lt;h1 id=&quot;provider-설정&quot;&gt;Provider 설정&lt;/h1&gt;
-&lt;p&gt;Response에 대한 응답 처리를 하고 싶을때 사용. 공식 문서에 나와 있는 예제는 Timeout, Internal Server Error 가 발생하였을때 Custom 한 응답을 내려 줄 수 있도록 설정하고 있습니다.&lt;/p&gt;
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nd&quot;&gt;@Component&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DeanServiceProvider&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FallbackProvider&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getRoute&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;dean-service&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ClientHttpResponse&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;fallbackResponse&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;route&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Throwable&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cause&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cause&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;instanceof&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HystrixTimeoutException&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;HttpStatus&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;GATEWAY_TIMEOUT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;HttpStatus&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;INTERNAL_SERVER_ERROR&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ClientHttpResponse&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HttpStatus&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;ClientHttpResponse&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
-            &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HttpStatus&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getStatusCode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;throws&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IOException&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-            &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
-            &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getRawStatusCode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;throws&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IOException&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-            &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
-            &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getStatusText&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;throws&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IOException&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getReasonPhrase&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-            &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
-            &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-            &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
-            &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;InputStream&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getBody&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;throws&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IOException&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;ByteArrayInputStream&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;fallback&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getBytes&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
-            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-            &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
-            &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HttpHeaders&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getHeaders&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;HttpHeaders&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;headers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HttpHeaders&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;headers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setContentType&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MediaType&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;APPLICATION_JSON&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-                &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;headers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;};&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><summary type="html">Spring Cloud Zuul에 대해서 간단히 알아보자.</summary></entry></feed>
+&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><summary type="html">Modern Java In Action 정리 - 병렬 데이터 처리와 성능</summary></entry></feed>
