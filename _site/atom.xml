@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-01-04T23:52:25+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">모던 자바 인 액션 - 17장 리액티브 프로그래밍</title><link href="http://localhost:4000/dev/2020/12/24/modern-java13/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 17장 리액티브 프로그래밍" /><published>2020-12-24T00:00:00+09:00</published><updated>2020-12-24T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/12/24/modern-java13</id><content type="html" xml:base="http://localhost:4000/dev/2020/12/24/modern-java13/">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-01-05T23:49:02+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">모던 자바 인 액션 - 17장 리액티브 프로그래밍</title><link href="http://localhost:4000/dev/2020/12/24/modern-java13/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 17장 리액티브 프로그래밍" /><published>2020-12-24T00:00:00+09:00</published><updated>2020-12-24T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/12/24/modern-java13</id><content type="html" xml:base="http://localhost:4000/dev/2020/12/24/modern-java13/">&lt;blockquote&gt;
   &lt;p&gt;Modern Java In Action 정리 - 리액티브 프로그래밍&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -60,8 +60,74 @@
 &lt;h2 id=&quot;리액티브-스트림과-플로-api&quot;&gt;리액티브 스트림과 플로 API&lt;/h2&gt;
 &lt;ul&gt;
   &lt;li&gt;리액티브 프로그래밍은 리액티브 스트림을 사용하는 프로그래밍이다. 리액티므 스트림은 잠재적으로 무한의 비동기 데이터를 순서대로 그리고 블록하지 않는 역압력을 전제해 처리하는 표준 기술이다.&lt;/li&gt;
-  &lt;li&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><summary type="html">Modern Java In Action 정리 - 리액티브 프로그래밍</summary></entry><entry><title type="html">모던 자바 인 액션 - 16장 CompletableFuture - 안정적 비동기 프로그래밍</title><link href="http://localhost:4000/dev/2020/12/14/modern-java12/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 16장 CompletableFuture - 안정적 비동기 프로그래밍" /><published>2020-12-14T00:00:00+09:00</published><updated>2020-12-14T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/12/14/modern-java12</id><content type="html" xml:base="http://localhost:4000/dev/2020/12/14/modern-java12/">&lt;blockquote&gt;
+  &lt;li&gt;스트림 처리의 비동기적인 특성상 역압력 기능의 내장은 필수라는 사실을 알 수 있다. 실제 비 동기 작업이 실행되는 동안 시스템에는 암묵적으로 블록 API로 인해 역 압력이 제공되는것이다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;flow-클래스-소개&quot;&gt;FLow 클래스 소개&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Java 9에서는 리액티브 프로그래밍을 제공하는 클래스 Flow를 추가했다.&lt;/li&gt;
+  &lt;li&gt;이 클래스는 정적 컴포넌트 하나를 포함하고 있으며 인스턴스화 할 수 없다.&lt;/li&gt;
+  &lt;li&gt;리액티브 스트림 프로젝트의 표준에 따라 프로그래밍 발행-구독 모델을 지원할 수 있도록 Flow 클래스는 중첩된 인터페이스 네 개를 포함한다.
+    &lt;ul&gt;
+      &lt;li&gt;Publisher&lt;/li&gt;
+      &lt;li&gt;Subscriber&lt;/li&gt;
+      &lt;li&gt;Subscription&lt;/li&gt;
+      &lt;li&gt;Processor&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Publisher가 항목을 발행하면 Subscriber가 한 개 또는 여러 항목을 소비하는데 Subscription이 이 과정을 관리할 수 있도록 Flow 클래스는 관련된 인터페이스와 정적 메서드를 제공한다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nd&quot;&gt;@FunctionalInterface&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Publisher&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;subscribe&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Subscriber&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;?&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;super&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// Subscriber 인터페이스는 Publisher가 관련 이벤트를 발행할 때 호출할 수 있도록 콜백 메서드 네 개를 정의한다.&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Subscriber&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;onSubscribe&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Subscription&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;onNext&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;onError&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Throwable&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;onComplete&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Subscriber 이벤트는 다음 프로토콜에서 정의한 순서로 지정된 메서드 호출을 통해 발행되어야 한다.&lt;/li&gt;
+  &lt;li&gt;
+    &lt;table&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;td&gt;onSubscribe onNext* (onError&lt;/td&gt;
+          &lt;td&gt;onComplete)&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/li&gt;
+  &lt;li&gt;onSubscribe가 반드시 먼저 호출되고, onNext는 여러번 호출 가능함을 의미한다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Subscription&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;cancel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Subscription 클래스는 첫번째로 Publisher에게 주어진 개수의 이벤트를 처리할 준비가 되었듬을 알릴수 있다.&lt;/li&gt;
+  &lt;li&gt;두번째로는 Subscription을 취소, 즉 더이상 Publisher에게 이벤트를 받지 않음을 통지한다.&lt;/li&gt;
+  &lt;li&gt;Java 9 플로 명세서어세는 이틀 인터페이스 구현이 어떻게 서로 협력해야 하는지에 대해 설명하고 있다.
+    &lt;ul&gt;
+      &lt;li&gt;Publisher는 반드시 Subscription의 request 메서드에 정의된 개수 이하의 요소만 Subscription에게 전달해야 한다.&lt;/li&gt;
+      &lt;li&gt;Subscriber는 요소를 받아 처리할 수 있음을 Publisher에게 알려야 한다.&lt;/li&gt;
+      &lt;li&gt;Publisher와 Subscriber는 정확하게 Subscription을 공유해야 하며, 각각이 고유한 역할을 수행해야한다. 그러기위해 onSubscribe와 onNext 메서드에서 Subscriber는 request 메서드를 동기적으로 호출 할 수 있어야 한다.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Flow 클래스의 네 번째 이자 마지막 멤버 Processor 인터페이스는 단지 Publisher와 Subscriber를 상속 받을 뿐 아무 메서드도 추가하지 않는다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Processor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;R&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Subscriber&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Publisher&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;R&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><summary type="html">Modern Java In Action 정리 - 리액티브 프로그래밍</summary></entry><entry><title type="html">모던 자바 인 액션 - 16장 CompletableFuture - 안정적 비동기 프로그래밍</title><link href="http://localhost:4000/dev/2020/12/14/modern-java12/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 16장 CompletableFuture - 안정적 비동기 프로그래밍" /><published>2020-12-14T00:00:00+09:00</published><updated>2020-12-14T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/12/14/modern-java12</id><content type="html" xml:base="http://localhost:4000/dev/2020/12/14/modern-java12/">&lt;blockquote&gt;
   &lt;p&gt;Modern Java In Action 정리 - CompletableFuture - 안정적 비동기 프로그래밍&lt;/p&gt;
 &lt;/blockquote&gt;
 
