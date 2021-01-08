@@ -523,6 +523,14 @@
 
 <div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1</pre></td><td class="code"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Processor</span><span class="o">&lt;</span><span class="n">T</span><span class="o">,</span> <span class="n">R</span><span class="o">&gt;</span> <span class="kd">extends</span> <span class="n">Subscriber</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;,</span> <span class="n">Publisher</span><span class="o">&lt;</span><span class="n">R</span><span class="o">&gt;</span> <span class="o">{</span> <span class="o">}</span>
 </code></pre></td></tr></tbody></table></div></div>
+<h2 id="리액티브-라이브러리-rxjava-사용하기">리액티브 라이브러리 RxJava 사용하기</h2>
+<ul>
+  <li>RxJava는 넷플릭스에서 개발한 자바로 리액티브 애플리케이션을 구현하는데 사용하는 라이브러리이다.</li>
+  <li>RxJava 2.0 이상 버전부터 Java 9의 Flow를 지원하도록 구현되었다.</li>
+  <li>RxJava를 보면 Java 9에서 리액티브 당김 기반 역압력 기능(request 메서드)가 있는 Flow를 포함하는 Flowable 클래스를 확인할 수 있다.</li>
+  <li>역압력은 Publisher가 너무 빠른 속도로 데이터를 발행하며 Subscriber가 이를 감당할수 없는 상황에 이르는것을 방지한다.</li>
+  <li>RxJava는 1000개 이하의 스트림, 마우스, 터치 이벤트 등 역압력을 적용하기 힘든 GUI 이벤트나 자주 발생하지 않는 이벤트에는 역압력을 적용하지 않을것을 권장하고 있다.</li>
+</ul>
 
 
       
@@ -569,6 +577,10 @@
       
         <div class="post-nav" id="post-nav-id">
           <div class="post-nav-next post-nav-item">
+            
+              <a href="/dev/2021/01/08/modern-java14/" rel="next" title="모던 자바 인 액션 - 18장 함수형 관점으로 생각하기">
+                <i class="fa fa-chevron-left"></i> 모던 자바 인 액션 - 18장 함수형 관점으로 생각하기
+              </a>
             
           </div>
 
@@ -659,7 +671,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-count">38</span>
                 <span class="site-state-item-name">포스트</span>
               </a>
             </div>
@@ -748,7 +760,7 @@
             
               <div class="post-toc-content">
     <ol class=nav>
-      <li class="nav-item nav-level-2"> <a class="nav-link" href="#리액티브-매니패스토"> <span class="nav-number">1</span> <span class="nav-text">리액티브 매니패스토</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#애플리케이션-수준의-리액티브"> <span class="nav-number">1.1</span> <span class="nav-text">애플리케이션 수준의 리액티브</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#시스템-수준의-리액티브"> <span class="nav-number">1.2</span> <span class="nav-text">시스템 수준의 리액티브</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#리액티브-스트림과-플로-api"> <span class="nav-number">2</span> <span class="nav-text">리액티브 스트림과 플로 API</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#flow-클래스-소개"> <span class="nav-number">2.1</span> <span class="nav-text">FLow 클래스 소개</span> </a> </li> </ol> </li>
+      <li class="nav-item nav-level-2"> <a class="nav-link" href="#리액티브-매니패스토"> <span class="nav-number">1</span> <span class="nav-text">리액티브 매니패스토</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#애플리케이션-수준의-리액티브"> <span class="nav-number">1.1</span> <span class="nav-text">애플리케이션 수준의 리액티브</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#시스템-수준의-리액티브"> <span class="nav-number">1.2</span> <span class="nav-text">시스템 수준의 리액티브</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#리액티브-스트림과-플로-api"> <span class="nav-number">2</span> <span class="nav-text">리액티브 스트림과 플로 API</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#flow-클래스-소개"> <span class="nav-number">2.1</span> <span class="nav-text">FLow 클래스 소개</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#리액티브-라이브러리-rxjava-사용하기"> <span class="nav-number">3</span> <span class="nav-text">리액티브 라이브러리 RxJava 사용하기</span> </a> </li>
     </ol>
   </div>
             
