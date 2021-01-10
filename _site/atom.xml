@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-01-09T21:14:46+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">모던 자바 인 액션 - 19장 함수형 프로그래밍 기법</title><link href="http://localhost:4000/dev/2021/01/09/modern-java15/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 19장 함수형 프로그래밍 기법" /><published>2021-01-09T00:00:00+09:00</published><updated>2021-01-09T00:00:00+09:00</updated><id>http://localhost:4000/dev/2021/01/09/modern-java15</id><content type="html" xml:base="http://localhost:4000/dev/2021/01/09/modern-java15/">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-01-10T00:47:04+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">모던 자바 인 액션 - 19장 함수형 프로그래밍 기법</title><link href="http://localhost:4000/dev/2021/01/09/modern-java15/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 19장 함수형 프로그래밍 기법" /><published>2021-01-09T00:00:00+09:00</published><updated>2021-01-09T00:00:00+09:00</updated><id>http://localhost:4000/dev/2021/01/09/modern-java15</id><content type="html" xml:base="http://localhost:4000/dev/2021/01/09/modern-java15/">&lt;blockquote&gt;
   &lt;p&gt;Modern Java In Action 정리 - 함수형 프로그래밍 기법&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -84,6 +84,51 @@
 &lt;ul&gt;
   &lt;li&gt;결과적으로 기존의 변환 로직을 재활용하는 유연한 코드를 얻었다.&lt;/li&gt;
   &lt;li&gt;커링은 x와 y라는 두 인수를 받는 함수 f를 한 개의 인수를 받는 g라는 함수로 대체하는 기법이다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;영속-자료구조&quot;&gt;영속 자료구조&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;함수형 프로그램에서는 함수형 자료구조, 불변 자료구조 등의 용어도 사용하지만 보통은 영속 자료구조라고 부른다. (여기서 영속은 DB에서 사용하는 영속과는 다른 뜻이다.)&lt;/li&gt;
+  &lt;li&gt;함수형 메서드에서는 전역 자료구조나 인수로 전달된 구조를 갱신할 수 없다. 자료구조를 변경한다면 같은 메서드를 두 번 호출했을 때 결과가 달려지므로 참조 투명성에 위배된다.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;결과 자료구조를 바꾸지 말라&lt;/code&gt; 라는것이 자료구조를 사용하는 모든 사용자에게 요구하는 단 한가지 조건이다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;스트림과-게으른-평가&quot;&gt;스트림과 게으른 평가&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;스트림은 단 한번만 소비할 수 있다는 제약으로 인해 어떤 문제가 발생했는지 살펴보자.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;자기-정의-스트림&quot;&gt;자기 정의 스트림&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;게으른 평가
+    &lt;ul&gt;
+      &lt;li&gt;특정한 작업이 일어나야 하는 상황에서만 스트림을 평가한다. (lazy evaluation)&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;게으른-리스트&quot;&gt;게으른 리스트&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Java 8의 스트림은 게으르다.&lt;/code&gt; 라는 말을 들어본적이 있을것이다. Java 8의 스트림은 요청할 때만 값을 생성한다. 스트림에게 특정 연산이 주어진다면 곧바로 연산이 수행되는것이 아니라 스트림에게 최종 연산을 적용하는 시점에 실제 연산이 이루어진다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;패턴-매칭&quot;&gt;패턴 매칭&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;일반적으로 함수형 프로그래밍을 구분하는 또 하나의 특징으로 패턴매칭을 들 수 있다.(정규표현식의 의미가 아니다.)&lt;/li&gt;
+  &lt;li&gt;자바에서 지원하지는 않지만 Kotlin과 같은 언어에서는 지원하는 기능이다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;정리&quot;&gt;정리&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;일급 함수란 인수로 전달하거나, 결과로 반환하거나, 자료구조에 저장할 수 있는 함수다.&lt;/li&gt;
+  &lt;li&gt;고차원 함수란 한 개 이상의 함수를 인수로 받아서 다른 함수를 반환하는 함수다. 자바에서는 comparing, andThen, compose 등의 고차원 함수를 제공한다.&lt;/li&gt;
+  &lt;li&gt;커링은 함수를 모듈화하고 코드를 재사용할 수 있도록 지원하는 기법이다.&lt;/li&gt;
+  &lt;li&gt;영속 자료구조는 갱신될 때 기존 버전의 자신을 보전한다. 결과적으로 자신을 복사하는 과정이 따로 필요하지 않다.&lt;/li&gt;
+  &lt;li&gt;자바의 스트림은 스스로 정의할 수 없다.&lt;/li&gt;
+  &lt;li&gt;게으른 리스트는 자바 스트림보다 비싼 버전으로 간주할 수 있다. 게으른 리스트는 데이터를 요청했을 때 Supplier를 이용하여 요소를 생성한다. Supplier는 자료구조의 요소를 생성하는 역할을 수행한다.&lt;/li&gt;
+  &lt;li&gt;패턴 매칭은 자료형을 언랩하는 함수형 기능이다. 자바의 switch문을 일반화할 수 있다.&lt;/li&gt;
+  &lt;li&gt;참조 투명성을 유지하는 상황에서는 계산 결과를 캐시할 수 있다.&lt;/li&gt;
+  &lt;li&gt;콤비네이터는 둘 이상의 함수나 자료구조를 조합하는 함수형 개념이다.&lt;/li&gt;
 &lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><summary type="html">Modern Java In Action 정리 - 함수형 프로그래밍 기법</summary></entry><entry><title type="html">모던 자바 인 액션 - 18장 함수형 관점으로 생각하기</title><link href="http://localhost:4000/dev/2021/01/08/modern-java14/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 18장 함수형 관점으로 생각하기" /><published>2021-01-08T00:00:00+09:00</published><updated>2021-01-08T00:00:00+09:00</updated><id>http://localhost:4000/dev/2021/01/08/modern-java14</id><content type="html" xml:base="http://localhost:4000/dev/2021/01/08/modern-java14/">&lt;blockquote&gt;
   &lt;p&gt;Modern Java In Action 정리 - 함수형 관점으로 생각하기&lt;/p&gt;
 &lt;/blockquote&gt;
