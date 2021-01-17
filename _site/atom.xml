@@ -1,33 +1,149 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-01-14T01:17:51+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">2020년 늦은 회고.</title><link href="http://localhost:4000/life/2021/01/13/goobbye2020/" rel="alternate" type="text/html" title="2020년 늦은 회고." /><published>2021-01-13T00:00:00+09:00</published><updated>2021-01-13T00:00:00+09:00</updated><id>http://localhost:4000/life/2021/01/13/goobbye2020</id><content type="html" xml:base="http://localhost:4000/life/2021/01/13/goobbye2020/">&lt;h1 id=&quot;2020년-회고&quot;&gt;2020년 회고.&lt;/h1&gt;
-&lt;p&gt;2020년은 개인적으로 의미있는 한해였습니다. 
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-01-17T13:47:11+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">악취나는 코드를 개선해보자 - 1</title><link href="http://localhost:4000/dev/2021/01/14/java-code-smell01/" rel="alternate" type="text/html" title="악취나는 코드를 개선해보자 - 1" /><published>2021-01-14T00:00:00+09:00</published><updated>2021-01-14T00:00:00+09:00</updated><id>http://localhost:4000/dev/2021/01/14/java-code-smell01</id><content type="html" xml:base="http://localhost:4000/dev/2021/01/14/java-code-smell01/">&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;이번 포스팅에서는 일급 함수를 이용하여 코드를 어떻게 개선할 수 있는지에 대해 알아보겠습니다. 
+우선 일급 객체(first-class object) 또는 일급 시민(first-class citizen)의 정의를 가져와봤습니다. 
+일급 객체가 되기 위한 조건으로 아래 3가지를 만족해야 합니다. 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;메소드의 인자로 전달 가능해야 한다.&lt;/li&gt;
+  &lt;li&gt;변수에 할당 할 수 있어야 한다.&lt;/li&gt;
+  &lt;li&gt;리턴 값으로 반환 할 수 있어야 한다.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;간략하게 정리하자면 우리가 일반적으로 만들고 사용해온 객체는 위 3가지 조건을 만족하니 일급 객체라고 할 수 있습니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;일급-함수란-무엇인가-&quot;&gt;일급 함수란 무엇인가 ?&lt;/h2&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;함수형 프로그래밍의 관점에서는 함수를 마치 일반값처럼 사용해서 인수로 전달하거나, 결과로 반환받거나,
+자료구조에 저장할 수 있음을 의미하고 일반값처럼 취급할 수 있는 함수를 일급함수라고 한다.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;일반값이나 함수형 프로그래밍의 관점이라는 단어를 제외한다면, 위에서 정리한 일급 객체가 되기 위한 조건 3가지와 일치하는것을 알수 있습니다.&lt;/li&gt;
+  &lt;li&gt;Java 8 이전엔 Java는 일급 함수를 지원하지 않았지만 지금은 Java도 일급 함수를 지원한다! 라고 이야기 할 수 있습니다.&lt;/li&gt;
+  &lt;li&gt;Java가 일급 함수를 지원하는지 간략한 예제 코드를 통하여 알아보겠습니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;함수를-매개변수로-전달&quot;&gt;함수를 매개변수로 전달.&lt;/h3&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// 정수형 리스트를 계산하는 클래스 정의.&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Calculator&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;values&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;Calculator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;values&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;values&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;values&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;// 일반적인 메소드, 상태값을 모두 더하여 리턴한다. &lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;calculate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;values&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;stream&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+                &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;reduce&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;integer2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;integer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;integer2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    
+    &lt;span class=&quot;c1&quot;&gt;// 함수를 매개변수로 전달 받는방법. &lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;calculateByFunctional&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Function&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;calculator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;calculator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;apply&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;values&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Main&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+	    &lt;span class=&quot;n&quot;&gt;Calculator&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;calculator&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;Calculator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;
+
+	    &lt;span class=&quot;c1&quot;&gt;// 객체의 계산 메소드 호출&lt;/span&gt;
+      &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;calculator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;calculate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+
+      &lt;span class=&quot;c1&quot;&gt;// 함수를 매개변수로 전달.&lt;/span&gt;
+      &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resultByFunction&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;calculator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;calculateByFunctional&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;values&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;values&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;stream&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+                &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;reduce&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;integer2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;integer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;integer2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;예제 코드를 확인해본결과 일급 객체가 되기 위한 첫번째 조건인 함수를 매개변수로 전달 가능함을 증명해보았습니다.&lt;/li&gt;
+  &lt;li&gt;나머지 조건들도 어떤 방식으로 구현 가능한지 알아보겠습니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;함수를-변수에-할당&quot;&gt;함수를 변수에 할당&lt;/h3&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;Calculator&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;calculator&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;Calculator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;// 함수를 변수에 저장&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;Function&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sumAll&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;values&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;values&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;stream&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+                                                                              &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;reduce&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;integer2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;integer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;integer2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;// 함수를 매개변수로 전달.&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resultByFunction&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;calculator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;calculateByFunctional&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sumAll&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;모든 값을 더하는 함수를 sumAll 이라는 &lt;strong&gt;Function 타입의 변수에 저장&lt;/strong&gt;하여 매개 변수로 전달 하고 있습니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;함수를-리턴값으로-반환&quot;&gt;함수를 리턴값으로 반환&lt;/h3&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Calculator&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Function&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getCalculator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;values&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;values&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;stream&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+                                 &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;reduce&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;integer2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;integer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;integer2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Main&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;values&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;Calculator&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;calculator&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Calculator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;Function&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;calculatorFunction&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;calculator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getCalculator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;Integer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;calculatorFunction&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;apply&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;values&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h1 id=&quot;참고&quot;&gt;참고&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://ko.wikipedia.org/wiki/%EC%9D%BC%EA%B8%89_%EA%B0%9D%EC%B2%B4&quot;&gt;일급객체&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Modern Java In Action - 함수형 프로그래밍&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><category term="cleancode" /><summary type="html">이번 포스팅에서는 일급 함수를 이용하여 코드를 어떻게 개선할 수 있는지에 대해 알아보겠습니다. 우선 일급 객체(first-class object) 또는 일급 시민(first-class citizen)의 정의를 가져와봤습니다. 일급 객체가 되기 위한 조건으로 아래 3가지를 만족해야 합니다.</summary></entry><entry><title type="html">2020년 늦은 회고.</title><link href="http://localhost:4000/life/2021/01/13/goobbye2020/" rel="alternate" type="text/html" title="2020년 늦은 회고." /><published>2021-01-13T00:00:00+09:00</published><updated>2021-01-13T00:00:00+09:00</updated><id>http://localhost:4000/life/2021/01/13/goobbye2020</id><content type="html" xml:base="http://localhost:4000/life/2021/01/13/goobbye2020/">&lt;h1 id=&quot;2020년-회고&quot;&gt;2020년 회고.&lt;/h1&gt;
+&lt;p&gt;2020년은 개인적으로 의미있는 한해였습니다.&lt;br /&gt;
 새로운 회사로 이직을 하고, 새로운 사람들과 익숙하지 않은 환경에 적응하느라 하반기가 금방 지나가버렷네요.&lt;/p&gt;
 
 &lt;h2 id=&quot;clean-code&quot;&gt;Clean Code&lt;/h2&gt;
-&lt;p&gt;상반기에 NextStep의 CleanCode 과정을 마치고, 클린 코드 리뷰어 활동을 3회 정도 진행하였습니다.
-1회 과정이 8주간 진행되는것을 감안하면 총 24주라는 기간동안 리뷰어 활동을 하게 된것인데 체력적으로 쉬운일은 아니였고 리뷰어 활동 자체도 쉽지않은 만큼 많이 성장할 수 있는 계기가 되었습니다. 
+&lt;p&gt;상반기에 NextStep의 CleanCode 과정을 마치고, 클린 코드 리뷰어 활동을 3회 정도 진행하였습니다.&lt;br /&gt;
+1회 과정이 8주간 진행되는것을 감안하면 총 24주라는 기간동안 리뷰어 활동을 하게 된것인데 체력적으로 쉬운일은 아니였고 리뷰어 활동 자체도 쉽지않은 만큼 많이 성장할 수 있는 계기가 되었습니다. &lt;br /&gt;
 리뷰를 진행하다 보니 첫번째 보단 두번째 기수의 수강생 분들에게 코드와 구조에 대해 더 많은것들을 알려줄 수 있었고 리뷰어 활동을 위해 클린코드나 이펙티브 자바 같은 책들도 많이 읽었는데 
-실제 리뷰활동은 책에서 나오는 예제와는 많이 달랏으며 개개인이 가진 생각도 달라서 모든 리뷰이분들에게 만족할만한 리뷰를 못 해드린것 같아 반성하게 됩니다. 
+실제 리뷰활동은 책에서 나오는 예제와는 많이 달랏으며 개개인이 가진 생각도 달라서 모든 리뷰이분들에게 만족할만한 리뷰를 못 해드린것 같아 반성하게 됩니다. &lt;br /&gt;
 클린코드 과정을 진행하며 배우게된것과 리뷰어 활동을 통해 알게 된 부분들을 잊지 않고 내것으로 만들기 위해 노력해야 겠습니다.&lt;/p&gt;
 
 &lt;h2 id=&quot;domain-driven-design&quot;&gt;Domain Driven Design&lt;/h2&gt;
-&lt;p&gt;DDD는 올해 가장 열심히 공부하고 적용하려고 노력한 주제입니다. DDD에 빠지게 된 계기는 어느 순간 절차 지향적, 서비스 레이어에 의존하는 모습을 발견하게 되었고 
-클린 아키텍처에 관한 토픽을 살펴보다 DDD, 육각형 아키텍처에 관심을 갖게 되었습니다. 
-또한 도메인 중심적 사고방식은 마이크로 서비스 환경을 도입하기전 선행되어야 하는 개념이라고 생각하고, 기존 순차적, 절차 지향적인 구현방법에서 벗어나
-객체지향적으로 구현하여 도메인 중심으로 안정성 있는 어플리케이션을 구현하기 위해 많은 시간을 들였습니다. 
-하반기 디자이너 서버 리빌딩을 진행하며 DDD의 개념을 적용시켜 보기 위해 노력하였으며 모든 개념을 적용하는것은 못했지만 패키지 구조, 레이어 분리까지 적용한것만으로도 확장성 있고
-유연한 아키텍처가 된것 같아 만족스러운 결과물이 나왔다고 생각합니다.
+&lt;p&gt;DDD는 올해 가장 열심히 공부하고 적용하려고 노력한 주제입니다. DDD에 빠지게 된 계기는 어느 순간 절차 지향적, 서비스 레이어에 의존하는 모습을 발견하게 되었고 &lt;br /&gt;
+클린 아키텍처에 관한 토픽을 살펴보다 DDD, 육각형 아키텍처에 관심을 갖게 되었습니다. &lt;br /&gt;
+또한 도메인 중심적 사고방식은 마이크로 서비스 환경을 도입하기전 선행되어야 하는 개념이라고 생각하고, 기존 순차적, 절차 지향적인 구현방법에서 벗어나 
+객체지향적으로 구현하여 도메인 중심으로 안정성 있는 어플리케이션을 구현하기 위해 많은 시간을 들였습니다. &lt;br /&gt;
+하반기 디자이너 서버 리빌딩을 진행하며 DDD의 개념을 적용시켜 보기 위해 노력하였으며 모든 개념을 적용하는것은 못했지만 패키지 구조, 레이어 분리까지 적용한것만으로도 확장성 있고 
+유연한 아키텍처가 된것 같아 만족스러운 결과물이 나왔다고 생각합니다.&lt;br /&gt;
 구현하며 어려웠던 부분들은 개념으로만 알고 있던 내용을 코드에 반영하려고 시도하다보니 올바르게 반영된 것인지 판단하기 힘들었습니다. 특히 클래스가 많아 지는것이 정상적인 상태인지 
-불필요한 클래스만 많아지는것이 아닌가 와 같은 고민들을 제쓰와 같이 공유하며 정답을 찾으려고 노력했습니다. 
+불필요한 클래스만 많아지는것이 아닌가 와 같은 고민들을 제쓰와 같이 공유하며 정답을 찾으려고 노력했습니다. &lt;br /&gt;
 역시 실전은 어렵다는것을 다시 한번 느끼게 됨.&lt;/p&gt;
 
 &lt;h2 id=&quot;코드리뷰&quot;&gt;코드리뷰&lt;/h2&gt;
-&lt;p&gt;피처 단위의 코드리뷰를 진행하며 느낀점들을 간략하게 정리해보려고 합니다. 
+&lt;p&gt;피처 단위의 코드리뷰를 진행하며 느낀점들을 간략하게 정리해보려고 합니다. &lt;br /&gt;
 첫번째로 코드리뷰를 통해 얻을수 있었던것은 이미 작성되어 있는 로직들에 대한 이해와 제가 작성하지 않은 코드들도 간접적으로 이해를 할수 있게 되어 
-개발팀에 합류한지 얼마 되지 않은 저에게는 많은 도움이 되었습니다. 
-두번째로는 요청한 PR들을 꼼꼼히 리뷰하여 잘못된 로직들이 배포되어 이슈가 발생하는 상황을 막을 수 있었습니다. 
-물론 모든 이슈를 걸러내지는 못하였지만 서비스 로직에 대한 이해도가 올라갈수록 더 많이 잡아 낼 수 있을거라 생각합니다. 
-마지막으로는 코드 품질 향상에 대해 매번 고민하게 되었습니다. 
-팀원 분들이 작성한 코드를 리뷰하다 보면 잘못된 로직은 아니지만 더 나은 구조 또는 효율적인 코드로 변경할 수 있는 부분들을 중점적으로 보게 된것 같습니다. 
+개발팀에 합류한지 얼마 되지 않은 저에게는 많은 도움이 되었습니다. &lt;br /&gt;
+두번째로는 요청한 PR들을 꼼꼼히 리뷰하여 잘못된 로직들이 배포되어 이슈가 발생하는 상황을 막을 수 있었습니다. &lt;br /&gt;
+물론 모든 이슈를 걸러내지는 못하였지만 서비스 로직에 대한 이해도가 올라갈수록 더 많이 잡아 낼 수 있을거라 생각합니다. &lt;br /&gt;
+마지막으로는 코드 품질 향상에 대해 매번 고민하게 되었습니다. &lt;br /&gt;
+팀원 분들이 작성한 코드를 리뷰하다 보면 잘못된 로직은 아니지만 더 나은 구조 또는 효율적인 코드로 변경할 수 있는 부분들을 중점적으로 보게 된것 같습니다. &lt;br /&gt;
 이렇게 하나, 둘 리뷰하다 보니 현재는 리뷰 초기에 코멘트를 달던 코드들이 보이지 않게 된것 같습니다.&lt;/p&gt;
 
 &lt;h2 id=&quot;isms-p-대응&quot;&gt;ISMS-P 대응&lt;/h2&gt;
@@ -35,8 +151,8 @@
 경험할 수 있었습니다. 아직 끝난것은 아니지만 앞으로 개인정보 처리라던지 시큐어 코딩에도 관심을 가져야할 필요성을 느끼게되었습니다.&lt;/p&gt;
 
 &lt;h2 id=&quot;spring-cloud&quot;&gt;Spring Cloud&lt;/h2&gt;
-&lt;p&gt;처음으로 Spring Cloud 관련 기술들을 접해보는 계기가 되었습니다. 
-우선은 Zuul Proxy을 사용해봤는데 마이크로 서비스 환경에 대한 관심과 Spring Cloud 진영이 더 커져가는 만큼 기회가 된다면 더 많은 기술들을 적용해볼수 있으면 좋을것 같습니다.
+&lt;p&gt;처음으로 Spring Cloud 관련 기술들을 접해보는 계기가 되었습니다. &lt;br /&gt;
+우선은 Zuul Proxy을 사용해봤는데 마이크로 서비스 환경에 대한 관심과 Spring Cloud 진영이 더 커져가는 만큼 기회가 된다면 더 많은 기술들을 적용해볼수 있으면 좋을것 같습니다.&lt;br /&gt;
 재택근무로 인해 잠시 멈춰버린 마이크로 서비스 스터디를 빨리 하고 싶네요.&lt;/p&gt;</content><author><name>DongChul Lee</name></author><category term="life" /><summary type="html">2020년 회고. 2020년은 개인적으로 의미있는 한해였습니다. 새로운 회사로 이직을 하고, 새로운 사람들과 익숙하지 않은 환경에 적응하느라 하반기가 금방 지나가버렷네요.</summary></entry><entry><title type="html">모던 자바 인 액션 - 19장 함수형 프로그래밍 기법</title><link href="http://localhost:4000/dev/2021/01/09/modern-java15/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 19장 함수형 프로그래밍 기법" /><published>2021-01-09T00:00:00+09:00</published><updated>2021-01-09T00:00:00+09:00</updated><id>http://localhost:4000/dev/2021/01/09/modern-java15</id><content type="html" xml:base="http://localhost:4000/dev/2021/01/09/modern-java15/">&lt;blockquote&gt;
   &lt;p&gt;Modern Java In Action 정리 - 함수형 프로그래밍 기법&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -2076,243 +2192,4 @@ nextOrSame / previousOrSame 현재 날짜 이후로 지정한 요일이 처음 /
   &lt;li&gt;Optional 클래스는 스트림과 비슷한 연산을 수행하는 map, flatMap, filter등의 메소드를 제공한다.&lt;/li&gt;
   &lt;li&gt;Optional로 값이 없는 상황을 적절하게 처리하도록 강제할 수 있다. 즉 Optional로 예상치 못한 NPE를 방지할 수 있다.&lt;/li&gt;
   &lt;li&gt;Optional을 활용하면 더 좋은 API를 설계할 수 있다. 즉 사용자는 메서드의 시그니처만 보고 Optional값이 사용되거나 반환되는지 예측할 수 있다.&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><summary type="html">Modern Java In Action 정리 - null 대신 Optional 클래스</summary></entry><entry><title type="html">모던 자바 인 액션 - 10장 람다를 이용한 도메인 전용 언어</title><link href="http://localhost:4000/dev/2020/11/03/modern-java07/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 10장 람다를 이용한 도메인 전용 언어" /><published>2020-11-03T00:00:00+09:00</published><updated>2020-11-03T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/11/03/modern-java07</id><content type="html" xml:base="http://localhost:4000/dev/2020/11/03/modern-java07/">&lt;blockquote&gt;
-  &lt;p&gt;Modern Java In Action 정리 - 람다를 이용한 도메인 전용 언어&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;도메인 전용 언어(Domain-Specific Languages, DSL)란 무엇이며 어떤 형식으로 구성되는가 ?&lt;/li&gt;
-  &lt;li&gt;DSL을 API에 추가할 때의 장단점&lt;/li&gt;
-  &lt;li&gt;JVM에서 활용할 수 있는 자바 기반 DSL을 깔끔하게 만드는 대안&lt;/li&gt;
-  &lt;li&gt;최신 자바 인터페이스와 클래스에 적용된 DSL에서 배움&lt;/li&gt;
-  &lt;li&gt;효과적인 자바 기반 DSL을 구현하는 패턴과 기법&lt;/li&gt;
-  &lt;li&gt;이들 패턴을 자바 라이브러리와 도구에서 얼마나 흔히 사용하는가 ?&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;모던 자바 인 액션 책을 보고 정리한 글입니다.&lt;/code&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;도메인-전용-언어&quot;&gt;도메인 전용 언어&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;DSL은 특정 비즈니스 도메인의 문제를 해결하려고 만든 언어다. 예를 들어 회계전용 소프트웨어 애플리케이션을 개발한다고 가정, 이 상황에서 비즈니스 도메인에는 통장 입출금 내역, 계좌 와 같은 개념이 포함&lt;br /&gt;
-이런 문제를 표현할 수 있는 DSL을 만들수 있다. (DDD의 유비쿼터스 언어와 유사한것 같다.)&lt;/li&gt;
-  &lt;li&gt;DSL 이란 특정 비즈니스 도메인을 인터페이스로 만든 API라고 생각할 수 있다.&lt;/li&gt;
-  &lt;li&gt;DSL은 평문 언어가 아니며, 도메인 전문가가 저수준 비즈니스 로직을 구현하기 위해 사용하는것이 아니다. 다음 뚜 가지 필요성을 생각하며 DSL을 개발해야 한다.&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;의사소통의 왕&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;코드의 의도가 분명히 전달되어야 하며 개발자가 아닌 사람들도 이해할수 있어야 한다.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;한 번 코드를 구현하지만 여러 번 읽는다.&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;가독성은 유지보수의 핵심이다. 항상 다른 개발자 또는 팀원들이 이해할 수 있도록 코드를 구현해야한다.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;dsl의-장점과-단점&quot;&gt;DSL의 장점과 단점&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;DSL은 만병 통치약이 아니다. DSL은 코드의 비즈니스 의도를 분명히 드러내고 가독성을 높인다는점에서 약이 되지만 그에 따른 유지보수의 책임이 생긴다.&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;DSL의 장점&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;간결함
-        &lt;ul&gt;
-          &lt;li&gt;API는 비즈니스 로직을 간편하게 캡슐화 하여 코드가 간결해지며 중복을 줄일수 있다.&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;가독성
-        &lt;ul&gt;
-          &lt;li&gt;도메인 영역의 용어를 사용하므로 비 도메인 전문가도 코드를 쉽게 이해할 수 있다.&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;유지보수
-        &lt;ul&gt;
-          &lt;li&gt;잘 설계된 DSL로 구현한 코드는 쉽게 유지보수하고 바꿀수 있다. 유지보수는 비즈늬스 관련 코드, 즉 가장 빈번히 바뀌는 애플리케이션 부분에 특히 중요하다.&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;높은 수준의 추상화
-        &lt;ul&gt;
-          &lt;li&gt;DSL은 도메인과 같은 추상화 수준에서 동작하므로 도메인의 문제와 직접적으로 관련되지 않은 세부 사항을 숨긴다.&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;집중
-        &lt;ul&gt;
-          &lt;li&gt;비즈니스 도메인의 규칙을 표현할 목적으로 설계된 언어이므로 프로그래머가 특정 코드에 집중할 수 있다.&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;관심사분리
-        &lt;ul&gt;
-          &lt;li&gt;지정된 언어로 비즈니스 로직을 표한함으로 애플리케이션의 인프라 구조와 관련된 문제, 독립적으로 비즈니스 관련된 코드에 집중하기가 용이하다.&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;DSL의 단점&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;DSL 설계의 어려움
-        &lt;ul&gt;
-          &lt;li&gt;간결하게 제한적인 언어에 도메인 지식을 담는 것이 쉬운 작업은 아니다.&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;개발 비용
-        &lt;ul&gt;
-          &lt;li&gt;코드에 DSL을 추가하는 작업은 초기 프로젝트에 많은 비용과 시간이 소모되는 작업이다. 또한 DSL 유지보수와 변경은 프로젝트에 부담을 주는 요소이다.&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;추가 우회 계층
-        &lt;ul&gt;
-          &lt;li&gt;DSL은 추가적은 계층으로 도메인 모델을 감싸며 이 때 계층을 최대한 작게 만들어 성능 문제를 회피한다.&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;새로 배워야 하는 언어
-        &lt;ul&gt;
-          &lt;li&gt;요즘 추세는 하나의 프로젝트에도 여러가지 언어를 사용한다. DSL을 프로젝트에 추가하며 배워야 하는 언어가 늘어난다는 부담이 생긴다.&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;호스팅 언어 한계
-        &lt;ul&gt;
-          &lt;li&gt;자바 같은 언어는 장황하고 엄격한 문법을 가졌다. 이런 언어의 특성상 사용자 친화적 DSL을 만들기가 힘들다. Java8의 람다 표현식은 이 문제를 해결할 강력한 도구이다.&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;jvm에서-이용할-수-있는-다른-dsl-해결책&quot;&gt;JVM에서 이용할 수 있는 다른 DSL 해결책&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;내부 DSL&lt;/strong&gt; (순수 자바로 구현한 DSL)
-    &lt;ul&gt;
-      &lt;li&gt;기존 자바 언어를 이용해 외부 DSL에 비해 새로운 패턴과 기술을 배워 DSL을 구현하는 노력이 현저히 줄어든다.&lt;/li&gt;
-      &lt;li&gt;순수 자바로 DSL을 구현하면 나머지 코드와 함께 DSL을 컴파일 할 수 있다. 따라서 다른 언어의 컴파일러를 이용하거나 외부 DSL을 만드는 도구를 사용할 필요가 없으므로 추가 비용이 발생하지 않는다.&lt;/li&gt;
-      &lt;li&gt;개발 팀이 새로운 언어를 배우거나 또는 익숙하지 않고 복잡한 외부 도구를 배울 필요가 없다.&lt;/li&gt;
-      &lt;li&gt;DSL 사용자는 기존의 자바 IDE를 이용해 자동 완성, 리팩터링과 같은 기능을 사용할 수 있다.&lt;/li&gt;
-      &lt;li&gt;한개의 언어로 하나 또는 여러 도메인을 대응하지 못해 추가 DSL을 개발해야 하는 상황에서 자바를 이용하여 추가 DSL을 쉽게 합칠수 있다.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;다중 DSL&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;새로운 프로그래밍 언어를 배우거나 또는 팀의 누군가가 리딩 할 수 있어야 한다.&lt;/li&gt;
-      &lt;li&gt;두 개 이상의 언어가 혼재하므로 여러 컴파일러로 소스를 빌드 하도록 빌드 과정의 개선이 필요하다.&lt;/li&gt;
-      &lt;li&gt;JVM에서 실행되는 거의 모든 언어가 자바와 호환된다고 하지만 모든 것이 호환되지 않을 때가 있다.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;외부 DSL&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;자신만의 문법과 구문으로 새로운 언어를 설계해야 한다.&lt;/li&gt;
-      &lt;li&gt;외부 DSL을 개발하는 가장 큰 장점은 외부 DSL이 제공하는 무한한 유연성 때문이다.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;최신-자바-api의-작은-dsl&quot;&gt;최신 자바 API의 작은 DSL&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;자바의 새로운 기능의 장점을 적용한 첫 API는 네이티브 자바 API 자신이다.&lt;/li&gt;
-  &lt;li&gt;사람들을 가지고 있는 리스트에서 나이순으로 객체를 정렬하는 예제를 보자.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;Collections&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;persons&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Comparator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;compare&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;})&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Java8 이전에는 위와 같이 익명 클래스를 활용하여 구현해야 했다.&lt;/li&gt;
-  &lt;li&gt;내부 클래스를 간단한 람다 표현식으로 바꿀수 있다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;Collections&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;persons&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getAge&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getAge&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;ul&gt;
-  &lt;li&gt;위와 같은 구현은 코드를 간결하게 만들었지만 정적 유틸리티 메서드를 활용하여 좀 더 가똑성 있게 개선할 수 있다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// Comparator.comparing&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Collections&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;persons&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;comparing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getAge&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()))&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;람다를 메서드 참조로 변경하여 코드를 개선할 수 있다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// Comparator.comparing&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Collections&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;persons&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;comparing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;Person:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getAge&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;Collections&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;persons&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;comparing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;Person:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getAge&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;reverse&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 역순 정렬&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;Collections&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;persons&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;comparing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;Person:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getAge&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-                          &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;thenComparing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;Person:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 나이 정렬 후 이름 정렬&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;persons&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;comparing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;Person:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getAge&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-                          &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;thenComparing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;Person:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// List 에 추가된 sort 메서드 이용하여 마지막 리팩토링&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;이 작은 예시는 컬렉션 정렬 도메인의 최소 DSL이다. 작은 영역에 국한된 예제지만 이미 람다와 메서드 참조를 이용한 DSL이 코드의 가독성, 재사용성, 결합성을 높일수 있는지 보여준다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;스트림-api는-컬렉션을-조작하는-dsl&quot;&gt;스트림 API는 컬렉션을 조작하는 DSL&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;Stream 인터페이슨느 네이티브 자바 API에 작은 내부 DSL을 적용한 좋은 예다.
-    &lt;h3 id=&quot;데이터를-수집하는-dsl인-collectors&quot;&gt;데이터를 수집하는 DSL인 Collectors&lt;/h3&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Stream 인터페이스를 데이터 리스트를 조작하는 DSL 로 간주할 수 있음을 확인했다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;자바로-dsl을-만드는-패턴과-기법&quot;&gt;자바로 DSL을 만드는 패턴과 기법&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;DSL은 특정 도메인 모델에 적용할 친하적이고 가독성 높은 API를 제공한다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;메서드-체인을-이용&quot;&gt;메서드 체인을 이용&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;메서드 체인을 이용하여 DSL을 구현해보자.&lt;/li&gt;
-  &lt;li&gt;플루언트 API로 도메인 객체를 만드는 몇개의 빌더를 구현해야 한다.&lt;/li&gt;
-  &lt;li&gt;최상위 빌더를 만들고 도메인 객체를 감싼 다음 빌더를 구가할 수 있는 구조가 되어야 한다.&lt;/li&gt;
-  &lt;li&gt;빌더를 구현해야하는것이 메서드 체인 방법의 단점이다.&lt;/li&gt;
-  &lt;li&gt;상위 수준의 빌더를 하위 수준의 빌더와 연결할 많은 접착 코드가 필요하다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;중첩된-함수-이용&quot;&gt;중첩된 함수 이용&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;중첩된 함수 DSL 패턴은 이름에서도 알 수 있듯이 다른 함수 안에 함수를 이용해 도메인 모델을 만든다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;Order&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;order&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;order&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;BigBank&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; 
-                      &lt;span class=&quot;n&quot;&gt;buy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;80&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stock&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;IBM&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;NYSE&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;at&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;125.00&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)),&lt;/span&gt;
-                    &lt;span class=&quot;n&quot;&gt;sell&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;50&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; 
-                      &lt;span class=&quot;n&quot;&gt;stock&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(...))&lt;/span&gt;
-                    &lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;ul&gt;
-  &lt;li&gt;메서드 체인에 비해 함수의 중첩 방식이 도메인 객체 계층 구조에 그대로 반영된다는 것이 장점이다.&lt;/li&gt;
-  &lt;li&gt;결과 DSL에 더 많은 괄호를 사용해야 한다는 것이 단점이다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;람다-표현식을-이용한-함수-시퀀싱&quot;&gt;람다 표현식을 이용한 함수 시퀀싱&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;다음 DSL 패턴은 람다 표현식으로 정의한 함수 시퀀스를 사용한다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;Order&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;order&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;order&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;o&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;forCustomer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(...);&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;o&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;buy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;quantity&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;80&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;price&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;132&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;});&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;o&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;sell&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;quantity&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;price&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;})&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;})&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;ul&gt;
-  &lt;li&gt;이런 DSL 을 만드려면 람다 표현식을 받아 실행해 도메인 모델을 만들어 내는 여러 빌더를 구현해야 한다.&lt;/li&gt;
-  &lt;li&gt;DSL 구현에서 했던 방식과 마찬가지로 이들 빌더는 메서드 체인 패턴을 이용해 만들려는 객체의 중간 상태를 유지한다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;조합하기&quot;&gt;조합하기&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;지금까지 살펴본 세가지 DSL 패턴 각자가 장단점을 갖고 있다.&lt;/li&gt;
-  &lt;li&gt;세가지 DSL 패턴을 혼용하여 가독성 있는 DSL을 만드는 방법 을 사용할 수 있다.&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><summary type="html">Modern Java In Action 정리 - 람다를 이용한 도메인 전용 언어</summary></entry></feed>
+&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><summary type="html">Modern Java In Action 정리 - null 대신 Optional 클래스</summary></entry></feed>

@@ -83,7 +83,7 @@
 <link href="/assets/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="DDD,NEXTSTEP," />
+  <meta name="keywords" content="Jekyll, NexT" />
 
 
 
@@ -111,17 +111,17 @@
 
 
 
-<meta name="description" content="NextStep DDD 세레나데 강의 정리">
-<meta name="keywords" content="DDD, NEXTSTEP">
-<meta property="og:type" content="article">
-<meta property="og:title" content="DDD 세레나데 5주차 강의 정리">
-<meta property="og:url" content="http://localhost:4000/dev/2020/03/20/ddd-serenade-5w/">
+<meta name="description" content="사내 공유, 개인의 경험을 기록하는 블로그입니다.">
+<meta name="keywords" content="Jekyll, NexT">
+<meta property="og:type" content="website">
+<meta property="og:title" content="천천히 걷는 방법">
+<meta property="og:url" content="http://localhost:4000/page5/">
 <meta property="og:site_name" content="천천히 걷는 방법">
-<meta property="og:description" content="NextStep DDD 세레나데 강의 정리">
+<meta property="og:description" content="사내 공유, 개인의 경험을 기록하는 블로그입니다.">
 <meta property="og:locale" content="ko">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="DDD 세레나데 5주차 강의 정리">
-<meta name="twitter:description" content="NextStep DDD 세레나데 강의 정리">
+<meta name="twitter:title" content="천천히 걷는 방법">
+<meta name="twitter:description" content="사내 공유, 개인의 경험을 기록하는 블로그입니다.">
 
 
 <script type="text/javascript" id="hexo.configurations">
@@ -154,7 +154,7 @@
 
 
 
-  <title>DDD 세레나데 5주차 강의 정리 | 천천히 걷는 방법</title>
+  <title>천천히 걷는 방법</title>
   
 
 
@@ -179,7 +179,7 @@
   
   
 
-  <div class="container sidebar-position-left page-post-detail ">
+  <div class="container sidebar-position-left page-home ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -269,9 +269,12 @@
           <div id="content" class="content">
             
 
-<div id="posts" class="posts-expand">
+
+
+<section id="posts" class="posts-expand">
   
-  
+    
+    
 
   
 
@@ -280,7 +283,7 @@
   
 
   <article class="post post-type- " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://localhost:4000/dev/2020/03/20/ddd-serenade-5w/">
+    <link itemprop="mainEntityOfPage" href="http://localhost:4000/dev/2020/01/24/jpa-replication-issue/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="DongChul Lee">
@@ -300,7 +303,12 @@
           <h1 class="post-title" itemprop="name headline">
           
           
-            DDD 세레나데 5주차 강의 정리
+            
+                
+                <a class="post-title-link" href="/dev/2020/01/24/jpa-replication-issue/" itemprop="url">
+                Spring JPA DB Master / Slave 적용시 주의할 점
+              </a>
+            
           
         </h1>
         
@@ -314,8 +322,8 @@
               
                 <span class="post-meta-item-text">작성일</span>
               
-              <time title="" itemprop="dateCreated datePublished" datetime="2020-03-20T00:00:00+09:00">
-                2020-03-20
+              <time title="" itemprop="dateCreated datePublished" datetime="2020-01-24T00:00:00+09:00">
+                2020-01-24
               </time>
             
 
@@ -361,12 +369,6 @@
           
 
           
-            
-                <div class="post-description">
-                    NextStep DDD 세레나데 강의 정리
-                </div>
-            
-          
 
         </div>
       </header>
@@ -379,214 +381,63 @@
 
       
         
-  
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  <blockquote>
-  <p>DDD 세레나데 5주차</p>
-</blockquote>
-
-<h2 id="4주차-복습">4주차 복습</h2>
-<ul>
-  <li>비즈니스 로직 수행은 어느 곳에 하는 것이 좋을까 ?
-    <ul>
-      <li>도메인 레이어에서 기능을 수행하고 다른 응용 및 표현 레이어에서 해당 기능을 사용한다.</li>
-    </ul>
-  </li>
-  <li>응용 서비스
-    <ul>
-      <li>사용자의 요청에 맞는 도메인 모델을 찾아오고 그 모델의 로직을 위임하는 처리를 한다.</li>
-    </ul>
-  </li>
-  <li>도메인 서비스
-    <ul>
-      <li>응용 서비스와 도메인 서비스를 판단 하는 기준
-        <ul>
-          <li>두개 이상의 애그리거트가 사용될때</li>
-          <li>다루고 있는 로직이 위키나 지라에 정리를 해야할 필요성이 있는 경우</li>
-          <li>두가지 조건을 한줄로 요약하면 도메인 지식이 다른곳으로 흘러가는것을 막아주는 역할을 한다.</li>
-          <li>도메인 서비스는 어플리케이션 레이어와 도메인 레이어 사이에 위치한다.</li>
-        </ul>
-      </li>
-    </ul>
-  </li>
-  <li>응용 서비스의 구현</li>
-  <li>vo가 dto로 돌아다녀 외부에 노출된다면 캡슐화가 깨지는것이 아닌가 ?
-    <ul>
-      <li>vo가 dto로 돌아다니는 것은 일종의 trade-off이다.</li>
-      <li>vo의 접근 제어자를 default로 두어 도메인 패키지 내부에서만 사용할수 있도록 만드는것도 하나의 방법이다.</li>
-    </ul>
-  </li>
-  <li>항상 DTO를 만드는것은 실용적이지 않아 DTO를 대신 할 수 있는 VO를 찾는것도 방법이다.</li>
-  <li>고수준 모듈 저수준 모듈
-    <ul>
-      <li>고수준 모듈이 저수준 모듈에 의존하는것이 아니고 저수준 모듈이 고수준 모듈에 의존하도록 dip를 적용해야 한다.</li>
-    </ul>
-  </li>
-  <li>클린 아키텍처
-    <ul>
-      <li>안에선 밖을 모르고 밖에선 안을 알수 있는 아키텍처</li>
-      <li>도메인 모델을 외부로 부터 지키는 것이 중요하다.</li>
-    </ul>
-  </li>
-  <li>anticorruption layer
-    <ul>
-      <li>anticorruption layer 하는 역할이 크다면 별도의 레이어로 만들수도 있고 클래스로도 만들 수 있다.</li>
-      <li>많은 mapper class assemblr pattern이 등장 하더라도 나의 도메인 모델을 지킬 수 있다.</li>
-    </ul>
-  </li>
-  <li>도메인 서비스 구현 방법
-    <ul>
-      <li>응용 서비스에서 도메인 서비스를 주입 받고 응용서비스 내부에서 메시지를 전달한다.</li>
-      <li>해당 도메인 서비스에서는 도메인들을 가지고 와서 실제 로직을 실행하는 과정을 거친다.</li>
-      <li>repository는 domain service에 담고 있다.</li>
-      <li>repository에서 실행하는 save와 같은 데이터 추가는 실제로 DB에 값이 저장되지는 하지만 도메인 입장에서는 add와 같은 기능을 한다고 생각하여 repository가 infra영역이 아닌 domain 영역에 있다고 본다.</li>
-      <li>Domain layer가 필요 없는 상황 (하나의 도메인만 사용한다면) application layer에서 처리</li>
-      <li>도메인 모델에서 에러 같은 경우는 try - catch하여 상위 레이어에 노출되지 않도록 막아준다.
-        <ul>
-          <li>상위 레이어에서 알 수 있는 에러를 핸들링 할수 있도록 하는 것.</li>
-        </ul>
-      </li>
-    </ul>
-  </li>
-  <li>DTO 가이드
-    <ul>
-      <li>dto를 도메인으로 전환하고 도메인을 dto로 전환하는건 application service에서 담당하는것이 맞다.</li>
-      <li>dto가 데이터를 담아서 전달 할 수 있는 영역은 application service까지 이다.</li>
-    </ul>
-  </li>
-  <li>모놀리식 아키텍처는 다른 패키지의 서비스를 주입 받아서 사용하지만 마이크로 서비스로 분리 되는 경우 변경이 힘들다.</li>
-  <li>외부 컨텍스트에서 발생한 예외 또한 내부 컨텍스트에서 이해할 수 있는 에러로 감싸주어야 한다.</li>
-  <li>infrastructure layer가 anti corruption layer 역할을 할 수도 있다.</li>
-  <li>exception은 domain 패키지에 위치</li>
-  <li>anticorruptionlayer 도메인 내부 에그리게잇 폴더에 위치</li>
-  <li>order - buyer 예시에선 order 에그리게잇이 root가 되었다. 내부에 order , order item entity를 가지고 있고 vo 도 가지고 있다.</li>
-</ul>
-
-<h2 id="전술적-설계---domain-event">전술적 설계 - Domain Event</h2>
-<ul>
-  <li>이벤트란 도메인 전문가가 관심을 가질 법한 것들 (단순 조회 제외)</li>
-  <li>강한 결합</li>
-  <li>이벤트
-    <ul>
-      <li>이벤트는 어떤 상태가 변경되었다는것이다.</li>
-      <li>도메인 모델에서 이벤트를 관리 하는 주체는 에그리게잇이 될 수 있다.</li>
-      <li>이벤트 핸들러는 이벤트에 담긴 주체를 가지고 부가적인 행동을 하게 된다.</li>
-      <li>스프링에선 application event publisher 가 트랜잭션이 종료될때 이벤트를 발행 해 준다.
-        <ul>
-          <li>테스트 코드에선 이벤트가 발행되었는지 안되었는지만 확인 하면 된다.</li>
-        </ul>
-      </li>
-      <li>스프링 이벤트는 기본적으로 한 트랜젝션 내부에선 묶여있다.
-        <ul>
-          <li>하나가 실패하면 롤백되는 구조이다.</li>
-          <li>TransactionalEventListener 를 사용하면 트랜잭션이 끝난 후 동작하도록 사용할 수 있다.</li>
-        </ul>
-      </li>
-      <li>스프링 이벤트를 사용하지 않고 이벤트를 발행 하려면 AbstractAggregateRoot 를 상속 받아 registerEvent()으로 이벤트를 발생할 수 있다. 이떄는 save를 강제로 호출 해줘야 한다.</li>
-      <li>도메인 내부에 이벤트를 가지고 있어야 한다.</li>
-    </ul>
-  </li>
-  <li>이벤트 소싱
-    <ul>
-      <li>도메인 모델에서 발생하는 모든 이벤트를 기록하는 방법</li>
-    </ul>
-  </li>
-  <li>CQRS
-    <ul>
-      <li>상태를 변경하는 명령과 모델의 상태를 조회하는 모델을 분리한 패턴.</li>
-      <li>커멘트 패키지와 조회 패키지등으로 분리 할 수 있다.</li>
-    </ul>
-  </li>
-</ul>
-
-
+          JPA환경 DB Replication 설정시 이슈 정리.
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/dev/2020/01/24/jpa-replication-issue/">
+              더 읽어보기 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
       
     </div>
 
     <div>
       
-        
-
-      
     </div>
 
     <div>
       
-        
-
-      
     </div>
 
     <div>
-      
-        
-
       
     </div>
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            
-            <a href="/tag/#/DDD" rel="tag"># DDD</a>
-          
-            
-            <a href="/tag/#/NEXTSTEP" rel="tag"># NEXTSTEP</a>
-          
-        </div>
+
       
 
       
-      
-      
-      
-      
 
       
-      
-        <div class="post-nav" id="post-nav-id">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/dev/2020/03/27/java-clean-code/" rel="next" title="Java Clean Code 작성법">
-                <i class="fa fa-chevron-left"></i> Java Clean Code 작성법
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/dev/2020/03/18/java-interface-and-implement/" rel="prev" title="인터페이스와 구현에 대한 정리">
-                인터페이스와 구현에 대한 정리 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-      
-
+        
+        
+        
+        
+          <div class="post-eof"></div>
+        
       
     </footer>
   </article>
 
-  <div class="post-spread">
+  
+</section>
+
+
+  <nav class="pagination">
     
-  </div>
-</div>
+    
+    
+
+
+
+    <a class="extend prev" rel="prev" href="/page4"><i class="fa fa-angle-left"></i></a> <a class="page-number" href="/">1</a> <span class="space">&hellip;</span> <a class="page-number" href="/page4">4</a> <span class="page-number current">5</span>
+  </nav>
+
+
 
 
           </div>
@@ -594,10 +445,6 @@
 
 
           
-  <div class="comments" id="comments">
-    
-  </div>
-
 
         </div>
         
@@ -615,30 +462,10 @@
     <div class="sidebar-inner">
 
       
-        
-        
-        
-
-
-
-
-
-
 
       
 
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            목차
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            흝어보기
-          </li>
-        </ul>
-      
-
-      <section class="site-overview sidebar-panel">
+      <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/assets/images/avatar.gif"
@@ -723,34 +550,6 @@
       </section>
 
       
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-            
-            
-            
-
-
-
-
-
-
-
-
-            
-              <div class="post-toc-content">
-    <ol class=nav>
-      <li class="nav-item nav-level-2"> <a class="nav-link" href="#4주차-복습"> <span class="nav-number">1</span> <span class="nav-text">4주차 복습</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#전술적-설계---domain-event"> <span class="nav-number">2</span> <span class="nav-text">전술적 설계 - Domain Event</span> </a> </li>
-    </ol>
-  </div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
 
       
 
@@ -758,28 +557,7 @@
   </aside>
 
         
-        
-      <div id="disqus_thread"></div>
-      <script>
-
-      /**
-      *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-      *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
-      /*
-      var disqus_config = function () {
-      this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
-      this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
-      };
-      */
-      (function() { // DON'T EDIT BELOW THIS LINE
-      var d = document, s = d.createElement('script');
-      s.src = 'https://sah3122.disqus.com/embed.js';
-      s.setAttribute('data-timestamp', +new Date());
-      (d.head || d.body).appendChild(s);
-      })();
-      </script>
-      <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-          
+              
       </div>
     </main>       
 
