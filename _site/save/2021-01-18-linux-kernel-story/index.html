@@ -434,6 +434,24 @@ Active(file) : 커널의 I/O 성능향상을 위해 사용하는 영역, buffers
 Inactive(file) : 참조된지 오래되어 swap으로 이동될 수 있는 영역
 Dirty : I/O 성능 향상을 위해 커널이 캐시 목적으로 사용하는 영역중 쓰기 작업이 이루어지고 실제 블록 디바이스의 블록에 씌어져야할 영역.</p>
 
+<p>active 메모리는 시간이 지나서 inactive로 이동하는것이 아니고, 가용 메모리가 부족한 상황에서 LRU 알고리즘에 인해 이동한다.</p>
+
+<p>slab 메모리 영역
+slab : 커널이 직접적으로 사용하는 메모리 영역. dentry cache(디렉토리 계층관계 캐싱), inode cache(파일의 inode 정보) 등 커널이 사용하는 메모리가 포함
+Sreclaimable: slab 영역 중 재사용가능한 영역. 캐시용도로 사용하는 메모리들이 주로 포함된다. 메모리가 부족한 경우 해제되어 프로세스에 할당될 영역
+SUnreclaim: slab 영역중 재사용될수 없는 영역. 커널이 현재 사용하고 있는 영역이다.</p>
+
+<p>정리
+free명령어와 /proc/meminfo를 통해 시스템 메모리의 전반적인 상태확인 방법을 알아보았다.</p>
+<ol>
+  <li>free - buffers는 파일 시스템의 메타 데이터 등을 저장하는 블록 디바이스의 블록을 위한 캐시이다.</li>
+  <li>free - cached는 I/O 작업의 효율성을 위해 파일의 내용을 저장하는 영역이다.</li>
+  <li>buffers와 cached 영역은 시스템의 효율성의 위하여 커널에서 사용하는 용도이며, 프로세스가 필요로 할때는 해당 영역을 반환하게 된다.</li>
+  <li>/proc/meminfo에서 보이는 anon영역은 프로세스가 사용하는 영역, file은 i/o 성능 향상을 위해 커널이 캐싱용도로 사용하는 영역이다.</li>
+  <li>anon과 file영역은 active, inactive라 불리는 LRU Listfmf xhdgo rhksflehlsek.</li>
+  <li>Slab 영역은 커널이 사용하는 캐싱영역을 의미한다.</li>
+</ol>
+
   
 </div>
 
