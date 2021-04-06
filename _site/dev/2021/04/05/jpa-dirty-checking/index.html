@@ -83,7 +83,7 @@
 <link href="/assets/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="DDD,NEXTSTEP," />
+  <meta name="keywords" content="java,jpa," />
 
 
 
@@ -111,17 +111,17 @@
 
 
 
-<meta name="description" content="NextStep DDD 세레나데 강의 정리">
-<meta name="keywords" content="DDD, NEXTSTEP">
+<meta name="description" content="JPA를 사용한 업데이트 연산을 믿지 말자.">
+<meta name="keywords" content="java, jpa">
 <meta property="og:type" content="article">
-<meta property="og:title" content="DDD 세레나데 3주차 강의 정리">
-<meta property="og:url" content="http://localhost:4000/dev/2020/02/21/ddd-serenade-3w/">
+<meta property="og:title" content="JPA Dirty Checking 사용시 주의점">
+<meta property="og:url" content="http://localhost:4000/dev/2021/04/05/jpa-dirty-checking/">
 <meta property="og:site_name" content="천천히 걷는 방법">
-<meta property="og:description" content="NextStep DDD 세레나데 강의 정리">
+<meta property="og:description" content="JPA를 사용한 업데이트 연산을 믿지 말자.">
 <meta property="og:locale" content="ko">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="DDD 세레나데 3주차 강의 정리">
-<meta name="twitter:description" content="NextStep DDD 세레나데 강의 정리">
+<meta name="twitter:title" content="JPA Dirty Checking 사용시 주의점">
+<meta name="twitter:description" content="JPA를 사용한 업데이트 연산을 믿지 말자.">
 
 
 <script type="text/javascript" id="hexo.configurations">
@@ -154,7 +154,7 @@
 
 
 
-  <title>DDD 세레나데 3주차 강의 정리 | 천천히 걷는 방법</title>
+  <title>JPA Dirty Checking 사용시 주의점 | 천천히 걷는 방법</title>
   
 
 
@@ -280,7 +280,7 @@
   
 
   <article class="post post-type- " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://localhost:4000/dev/2020/02/21/ddd-serenade-3w/">
+    <link itemprop="mainEntityOfPage" href="http://localhost:4000/dev/2021/04/05/jpa-dirty-checking/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="DongChul Lee">
@@ -300,7 +300,7 @@
           <h1 class="post-title" itemprop="name headline">
           
           
-            DDD 세레나데 3주차 강의 정리
+            JPA Dirty Checking 사용시 주의점
           
         </h1>
         
@@ -314,8 +314,8 @@
               
                 <span class="post-meta-item-text">작성일</span>
               
-              <time title="" itemprop="dateCreated datePublished" datetime="2020-02-21T00:00:00+09:00">
-                2020-02-21
+              <time title="" itemprop="dateCreated datePublished" datetime="2021-04-05T00:00:00+09:00">
+                2021-04-05
               </time>
             
 
@@ -363,7 +363,7 @@
           
             
                 <div class="post-description">
-                    NextStep DDD 세레나데 강의 정리
+                    JPA를 사용한 업데이트 연산을 믿지 말자.
                 </div>
             
           
@@ -393,175 +393,89 @@
 
 
 
-  <blockquote>
-  <p>DDD 세레나데 3주차</p>
-</blockquote>
+  <p>이번 포스팅에서는 간단하지만 쉽게 놓칠 수 있는 부분을 소개해드리려고 합니다. :)</p>
 
-<h2 id="2주차-복습">2주차 복습</h2>
-<ul>
-  <li>유비쿼터스 언어
-    <ul>
-      <li>유비쿼터스 언어는 회의록, 회의, 코드 등에서 나타난다.</li>
-      <li>유비쿼터스 언어는 Bounded Context에서만 존재 해야 한다.</li>
-      <li>코드레벨에서는 유비쿼터스 언어가 검증이 되어야 한다.</li>
-      <li>검증이 되지 않으면 실패할 가능성이 크다.</li>
-    </ul>
-  </li>
-  <li>용어사전
-    <ul>
-      <li>도메인 주도 설계가 성공하기 위해선 용어 사전을 개발자만 참여하는것이 아닌 프로젝트에 참여하는 모두가 관리 해야 한다.</li>
-      <li>프로젝트가 커질 시 컨텍스트 별로 용어 사전을 정리 해야 한다. (동일한 용어가 다른 의미를 가질 수 있다.)</li>
-    </ul>
-  </li>
-  <li>모델링
-    <ul>
-      <li>모델링은 소리 내어 읽었을때 어색하지 않아야 한다.</li>
-    </ul>
-  </li>
-  <li>Bounded Context
-    <ul>
-      <li>BC는 서로 다른 관점을 찾는 것이다.</li>
-      <li>우발적인 중복은 충분한 고민을 해봐야 한다.</li>
-      <li>하나의 BC는 하나의 팀에서만 관리하는것이 베스트이다.</li>
-    </ul>
-  </li>
-  <li>OOP vs DDD
-    <ul>
-      <li>oop 에서의 상속으로 풀수 있는 문제 라고 하더라도 ddd 에선 context 간 분리가 더 중요하다.   <br />
-  그로 인해 context 내부에 중복이 발생 할 수도 있다.</li>
-    </ul>
-  </li>
-  <li>이벤트 스토밍
-    <ul>
-      <li>단순한 조회 같은 행위는 이벤트가 아닐 수도 있다.</li>
-      <li>조회를 하여 조회 카운트가 상승했다 와 같은 행위가 이벤트이다.</li>
-      <li>개발자들은 이벤트 스토밍 도중 기획자나 도메인 전문가 들이 설계를 어렵게 하는 부분에 대해 문제를 제기 할 줄 알아야 한다.</li>
-    </ul>
-  </li>
-  <li>Aggregate
-    <ul>
-      <li>독립된 라이프 사이클을 가지는 무언가</li>
-    </ul>
-  </li>
-</ul>
+<p>어느 날 API 모니터링 중 유난히 응답속도가 오래 걸리는 API를 발견하게 되었고, 어떤 작업을 수행하는 API인지 찾아보게 되었습니다.</p>
+
+<p>API의 기능을 간략하게 정리하자면 아래와 같은 기능을 수행하고 있었습니다.</p>
+<ol>
+  <li>사용자의 읽지 않은 알림을 모두 가지고 온다.</li>
+  <li>모두 읽음 처리한다.</li>
+</ol>
+
+<p>기능만 봐서는 간단한 작업들이고, 전혀 문제 될 부분들이 없어 보였지만 그동안 JPA에 익숙해짐으로써 중요한 부분들을 놓치고 있다는 것을 알게 되었습니다.</p>
+
+<p>문제의 코드를 확인해보겠습니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6</pre></td><td class="code"><pre class="highlight"><code><span class="nd">@Transactional</span>
+<span class="kd">public</span> <span class="n">ViewCountDto</span> <span class="nf">viewBadgeAll</span><span class="o">(</span><span class="n">UserAccount</span> <span class="n">userAccount</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">List</span><span class="o">&lt;</span><span class="n">Notification</span><span class="o">&gt;</span> <span class="n">notifications</span> <span class="o">=</span> <span class="n">notificationRepository</span><span class="o">.</span><span class="na">findUnBadgeviewNotifications</span><span class="o">(</span><span class="n">userAccount</span><span class="o">.</span><span class="na">getId</span><span class="o">());</span>
+    <span class="n">notifications</span><span class="o">.</span><span class="na">forEach</span><span class="o">(</span><span class="nl">Notification:</span><span class="o">:</span><span class="n">viewBadge</span><span class="o">);</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nf">ViewCountDto</span><span class="o">(</span><span class="n">notifications</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>위 코드만 봐서는 크게 문제 될 부분이 없어 보일 수도 있습니다.</p>
 
 <blockquote>
-  <p>공통된 단어가 나오면 반드시 context를 나눠야 한다.  (최소 context 수)
-최대 context 개수는 는 aggregate 개수</p>
+  <p>만약 JPA를 잘 모르시거나 Dirty Checking이란 기능을 모르시는 분들을 위해 간략히 설명드리자면 JPA에는 영속성 컨텍스트라는 개념과, 1차 캐시라는 개념이 있습니다. 
+  비즈니스 로직 실행 중 영속성 컨텍스트가 관리하는 도메인 객체의 값이 변경되고, 트랜젝션이 커밋되는 순간 Update Query가 실행되게 되는데 이러한 기능을 Dirty Checking이라고 합니다.</p>
 </blockquote>
 
-<blockquote>
-  <p>도메인 주도 설계는 설게 후 구축이 아닌 설계와 구축이 병렬적으로 진행 되어야 한다.</p>
-</blockquote>
+<p>영속성 컨텍스트를 중심적으로 다시 한번 위 코드를 분석해 보겠습니다.</p>
+<ol>
+  <li>알림 엔티티를 조회한다. (영속성 컨텍스트에 저장한다.)</li>
+  <li>알림 엔티티를 각각 수정한다.</li>
+  <li>수정된 알림 엔티티들을 업데이트한다.</li>
+</ol>
 
-<h2 id="전술적-설계---entity-와-value-object">전술적 설계 - ENTITY 와 VALUE OBJECT</h2>
-<ul>
-  <li>Entity는 지속적으로 상태를 관찰해야할 필요가 있을때 만든다.</li>
-  <li>내부적인 상태가 변하더라도 동일한 객체라고 인식을 해야 할 때 식별자를 만들고 Entity로 만든다.</li>
-  <li>도메인 모델에 setter 가 있으면 해당 도메인 모델은 완전한 상태가 아니게 된다.
-    <ul>
-      <li>버릇처럼 쓰는 setter 는 남발하면 안된다.</li>
-    </ul>
-  </li>
-  <li>모든 객체는 불변 객체가 가장 좋다.
-    <ul>
-      <li>새로운 타입의 객체를 만들어서 유효성 검사 로직을 옮긴다.</li>
-      <li>객체 끼리의 책임을 나누는 방법.</li>
-      <li>분리 된 객체는 만들어지거나 실패하거나 원자성을 보장한다.</li>
-      <li>값 객체 (value object- 불변 객체)는 동일성과 동등성을 보장해야 한다.
-        <ul>
-          <li>가변 객체는 값이 바뀜에 따라 의미가 달라 질 수 있다.</li>
-          <li>불변 객체는 값이 바뀜에 따라 새로운 불변 객체를 만들어 내야 한다.</li>
-          <li>불변 객체는 계속 생성이 되면 메모리 부하가 일어나지 않나 ?
-            <ul>
-              <li>-&gt; 컴퓨팅 파워와 GC를 믿어야 한다.</li>
-            </ul>
-          </li>
-        </ul>
-      </li>
-      <li>불변 객체
-        <ul>
-          <li>포함 되고 있는 모든 값들을 final 로 만든다.</li>
-          <li>1 + 1 = 2 가 아닌 new int(2)</li>
-          <li>리스트 같은 멤버 변수는 final을 사용해도 값이 바뀔수 있어서 의식적인 방어적 복사가 필요하다.</li>
-        </ul>
-      </li>
-    </ul>
-  </li>
-</ul>
+<p>어떤 문제점이 발생할지 감이 오시는 분들이 계실 것 같습니다. <br />
+위 코드를 실행하는 경우 Notifications의 크기만큼 Update Query가 실행되고 있었습니다.</p>
 
-<h1 id="aggregate">AGGREGATE</h1>
-<ul>
-  <li>엔티티와 ValueObject (관련 객체)가 모여있는 군집.</li>
-  <li>반장이라는 개념이 있다 (루트 엔티티)</li>
-  <li>Bounded Context &gt; Context &gt; AGGREATE</li>
-  <li>동일한라이프 사이클을 가진것을 하나의 AGGREGATE로 묶는다.
-    <ul>
-      <li>ex) 자동차 인스턴스가 사라지면 내부에 속한 핸들 및 바퀴와 같은 인스턴스도 같이 사라져야 한다.</li>
-    </ul>
-  </li>
-  <li>하나의 Aggregate에 속하면 다른 Aggregate에는 속하지 못한다.</li>
-  <li>정리 하면 많은 엔티티들을 동일한 라이프 사이클로 묶어둔 군집</li>
-  <li>Aggregate Root
-    <ul>
-      <li>외부에선 해당 aggregate와 대화 하기 위해선 Root에게 요청을 해야 한다.</li>
-      <li>Aggregate Root 도 하나의 엔티티 이기 때문에 내부에 상태를 가지고 있다.</li>
-      <li>서로 다른 Aggregate와 대화 하기 위해선 반드시 Aggregate Root를 거쳐야 한다.</li>
-      <li>내부에 어떤 상태를 가지고 있는지 외부에서는 알지 못한다 (캡슐화)</li>
-    </ul>
-  </li>
-  <li>두개 이상의 엔티티가 하나의 Aggretate에 있으면 어떤걸 Root로 할까 ?
-    <ul>
-      <li>Aggregate Root 가 될 수 있는 기준은 Global 식별자(외부에서 참조 하고 있는 식별자) 를 가지고 있는것. 따라서 Order가 Root</li>
-      <li>로컬 식별자 를 가지고 있으면 루트가 될 수 없다.</li>
-    </ul>
-  </li>
-  <li>정리 하면 글로벌 식별자를 가지고 있어야 루트 에그리게잇이 될 수 있다.</li>
-  <li>Aggregate 참조
-    <ul>
-      <li>직접 참조를 허용하면 편리함을 오용한다.</li>
-      <li>ID를 이용한 간접 참조를 권장한다.
-        <ul>
-          <li>복잡도를 낮출 수 있다.</li>
-        </ul>
-      </li>
-      <li>같은 Aggregate 에선 직접 참조 해야 한다.</li>
-    </ul>
-  </li>
-</ul>
+<p>이러한 문제점들을 바로잡기 위하여 코드를 개선하는 작업을 진행하였고 현재는 아래와 같이 동작하도록 수정하였습니다.</p>
 
-<h2 id="repository">Repository</h2>
-<ul>
-  <li>Repository 는 구현을 위한 도메인 모델.</li>
-  <li>Aggregate 단위로 도메인 객체를 저장하고 조회하는 기능을 정의한다.</li>
-  <li>리포지토리는 Aggregate(Root)단위로 존재하며 테이블 단위로 존재하는 것이 아니다.
-    <ul>
-      <li>리포지토리는 Aggregate을 위한 컬렉션으로 생각하면 된다.</li>
-    </ul>
-  </li>
-</ul>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26</pre></td><td class="code"><pre class="highlight"><code><span class="nd">@Transactional</span>
+<span class="kd">public</span> <span class="n">ViewCountDto</span> <span class="nf">viewBadgeAll</span><span class="o">(</span><span class="n">UserAccount</span> <span class="n">userAccount</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">List</span><span class="o">&lt;</span><span class="n">Long</span><span class="o">&gt;</span> <span class="n">notificationIds</span> <span class="o">=</span> <span class="n">notificationRepository</span><span class="o">.</span><span class="na">findUnBadgeviewNotifications</span><span class="o">(</span><span class="n">userAccount</span><span class="o">.</span><span class="na">getId</span><span class="o">())</span>
+                                                       <span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+                                                       <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="nl">Notification:</span><span class="o">:</span><span class="n">getId</span><span class="o">)</span>
+                                                       <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">toList</span><span class="o">());</span>
+    <span class="kd">final</span> <span class="n">AtomicInteger</span> <span class="n">count</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AtomicInteger</span><span class="o">();</span>
+    <span class="n">notificationIds</span><span class="o">.</span><span class="na">stream</span><span class="o">()</span>
+                   <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">groupingBy</span><span class="o">(</span><span class="n">notificationId</span> <span class="o">-&gt;</span> <span class="n">count</span><span class="o">.</span><span class="na">getAndIncrement</span><span class="o">()</span> <span class="o">/</span> <span class="n">CHUNK_SIZE</span><span class="o">))</span>
+                   <span class="o">.</span><span class="na">values</span><span class="o">()</span>
+                   <span class="o">.</span><span class="na">forEach</span><span class="o">(</span><span class="k">this</span><span class="o">::</span><span class="n">bulkUpdate</span><span class="o">);</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nf">ViewCountDto</span><span class="o">(</span><span class="n">notificationIds</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
+<span class="o">}</span>
 
-<h2 id="service">Service</h2>
-<ul>
-  <li>어플리케이션 서비스와 도메인 서비스는 다르다.</li>
-  <li>여러 도메인이 가진 로직들을 하나의 서비스에서 처리 하기 위한 레이어.</li>
-  <li>도메인 서비스라는 것은 엔티티, vo, repository를 만든 상태에서 정책 또는 로직을 특정 애그리게잇의 행위로 지정하기 어려운것들.</li>
-  <li>객체 지향이 아닌 절차 지향적인 로직들을 도메인 서비스로 분리해서 특별하게 관리 할 수 있다.</li>
-  <li>도메인 서비스와 어플리케이션 서비스는 상태값을 가지고 있지 않다는것에선 유사하지만 서로 다루는 서비스 영역이 다르다.</li>
-</ul>
 
-<h2 id="factory">Factory</h2>
-<ul>
-  <li>연관된 Aggregate에서 생성 해보자.
-    <ul>
-      <li>ex) 좋은 모델링 - LadderGame 이 종료되야 GameResult 생성
-        <ul>
-          <li>사다리게임이 끝나야 게임 결과를 생성한다 라는것은 게임 결과는 게임을 통해서 알수 있다는 비즈니스 로직을 한눈에 알수 있는것이다.</li>
-        </ul>
-      </li>
-    </ul>
-  </li>
-</ul>
+<span class="kd">private</span> <span class="kt">void</span> <span class="nf">bulkUpdate</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Long</span><span class="o">&gt;</span> <span class="n">notificationIds</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">notificationRepository</span><span class="o">.</span><span class="na">updateNotificationsViewByIds</span><span class="o">(</span><span class="n">notificationIds</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="nd">@Override</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">updateNotificationsViewByIds</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Long</span><span class="o">&gt;</span> <span class="n">ids</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">jpaQueryFactory</span><span class="o">.</span><span class="na">update</span><span class="o">(</span><span class="n">notification</span><span class="o">)</span>
+                   <span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">notification</span><span class="o">.</span><span class="na">badgeView</span><span class="o">,</span> <span class="kc">true</span><span class="o">)</span>
+                   <span class="o">.</span><span class="na">where</span><span class="o">(</span><span class="n">notification</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">in</span><span class="o">(</span><span class="n">ids</span><span class="o">))</span>
+                   <span class="o">.</span><span class="na">execute</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>개선된 코드를 간략히 설명드리겠습니다.</p>
+<ol>
+  <li>읽지 않은 알림을 조회한다.</li>
+  <li>알림 리스트를 정의한 사이즈만큼의 Chunk로 분할한다.</li>
+  <li>분할된 리스트마다 Id를 추출하고 Update In 쿼리를 실행한다.</li>
+</ol>
+
+<p>이와 같이 개선함으로 실행되는 Update Query의 빈도의 전 / 후 차이를 살펴보면 개선 전 로직의 경우<br />
+Notification의 크기만큼 Update 쿼리가 실행된 반면 개선 후 로직의 경우는 Notification Size / 1000 만큼의 Update Query가 실행되도록 개선되었습니다.</p>
+
+<p>간략한 팁이지만 Chunk Size를 1000개로 설정한 이유로는 Mysql In query는 기본적으로 1000개까지만 입력 가능하도록 되어 있기 때문에 Chunk Size를 1000개로 설정하였습니다.<br />
+또한 Bulk Update를 실행하는 경우 영속성 컨텍스트의 관리를 받지 못하게 되므로 업데이트 연산 이후 엔티티를 가지고 후 처리가 필요한 경우에는 엔티티를 다시 조회해야 한다는 점을 반드시 알고 계셔야 합니다. :)</p>
+
+<p>지금까지 JPA를 사용하며 Dirty Chekcing이라는 편리한 기능에 익숙해져 성능과는 거리가 멀어진 코드를 리팩토링하는 과정이었습니다.</p>
 
 
       
@@ -593,10 +507,10 @@
         <div class="post-tags">
           
             
-            <a href="/tag/#/DDD" rel="tag"># DDD</a>
+            <a href="/tag/#/java" rel="tag"># java</a>
           
             
-            <a href="/tag/#/NEXTSTEP" rel="tag"># NEXTSTEP</a>
+            <a href="/tag/#/jpa" rel="tag"># jpa</a>
           
         </div>
       
@@ -612,18 +526,14 @@
         <div class="post-nav" id="post-nav-id">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/dev/2020/03/13/ddd-serenade-4w/" rel="next" title="DDD 세레나데 4주차 강의 정리">
-                <i class="fa fa-chevron-left"></i> DDD 세레나데 4주차 강의 정리
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/dev/2020/02/14/ddd-serenade-2w/" rel="prev" title="DDD 세레나데 2주차 강의 정리">
-                DDD 세레나데 2주차 강의 정리 <i class="fa fa-chevron-right"></i>
+              <a href="/dev/2021/01/14/java-code-smell01/" rel="prev" title="코드 스멜 없애기 - Part 1">
+                코드 스멜 없애기 - Part 1 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -680,17 +590,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            목차
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            흝어보기
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel">
+      <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/assets/images/avatar.gif"
@@ -774,34 +675,6 @@
 
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-            
-            
-            
-
-
-
-
-
-
-
-
-            
-              <div class="post-toc-content">
-    <ol class=nav>
-      <li class="nav-item nav-level-1"> <a class="nav-link" href="#aggregate"> <span class="nav-number">1</span> <span class="nav-text">AGGREGATE</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-2"> <a class="nav-link" href="#repository"> <span class="nav-number">1.1</span> <span class="nav-text">Repository</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#service"> <span class="nav-number">1.2</span> <span class="nav-text">Service</span> </a> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#factory"> <span class="nav-number">1.3</span> <span class="nav-text">Factory</span> </a> </li> </ol> </li>
-    </ol>
-  </div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
