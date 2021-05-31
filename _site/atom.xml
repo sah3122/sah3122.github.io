@@ -1,4 +1,153 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-05-31T23:54:39+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">JPA Dirty Checking 사용시 주의점</title><link href="http://localhost:4000/dev/2021/04/05/jpa-dirty-checking/" rel="alternate" type="text/html" title="JPA Dirty Checking 사용시 주의점" /><published>2021-04-05T00:00:00+09:00</published><updated>2021-04-05T00:00:00+09:00</updated><id>http://localhost:4000/dev/2021/04/05/jpa-dirty-checking</id><content type="html" xml:base="http://localhost:4000/dev/2021/04/05/jpa-dirty-checking/">&lt;p&gt;이번 포스팅에서는 간단하지만 쉽게 놓칠 수 있는 부분을 소개해드리려고 합니다. :)&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-06-01T00:37:03+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">쿠버네티스 인 액션 - 11장 쿠버네티스 내부 이해</title><link href="http://localhost:4000/dev/2021/05/31/k8s-in-action11/" rel="alternate" type="text/html" title="쿠버네티스 인 액션 - 11장 쿠버네티스 내부 이해" /><published>2021-05-31T00:00:00+09:00</published><updated>2021-05-31T00:00:00+09:00</updated><id>http://localhost:4000/dev/2021/05/31/k8s-in-action11</id><content type="html" xml:base="http://localhost:4000/dev/2021/05/31/k8s-in-action11/">&lt;blockquote&gt;
+  &lt;p&gt;Kubernetes In Action 정리 - 쿠버네티스 내부 이해&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;쿠버네티스 클러스터 구성 요소&lt;/li&gt;
+  &lt;li&gt;각 구성 요소의 기능과 동작 방법&lt;/li&gt;
+  &lt;li&gt;디플로이먼트 오브젝트를 생성해 파드를 실행하는 방법&lt;/li&gt;
+  &lt;li&gt;실행 중인 파드에 관하여&lt;/li&gt;
+  &lt;li&gt;파드 간의 네트워크 동작 방식&lt;/li&gt;
+  &lt;li&gt;쿠버네티스 서비스의 동작 방식&lt;/li&gt;
+  &lt;li&gt;고가용성 실현 방법&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;111-아키텍처-이해&quot;&gt;11.1 아키텍처 이해&lt;/h2&gt;
+
+&lt;p&gt;쿠버네티스 클러스터를 이루는 구성&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;쿠버네티스 컨트롤 플레인&lt;/li&gt;
+  &lt;li&gt;(워커) 노드&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;컨트롤-플레인-구성요소&quot;&gt;컨트롤 플레인 구성요소&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;컨트롤 플레인은 클러스터 기능을 제어 및 전체 클러스터가 동작하게 만드는 역할을 한다. 구성요소는 아래와 같다.
+    &lt;ul&gt;
+      &lt;li&gt;etcd 분산 저장 스토리지&lt;/li&gt;
+      &lt;li&gt;API 서버&lt;/li&gt;
+      &lt;li&gt;스케줄러&lt;/li&gt;
+      &lt;li&gt;컨트롤러 매니저&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;이들 구성 요소는 클러스터 상태를 저장 및 관리 하지만 애플리케이션 컨테이너를 직접 실행하는 것은 아니다.&lt;/p&gt;
+
+&lt;h3 id=&quot;워커-노드에서-실행하는-구성요소&quot;&gt;워커 노드에서 실행하는 구성요소&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;kubelet&lt;/li&gt;
+  &lt;li&gt;쿠버네티스 서비스 프록시 (kube-proxy)&lt;/li&gt;
+  &lt;li&gt;컨테이너 런타임 (Dockerm rkt …)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;애드온-구성요소&quot;&gt;애드온 구성요소&lt;/h3&gt;
+&lt;p&gt;컨트롤 플레인과 노드에서 실행되는 구성요소 이외에 몇가지 추가 구성요소가 필요.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;쿠버네티스 DNS 서버&lt;/li&gt;
+  &lt;li&gt;대시보드&lt;/li&gt;
+  &lt;li&gt;인그레스 컨트롤러&lt;/li&gt;
+  &lt;li&gt;힙스터&lt;/li&gt;
+  &lt;li&gt;컨테이너 네트워크 인터페이스 플러그인&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;1111-쿠버네티스-구성-요소의-분산-특성&quot;&gt;11.1.1 쿠버네티스 구성 요소의 분산 특성&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/post/k8s/Kubernetes-101-Architecture-Diagram.jpeg&quot; alt=&quot;쿠버네티스 구성 요소&quot; /&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;컨트롤 플레인 구성 요소의 상태 확인
+API 서버는 각 컨트롤 플레인 구성요소의 상태를 표시하는 ComponentStatus API 리소스 제공.
+$ kubectl get componentstatus
+Warning: v1 ComponentStatus is deprecated in v1.19+
+NAME                 STATUS      MESSAGE                                                                                       ERROR
+controller-manager   Unhealthy   Get &quot;http://127.0.0.1:10252/healthz&quot;: dial tcp 127.0.0.1:10252: connect: connection refused
+scheduler            Unhealthy   Get &quot;http://127.0.0.1:10251/healthz&quot;: dial tcp 127.0.0.1:10251: connect: connection refused
+etcd-0               Healthy     {&quot;health&quot;:&quot;true&quot;}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;구성-요소가-서로-통신하는-방법&quot;&gt;구성 요소가 서로 통신하는 방법&lt;/h3&gt;
+&lt;p&gt;쿠버네티스 시스템 구성요소는 오직 API 서버하고만 통신하며 API 서버는 etcd와 통신하는 유일한 구성요소이다.&lt;br /&gt;
+다른 구성요소는 etcd와 직접 통신하지 않고, API 서버로 클러스터 상태를 변경한다. (API 서버에 요청을 보낸다.)&lt;/p&gt;
+
+&lt;h3 id=&quot;개별-구성-요소의-여러-인스턴스-실행&quot;&gt;개별 구성 요소의 여러 인스턴스 실행&lt;/h3&gt;
+&lt;p&gt;워커 노드의 구성요소는 동일한 노드에서 실행되어야 하는 반면 컨트롤 플레인의 구성요소는 여러 서버에 걸쳐 실행 가능하다.&lt;br /&gt;
+각 컨트롤 플레인 구성 요소 인스턴스를 둘 이상 샐행하여 가용성을 높일 수 있다. (etcd, API 서버는 병렬 실행 가능, 스케줄러와 컨트롤러 매니저는 하나의 인스턴스만 활성화)&lt;/p&gt;
+
+&lt;h3 id=&quot;구성-요소-실행-방법&quot;&gt;구성 요소 실행 방법&lt;/h3&gt;
+&lt;p&gt;Kubelet은 항상 일반 시스템 구성 요소로 실행되는 유일한 구성요소며 Kubelet이 다른 구성 요소를 파드로 실행한다. (kube-proxy와 같은 구성요소는 파드로 실행할 수 있지만 kubelet은 시스템 구성요소(데몬)으로 실행되어야 한다.)&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Kubelet 이란 ?&lt;br /&gt;
+클러스터의 각 노드에서 실행되는 에이전트. Kubelet은 파드에서 컨테이너가 확실하게 동작하도록 관리한다.&lt;br /&gt;
+Kubelet은 다양한 메커니즘을 통해 제공된 파드 스펙(PodSpec)의 집합을 받아서 컨테이너가 해당 파드 스펙에 따라 건강하게 동작하는 것을 확실히 한다. Kubelet은 쿠버네티스를 통해 생성되지 않는 컨테이너는 관리하지 않는다.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;kube-system 네임스페이스에 속한 파드 조회
+
+$ kubectl get po -o custom-columns=POD:metadata.name,NODE:spec.nodeName --sort-by spec.nodeName -n kube-system
+POD                                      NODE
+etcd-docker-desktop                      docker-desktop
+kube-apiserver-docker-desktop            docker-desktop
+kube-controller-manager-docker-desktop   docker-desktop
+kube-scheduler-docker-desktop            docker-desktop
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;컨트롤 플레인의 구성요소는 마스터노드에서 파드로 실행, 세 개의 워커 노드는 kube-proxy와 Flannel 파드를 실행한 오버레이 네트워크를 제공 (Docker K8S에서는 응답값이 다르다.)&lt;/p&gt;
+
+&lt;h3 id=&quot;1112-쿠버네티스가-etcd를-사용하는-방법&quot;&gt;11.1.2 쿠버네티스가 etcd를 사용하는 방법&lt;/h3&gt;
+&lt;p&gt;영구적으로 저장되어야 하는 값들을 빠르고 분산하여 저장하기 위하여 일관된 key - value 저장소를 제공한다. 이것이 etcd이다. &lt;br /&gt;
+분산되어 있기 때문에 둘 이상의 etcd 인스턴스를 실행하여 고가용성과 우수한 성능 제공, 낙관적 잠금 시스템 및 유효성 검사 이점&lt;br /&gt;
+&lt;strong&gt;쿠버네티스가 클러스터 상태와 메타데이터를 저장하는 유일한 장소가 etcd라는 것은 강조할 가치가 있다.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;리소스를-etcd에-저장하는-방법&quot;&gt;리소스를 etcd에 저장하는 방법&lt;/h3&gt;
+&lt;p&gt;etcd는 파일 시스템과 유사하게 key - value 쌍을 만들어 저장한다. 쿠버네티스는 모든 데이터를 /registry 아래에 저장한다.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ etcdctl ls /registry
+&amp;gt; Docker K8S 에서는 기본적으로 제공하지 않음.
+키 목록이 리소스 형식에 해당한다. 
+
+디렉터리 안에 있는 키 목록
+$ etcdctl ls /registry/pods
+&amp;gt; 네임 스페이스 단위로 저장된다. 
+
+default 네임스페이스 안에 있는 파드의 etcd 항목
+$ etcdctl ls /registry/pods/default
+
+파드를 나타내는 etcd 항목
+$ etcdctl get /registry/pods/default/kubia-xxx
+{
+  json 타입
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;파드를 나타내는 항목들은 json 형식으로 저장된다.&lt;/p&gt;
+
+&lt;h3 id=&quot;저장된-오브젝트의-일관성과-유효성-보장&quot;&gt;저장된 오브젝트의 일관성과 유효성 보장&lt;/h3&gt;
+&lt;p&gt;쿠버네티스는 모든 구성 요소가 API 서버를 통하도록 구현하여 데이터가 항상 일치 하도록 구현했다. API 서버 한곳에서 낙관적 잠금 메커니즘을 구현하여 클러스터의 상태를 업데이트 하고,&lt;br /&gt;
+오류가 발생할 가능성을 줄이고, 일관성을 가질수 있다.&lt;/p&gt;
+
+&lt;h3 id=&quot;클러스터링된-etcd의-일관성-보장&quot;&gt;클러스터링된 etcd의 일관성 보장&lt;/h3&gt;
+&lt;p&gt;고가용성을 보장하기 위해 두 개 이상의 etcd 인스턴스를 실행하는것이 일반적.&lt;br /&gt;
+etcd는 RAFT 합의 알고리즘을 사용하여 어느 순간이든 각 노드 상태가 대다수의 노드가 동의하는 현재 상태이거나, 이전에 동의된 상태 중에 하나임을 보장한다. 
+합의 알고리즘은 클러스터가 다음 상태로 진행하기 위해 과반수가 필요하다.&lt;/p&gt;
+
+&lt;h3 id=&quot;etcd-인스턴스-수가-홀수인-이유&quot;&gt;etcd 인스턴스 수가 홀수인 이유&lt;/h3&gt;
+&lt;p&gt;etcd는 인스턴스를 일반적으로 홀수로 배포한다. 하나의 인스턴스가 실패하는 경우 과반수의 인스턴스가 필요하기 때문이다.&lt;/p&gt;
+
+&lt;h3 id=&quot;1113-api-서버의-기능&quot;&gt;11.1.3 API 서버의 기능&lt;/h3&gt;
+&lt;p&gt;쿠버네티스 API 서버는 다른 모든 구성 요소와 kubectl 같은 클라이언트에서 사용하는 중심 구성 요소이다.&lt;br /&gt;
+클러스터 상태를 조회 / 변경하기 위해 RESTful API를 제공한다. 변경된 상태는 etcd에 저장하고 오브젝트 유효성 검사 작업도 수행하기 때문에 잘못 설정된 오브젝트를 저장할 수 없다.&lt;br /&gt;
+API 서버의 클라이언트 중 하나는 kubectl 명령줄 도구이다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/post/k8s/api-server.png&quot; alt=&quot;API 서버의 동작&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;이미지 출처
+    &lt;ul&gt;
+      &lt;li&gt;https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-architecture/&lt;/li&gt;
+      &lt;li&gt;https://kubernetes.io/ko/docs/concepts/security/controlling-access/&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="kubernetes" /><summary type="html">Kubernetes In Action 정리 - 쿠버네티스 내부 이해</summary></entry><entry><title type="html">JPA Dirty Checking 사용시 주의점</title><link href="http://localhost:4000/dev/2021/04/05/jpa-dirty-checking/" rel="alternate" type="text/html" title="JPA Dirty Checking 사용시 주의점" /><published>2021-04-05T00:00:00+09:00</published><updated>2021-04-05T00:00:00+09:00</updated><id>http://localhost:4000/dev/2021/04/05/jpa-dirty-checking</id><content type="html" xml:base="http://localhost:4000/dev/2021/04/05/jpa-dirty-checking/">&lt;p&gt;이번 포스팅에서는 간단하지만 쉽게 놓칠 수 있는 부분을 소개해드리려고 합니다. :)&lt;/p&gt;
 
 &lt;p&gt;어느 날 API 모니터링 중 유난히 응답속도가 오래 걸리는 API를 발견하게 되었고, 어떤 작업을 수행하는 API인지 찾아보게 되었습니다.&lt;/p&gt;
 
@@ -1763,281 +1912,4 @@ interface Subscription {
   &lt;li&gt;디폴트 메서드를 사용하면 소스 호환성을 유지할 수 있다.&lt;/li&gt;
   &lt;li&gt;선택형 메서드와 동작 다중 상속에도 디폴트 메서드를 사용할 수 있다.&lt;/li&gt;
   &lt;li&gt;클래스가 같은 시그니처를 갖는 여러 디폴트 메서드를 상속하며 생기는 충돌 문제를 해결하는 규칙이 있다.&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><summary type="html">Modern Java In Action 정리 - 디폴트 메서드</summary></entry><entry><title type="html">모던 자바 인 액션 - 12장 새로운 날짜와 시간 API</title><link href="http://localhost:4000/dev/2020/11/24/modern-java09/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 12장 새로운 날짜와 시간 API" /><published>2020-11-24T00:00:00+09:00</published><updated>2020-11-24T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/11/24/modern-java09</id><content type="html" xml:base="http://localhost:4000/dev/2020/11/24/modern-java09/">&lt;blockquote&gt;
-  &lt;p&gt;Modern Java In Action 정리 - 새로운 날짜와 시간 API&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Java 8에서 새로운 날짜와 시간 라이브러리를 제공하는 이유&lt;/li&gt;
-  &lt;li&gt;사람이나 기계가 이해할 수 있는 날짜와 시간 표현 방법&lt;/li&gt;
-  &lt;li&gt;시간의 양 정의하기&lt;/li&gt;
-  &lt;li&gt;날짜 조작, 포매팅, 파싱&lt;/li&gt;
-  &lt;li&gt;시간대와 캘린더 다루기&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;모던 자바 인 액션 책을 보고 정리한 글입니다.&lt;/code&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;localdate-localtime-instant-duration-period-클래스&quot;&gt;LocalDate, LocalTime, Instant, Duration, Period 클래스&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;LocalDate, LocalTime, Instant, Duration, Period를 활용하여 간단한 날짜와 시간 간격을 정의해보자.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;localdate와-localtime-사용&quot;&gt;LocalDate와 LocalTime 사용&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;LocalDate 인스턴스는 시간을 제외한 날짜를 표현하는 불변객체이다.&lt;/li&gt;
-  &lt;li&gt;LocalDate 객체는 어떤 시간대 정보도 포함하지 않는다.&lt;/li&gt;
-  &lt;li&gt;정적 팩토리 메소드 of를 활용하여 LocalDate 인스턴스를 만들 수 있다.&lt;/li&gt;
-  &lt;li&gt;팩토리 메소드 now()는 시스템 시계의 정보를 이용해 현재 날짜 정보를 얻는다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2017&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;21&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;date&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getYear&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;시간대를 포함한 클래스는 LocalTime을 사용한다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;LocalTime&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LocalTime&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;13&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;45&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 13:45:20&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getHour&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;날짜와 시간 문자열로 LocalDate와 LocalTime의 인스턴스를 만드는 방법도 있다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;2017-09-21&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;LocalTime&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LocalTime&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;13:45:20&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;parse 메서드에 DateTimeFormatter를 전달할 수 있다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;날짜와-시간-조합&quot;&gt;날짜와 시간 조합&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;LocalDateTime은 LocalDate와 LocalTime을 갖는다.&lt;/li&gt;
-  &lt;li&gt;LocalDateTime은 날짜와 시간을 모두 표현할 수 있다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;LocalDateTime&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dt1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LocalDateTime&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2017&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Month&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;SEPTEMBER&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;21&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;13&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;45&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;LocalDateTime&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dt2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LocalDateTime&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;date&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;instant-클래스--기계의-날짜와-시간&quot;&gt;Instant 클래스 : 기계의 날짜와 시간&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;Instant 클래스는 유닉스 에포크 시간을 기준으로 특정 지점까지의 시간을 초로 표현한다.&lt;/li&gt;
-  &lt;li&gt;팩토리 메서드 ofEpochSecond에 초를 넘겨줘서 Instant 클래스 인스턴스를 만들 수 있다.&lt;/li&gt;
-  &lt;li&gt;Instant 클래스는 나노초의 정밀도를 제공한다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;duration과-period-정의&quot;&gt;Duration과 Period 정의&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;Temporal 인터스페이스는 특정 시간을 모델링하는 객체의 값을 어떻게 읽고 조작할지 정의한다.&lt;/li&gt;
-  &lt;li&gt;Duration클래스는 between으로 두시간 객체 사이의 지속시간을 만들수 있다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;Duration&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;d1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Duration&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;between&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Duration&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;d1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Duration&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;between&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dateTime1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dateTime2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Duration&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;d1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Duration&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;between&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;instant1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;instant2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;LocalDateTime은 사람이 사용하도록, Instant는 기계가 사용하도록 만들어졌다.&lt;/li&gt;
-  &lt;li&gt;Period 클래스의 팩토리 메서드 between을 이용하면 두 LocalDate의 차이를 확인할 수 있다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;Period&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tenDays&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Period&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;between&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2017&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;11&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2017&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;21&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Duration과 Period 클래스는 자신의 인스턴스를 만들 수 있도록 다양한 팩토리 메서드를 제공한다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;Duration&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;threeMinutes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Duration&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;ofMinutes&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Duration&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;threeMinutes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Duration&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ChronoUnit&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;MINUTES&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;Period&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tenDays&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Period&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;ofDays&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Period&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;threeWeeks&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Period&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;ofWeeks&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;지금까지 살펴본 모든 클래스는 불변이다. 불변 클래스는 함수형 프로그래밍과 스레드 세이프하여 도메인 모델의 일관성을 유지하는데 좋은 특성이다.&lt;/li&gt;
-  &lt;li&gt;새로운 날짜와 시간 API에서는 변경된 객체 버전을 만들 수 있는 메서드를 제공한다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;날짜-조정-파싱-포메팅&quot;&gt;날짜 조정, 파싱, 포메팅&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;withAttribte 메서드로 기존의 LocalDate를 바꾼 버전을 직접 간단히 만들 수 있다.&lt;/li&gt;
-  &lt;li&gt;모든 메서드는 기존 객체를 변경하지 않는다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;//절대적인 방식으로 LocalDate의 속성 바꾸기&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2017&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;21&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 2017-09-21&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;withYear&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2011&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 2011-09-21&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;withDayOfMonth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;25&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 2011-09-25&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date4&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ChronoField&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;MONTH_OF_YEAR&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 2011-02-25&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;마지막 행에서 보여주는 것처럼 첫 번째 인수로 TemporalField를 갖는 메서드를 사용하면 조금더 범용적으로 날짜를 변경할 수 있다.&lt;/li&gt;
-  &lt;li&gt;선언형으로 LocalDate를 사용하는 방법도 존재한다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2017&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;21&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 2017-09-21&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;plusWeek&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 2017-09-28&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;minusYear&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 2011-09-28&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date4&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;plus&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ChronoUnit&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;MONTHS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 2012-03-28&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;temporaladjusters-사용하기&quot;&gt;TemporalAdjusters 사용하기&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;Java는 다음주 일요일, 돌아오는 평일등 복잡한 날짜 조정기능을 지원한다.&lt;/li&gt;
-  &lt;li&gt;날짜와 시간 API는 다양한 상황에서 사용할 수 있도록 TemporalAdjuster를 제공한다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2014&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;18&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nextOrSame&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DayOfWeek&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;SUNDAY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lastDayOfMonth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;TemporalAdjusters 의 팩토리 메소드
-
-dayOfWeekInMonth 서수 요일에 해당하는 날짜를 반환
-firstDayOfMonth 현재 달의 첫 번쨰 날짜를 반환
-firstDayOfNextMonth 다음 날의 첫 번째 날짜를 반환
-firstDayOfNextYear 내년의 첫 번째 날짜를 반환
-firstDayOfYear 올해의 첫 번째 날짜를 반환
-firstInMonth 현재 달의 첫 번째 요일에 해당하는 날짜를 반환
-lastDayOfMonth 현재달의 마지막 날짜를 반환
-lastDayOfNextMonth 다음 달의 마지막 날짜를 반환
-lastDayOfNextYear 내년의 마지막 날짜를 반환
-lastDayOfYear 올해의 마지막 날짜를 반환
-lastInMonth 현재 달의 마지막 요일에 해당하는 날짜 반환
-next / previous 현재 달에서 현재 날짜 이후로 지정한 요일이 처음으로 나타나는 날짜를 반환
-nextOrSame / previousOrSame 현재 날짜 이후로 지정한 요일이 처음 / 이전으로 나타나는 날짜를 반환
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;필요한 기능이 정의되어 있지 않은 때는 커스텀 TemporalAdjuster 를 구현할 수 있다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nd&quot;&gt;@FunctionalInterface&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TemporalAdjuster&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;Temporal&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;adjustInto&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Temporal&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;temporal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;함수형 인터페이스로 도이ㅓ 있으므로 adjustInto만 구현하면 된다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// Working Day 만 구하는 커스텀 TemporalAdjuster&lt;/span&gt;
-&lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Temporal&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;adjustInto&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Temporal&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;temporal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;DayOfWeek&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;today&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DayOfWeek&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;temporal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ChronoField&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;DAY_OF_WEEK&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 현재 날짜 읽기&lt;/span&gt;
-    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dayToAdd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;today&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DayOfWeek&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;FRIDAY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;dayToAdd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;today&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DayOfWeek&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;SATURDAY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;dayToAdd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;temporal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;plus&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dayToAdd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ChronoUnit&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;DAYS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;날짜와-시간-객체-출력과-파싱&quot;&gt;날짜와 시간 객체 출력과 파싱&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;날짜와 시간 관련해서 포매팅과 파싱은 필수이다.&lt;/li&gt;
-  &lt;li&gt;DateTimeFormmatter 클래스는 BASIC_ISO_DATE와 ISO_LOCAL_DATE등의 상수를 미리 정의하고 있다.&lt;/li&gt;
-  &lt;li&gt;DateTimeFormmatter를 활용하여 날짜나 시간을 특정 형식의 문자열로 만들 수 있다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2014&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;18&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;date&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DateTimeFormatter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;BASIC_ISO_DATE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 20140318&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;date&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DateTimeFormatter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;ISO_LOCAL_DATE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 2014-03-18&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;반대로 날짜나 시간을 표현하는 문자열을 파싱하여 날짜 객체를 다시 만들 수 있다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;parse&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;20140318&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DateTimeFormatter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;BASIC_ISO_DATE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;parse2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;2014-03-18&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DateTimeFormatter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;ISO_LOCAL_DATE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;DateTimeFormmatter는 스레드 세이프 한 클래스이며 특정 패턴으로 포매터를 만들 수 있는 정적 팩토리 메서드도 제공한다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;DateTimeFormatter&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;formatter&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DateTimeFormatter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;ofPattern&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;dd/MM/yyyy&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;localDate&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2014&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;18&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;formattedDate&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;localDate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;formatter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;parse1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LocalDate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;formattedDate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;formatter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;지역화 된 DateTimeFormatter도 만들수 있으며 조금더 복합적인 포매터를 만들기 위해 Builter를 사용할 수 있다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// d. MMMM yyyy&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;DateTimeFormatter&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;italianFormatter&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DateTimeFormatterBuilder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-                &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;appendText&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ChronoField&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;DAY_OF_MONTH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-                &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;appendLiteral&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;. &quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-                &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;appendText&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ChronoField&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;MONTH_OF_YEAR&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-                &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;appendLiteral&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot; &quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-                &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;appendText&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ChronoField&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;YEAR&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-                &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;parseCaseInsensitive&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 정해진 형식과 정확하게 일치하지 않아도 해석가능&lt;/span&gt;
-                &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;toFormatter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Locale&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;ITALIAN&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;다양한-시간대와-캘린더-활용-방법&quot;&gt;다양한 시간대와 캘린더 활용 방법&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;새로운 날짜와 시간 API의 편리함 중 하나는 시간대를 간단하게 처리할 수 있다는 점이다.&lt;/li&gt;
-  &lt;li&gt;기존 TimeZone을 대체할 수 있는 ZoneId 클래스가 새롭게 등장했다.&lt;/li&gt;
-  &lt;li&gt;새로운 클래스를 이용하면 서머타임같은 복잡한 사항이 자동으로 처리된다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;시간대-이용하기&quot;&gt;시간대 이용하기&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;표준 시간이 같은 지역을 묶어 시간대 규칙 집합을 정의한다.&lt;/li&gt;
-  &lt;li&gt;ZoneRules 클래스에는 약 40개 정도의 시간대가 있다.&lt;/li&gt;
-  &lt;li&gt;ZoneId의 getRules()를 이용해 해당 시간대의 규정을 획득할 수 있다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;ZoneId&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;romeZone&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ZoneId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Europe/Rome&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;지역 Id는 &lt;code class=&quot;highlighter-rouge&quot;&gt;지역/도시&lt;/code&gt;형식으로 이루어지며 IANA Time Zone Database에서 제공하는 지역 집합 정보를 사용한다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;ZoneId&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zoneId&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TimeZone&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getDefault&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;toZoneId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;utcgreenwich-기준의-고정-오프셋&quot;&gt;UTC/Greenwich 기준의 고정 오프셋&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;때로는 UTC / GMT 를 기준으로 시간대를 표현하기도 한다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;ZoneOffset&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;-5:00&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 현재 타임존 보다 5시간 느린 곳 정의&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;위 예제에서 정의한 ZoneOffset으로는 서머타임을 정확히 처리할 수 없으므로 권장하지 않는다. ZoneOffset은 ZoneId이므로 ZoneOffset을 사용할 수 있다.&lt;/li&gt;
-  &lt;li&gt;ISO-8601 캘린더 시스템에서 정의하는 UTC/GMT와 오프셋으로 날짜와 시간을 표현하는 OffsetDateTime을 만들수 있다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;정리&quot;&gt;정리&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;Java 8 이전에서 제공하는 기존 Date 클래스와 관련 클래스는 결함이 존재했다.&lt;/li&gt;
-  &lt;li&gt;새로운 날짜와 시간 API에서 날짜와 시간 객체는 모두 불변클래스이다.&lt;/li&gt;
-  &lt;li&gt;새로운 API는 각각 사람과 기계가 편리하게 날짜와 시간 정보를 관리할 수 있으며 기존 인스턴스를 변환하지 않도록 처리 결과로 새로운 인스턴스가 생성된다.&lt;/li&gt;
-  &lt;li&gt;TemporalAdjuster를 이용하면 단순히 값을 바꾸는 것 이상의 복잡한 동작을 수행할수 있으며 자신만의 커스텀 날짜 변환 기능을 정의할 수 있다.&lt;/li&gt;
-  &lt;li&gt;날짜와 시간 객체를 특정 포맷으로 출력하고 파싱하는 포매터를 정의 할 수 있다. 패턴을 이용할 수 있고 포매터는 스레드 세이프하다.&lt;/li&gt;
-  &lt;li&gt;특정 지역/장소에 상대적인 시간대 또는 UTC/GMT 기준 오프셋을 이용해 시간대를 정의할 수 있다.&lt;/li&gt;
-  &lt;li&gt;ISO-8601 표준 시스템을 준수하지 않는 캘린더 시스템도 이용할 수 있다.&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><summary type="html">Modern Java In Action 정리 - 새로운 날짜와 시간 API</summary></entry></feed>
+&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><summary type="html">Modern Java In Action 정리 - 디폴트 메서드</summary></entry></feed>
