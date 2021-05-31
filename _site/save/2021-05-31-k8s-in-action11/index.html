@@ -1,0 +1,722 @@
+
+<!doctype html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next muse use-motion" lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/assets/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/assets/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/assets/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="kubernetes," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="천천히 걷는 방법" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="쿠버네티스 인 액션 - 11장 쿠버네티스 내부 이해">
+<meta name="keywords" content="kubernetes">
+<meta property="og:type" content="website">
+<meta property="og:title" content="쿠버네티스 인 액션 - 11장 쿠버네티스 내부 이해">
+<meta property="og:url" content="http://localhost:4000/save/2021-05-31-k8s-in-action11/">
+<meta property="og:site_name" content="천천히 걷는 방법">
+<meta property="og:description" content="쿠버네티스 인 액션 - 11장 쿠버네티스 내부 이해">
+<meta property="og:locale" content="ko">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="쿠버네티스 인 액션 - 11장 쿠버네티스 내부 이해">
+<meta name="twitter:description" content="쿠버네티스 인 액션 - 11장 쿠버네티스 내부 이해">
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '작성자'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://localhost:4000/"/>
+
+
+
+
+
+  <title>              쿠버네티스 인 액션 - 11장 쿠버네티스 내부 이해 | 천천히 걷는 방법      </title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="ko">
+
+  
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">천천히 걷는 방법</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">적당히 잘하는 개발자가 되기 위한 기록 저장소</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            홈
+          </a>
+        </li>
+      
+        
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            아카이브
+          </a>
+        </li>
+      
+        
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            태그
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<div id="posts" class="posts-expand">
+<header class="post-header">
+
+	<h1 class="post-title" itemprop="name headline">
+    
+      쿠버네티스 인 액션 - 11장 쿠버네티스 내부 이해
+    
+  </h1>
+
+
+	<div class="post-meta">
+		<div class="post-description">쿠버네티스 인 액션 - 11장 쿠버네티스 내부 이해</div>
+	</div>
+
+
+</header>
+
+  
+  
+    <blockquote>
+  <p>Kubernetes In Action 정리 - 쿠버네티스 내부 이해</p>
+</blockquote>
+
+<ul>
+  <li>쿠버네티스 클러스터 구성 요소</li>
+  <li>각 구성 요소의 기능과 동작 방법</li>
+  <li>디플로이먼트 오브젝트를 생성해 파드를 실행하는 방법</li>
+  <li>실행 중인 파드에 관하여</li>
+  <li>파드 간의 네트워크 동작 방식</li>
+  <li>쿠버네티스 서비스의 동작 방식</li>
+  <li>고가용성 실현 방법</li>
+</ul>
+
+<h2 id="111-아키텍처-이해">11.1 아키텍처 이해</h2>
+
+<p>쿠버네티스 클러스터를 이루는 구성</p>
+<ul>
+  <li>쿠버네티스 컨트롤 플레인</li>
+  <li>(워커) 노드</li>
+</ul>
+
+<h3 id="컨트롤-플레인-구성요소">컨트롤 플레인 구성요소</h3>
+<ul>
+  <li>컨트롤 플레인은 클러스터 기능을 제어 및 전체 클러스터가 동작하게 만드는 역할을 한다. 구성요소는 아래와 같다.
+    <ul>
+      <li>etcd 분산 저장 스토리지</li>
+      <li>API 서버</li>
+      <li>스케줄러</li>
+      <li>컨트롤러 매니저</li>
+    </ul>
+  </li>
+</ul>
+
+<p>이들 구성 요소는 클러스터 상태를 저장 및 관리 하지만 애플리케이션 컨테이너를 직접 실행하는 것은 아니다.</p>
+
+<h3 id="워커-노드에서-실행하는-구성요소">워커 노드에서 실행하는 구성요소</h3>
+<ul>
+  <li>kubelet</li>
+  <li>쿠버네티스 서비스 프록시 (kube-proxy)</li>
+  <li>컨테이너 런타임 (Dockerm rkt …)</li>
+</ul>
+
+<h3 id="애드온-구성요소">애드온 구성요소</h3>
+<p>컨트롤 플레인과 노드에서 실행되는 구성요소 이외에 몇가지 추가 구성요소가 필요.</p>
+<ul>
+  <li>쿠버네티스 DNS 서버</li>
+  <li>대시보드</li>
+  <li>인그레스 컨트롤러</li>
+  <li>힙스터</li>
+  <li>컨테이너 네트워크 인터페이스 플러그인</li>
+</ul>
+
+<h3 id="1111-쿠버네티스-구성-요소의-분산-특성">11.1.1 쿠버네티스 구성 요소의 분산 특성</h3>
+
+<p><img src="/assets/images/post/k8s/Kubernetes-101-Architecture-Diagram.jpeg" alt="쿠버네티스 구성 요소" /></p>
+
+<blockquote>
+  <p>컨트롤 플레인 구성 요소의 상태 확인
+API 서버는 각 컨트롤 플레인 구성요소의 상태를 표시한느 ComponentStatus API 리소스 제공.
+ dobby@dongchului-MacBookPro  ~  kubectl get componentstatus
+Warning: v1 ComponentStatus is deprecated in v1.19+
+NAME                 STATUS      MESSAGE                                                                                       ERROR
+controller-manager   Unhealthy   Get “http://127.0.0.1:10252/healthz”: dial tcp 127.0.0.1:10252: connect: connection refused
+scheduler            Unhealthy   Get “http://127.0.0.1:10251/healthz”: dial tcp 127.0.0.1:10251: connect: connection refused
+etcd-0               Healthy     {“health”:”true”}</p>
+</blockquote>
+
+<ul>
+  <li>이미지 출처
+    <ul>
+      <li>https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-architecture/</li>
+    </ul>
+  </li>
+</ul>
+
+  
+</div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/assets/images/avatar.gif"
+               alt="DongChul Lee" />
+          <p class="site-author-name" itemprop="name">DongChul Lee</p>
+           
+              <p class="site-description motion-element" itemprop="description">사내 공유, 개인의 경험을 기록하는 블로그입니다.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">42</span>
+                <span class="site-state-item-name">포스트</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">카테고리</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">태그</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+        
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              
+              
+              <span class="links-of-author-item">
+                <a href="https://github.com/sah3122" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+        
+        
+      <div id="disqus_thread"></div>
+      <script>
+
+      /**
+      *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+      *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+      /*
+      var disqus_config = function () {
+      this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+      };
+      */
+      (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://sah3122.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+      })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+          
+      </div>
+    </main>       
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DongChul Lee</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://jekyllrb.com">Jekyll</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/simpleyyt/jekyll-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+   
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/assets/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/assets/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/assets/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/assets/js/src/post-details.js?v=5.1.1"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/assets/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+    
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/assets/js/src/js.cookie.js?v=5.1.1"></script>
+  <script type="text/javascript" src="/assets/js/src/scroll-cookie.js?v=5.1.1"></script>
+
+
+  
+
+</body>
+</html>
+
