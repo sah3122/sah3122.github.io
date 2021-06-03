@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-06-02T01:01:31+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">쿠버네티스 인 액션 - 11장 쿠버네티스 내부 이해</title><link href="http://localhost:4000/dev/2021/05/31/k8s-in-action11/" rel="alternate" type="text/html" title="쿠버네티스 인 액션 - 11장 쿠버네티스 내부 이해" /><published>2021-05-31T00:00:00+09:00</published><updated>2021-05-31T00:00:00+09:00</updated><id>http://localhost:4000/dev/2021/05/31/k8s-in-action11</id><content type="html" xml:base="http://localhost:4000/dev/2021/05/31/k8s-in-action11/">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-06-03T23:54:33+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">쿠버네티스 인 액션 - 11장 쿠버네티스 내부 이해</title><link href="http://localhost:4000/dev/2021/05/31/k8s-in-action11/" rel="alternate" type="text/html" title="쿠버네티스 인 액션 - 11장 쿠버네티스 내부 이해" /><published>2021-05-31T00:00:00+09:00</published><updated>2021-05-31T00:00:00+09:00</updated><id>http://localhost:4000/dev/2021/05/31/k8s-in-action11</id><content type="html" xml:base="http://localhost:4000/dev/2021/05/31/k8s-in-action11/">&lt;blockquote&gt;
   &lt;p&gt;Kubernetes In Action 정리 - 쿠버네티스 내부 이해&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -55,14 +55,21 @@
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/post/k8s/Kubernetes-101-Architecture-Diagram.jpeg&quot; alt=&quot;쿠버네티스 구성 요소&quot; /&gt;&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;컨트롤 플레인 구성 요소의 상태 확인
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;컨트롤 플레인 구성 요소의 상태 확인
 API 서버는 각 컨트롤 플레인 구성요소의 상태를 표시하는 ComponentStatus API 리소스 제공.
-$ kubectl get componentstatus
-Warning: v1 ComponentStatus is deprecated in v1.19+
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl get componentstatus
+Warning: v1 ComponentStatus is deprecated &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;v1.19+
 NAME                 STATUS      MESSAGE                                                                                       ERROR
-controller-manager   Unhealthy   Get &quot;http://127.0.0.1:10252/healthz&quot;: dial tcp 127.0.0.1:10252: connect: connection refused
-scheduler            Unhealthy   Get &quot;http://127.0.0.1:10251/healthz&quot;: dial tcp 127.0.0.1:10251: connect: connection refused
-etcd-0               Healthy     {&quot;health&quot;:&quot;true&quot;}
+controller-manager   Unhealthy   Get &lt;span class=&quot;s2&quot;&gt;&quot;http://127.0.0.1:10252/healthz&quot;&lt;/span&gt;: dial tcp 127.0.0.1:10252: connect: connection refused
+scheduler            Unhealthy   Get &lt;span class=&quot;s2&quot;&gt;&quot;http://127.0.0.1:10251/healthz&quot;&lt;/span&gt;: dial tcp 127.0.0.1:10251: connect: connection refused
+etcd-0               Healthy     &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;health&quot;&lt;/span&gt;:&lt;span class=&quot;s2&quot;&gt;&quot;true&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; 사내 샌드박스
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl get componentstatus
+NAME                 AGE
+scheduler            &amp;lt;unknown&amp;gt;
+controller-manager   &amp;lt;unknown&amp;gt;
+etcd-0               &amp;lt;unknown&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h3 id=&quot;구성-요소가-서로-통신하는-방법&quot;&gt;구성 요소가 서로 통신하는 방법&lt;/h3&gt;
@@ -254,11 +261,209 @@ kubectl 도구를 사용하여 리소스 변경을 감시할 수 있다. 새로�
 &lt;p&gt;레플리케이션컨트롤러 리소스를 활성화 하는 컨트롤러를 레플리케이션 매니저라고 한다. 컨트롤러는 파드 셀렉터와 일치하는 파드의 수를 찾고 이를 원하는(spec에 정의된) 레플리카 수와 비교한다. 
 레플리카 수가 적거나 많으면 새로운 레플리케이션 매니저는 새로운 파드 매니페스트를 생성하여 API 서버에 게시하고 스케줄러와 kubelet이 작업을 수행한다.&lt;/p&gt;
 
+&lt;h3 id=&quot;레플리카셋-데몬셋-잡-컨트롤러&quot;&gt;레플리카셋, 데몬셋, 잡 컨트롤러&lt;/h3&gt;
+&lt;p&gt;레플리카셋 컨트롤러는 레플리케이션 매니저와 거의 동일한 기능을 수행, 데몬셋, 잡 컨트롤러는 파드 리소스를 생성한다.&lt;/p&gt;
+
+&lt;h3 id=&quot;디플로이먼트-컨트롤러&quot;&gt;디플로이먼트 컨트롤러&lt;/h3&gt;
+&lt;p&gt;디플로이먼트 컨트롤러는 실제 배포된 상태와 디플로이먼트 API 오브젝트에 기록된 원하는 상태가 동기화되도록 관리한다.&lt;/p&gt;
+
+&lt;h3 id=&quot;스테이트풀셋-컨트롤러&quot;&gt;스테이트풀셋 컨트롤러&lt;/h3&gt;
+&lt;p&gt;스테이트풀셋 컨트롤러는 리소스 정의에 따라 파드를 관리, 다른 컨트롤러와의 차이점은 퍼시스턴트 볼륨 클레임도 관리한다는것이다.&lt;/p&gt;
+
+&lt;h3 id=&quot;노드-컨트롤러&quot;&gt;노드 컨트롤러&lt;/h3&gt;
+&lt;p&gt;클러스터의 워커 노드를 기술하는 노드 리소스를 관리, 클러스터에서 실행 중인 실제 머신 목록과 노드 오브젝트 목록을 동기화하는 데 중점을 둔다.&lt;/p&gt;
+
+&lt;h3 id=&quot;서비스-컨트롤러&quot;&gt;서비스 컨트롤러&lt;/h3&gt;
+&lt;p&gt;로드밸런서 유형의 서비스가 생성되거나 삭제 되는 경우 인프라스트럭처에 로드밸런서를 요청하고 해제하는 역할 수행&lt;/p&gt;
+
+&lt;h3 id=&quot;엔드포인트-컨트롤러&quot;&gt;엔드포인트 컨트롤러&lt;/h3&gt;
+&lt;p&gt;서비스는 파드에 직접 연결되어 있지는 않지만 서비스에 정의된 파드 셀렉터에 따라 엔드포인트(ip, port)를 포함한다. 
+레이블 셀렉터와 일치하는 파드의 IP와 포트로 엔드포인트 리스트를 계속 갱신하는 활성 구성요소이다.&lt;/p&gt;
+
+&lt;h3 id=&quot;네임스페이스-컨트롤러&quot;&gt;네임스페이스 컨트롤러&lt;/h3&gt;
+
+&lt;h3 id=&quot;퍼시스턴트볼륨-컨트롤러&quot;&gt;퍼시스턴트볼륨 컨트롤러&lt;/h3&gt;
+&lt;p&gt;퍼시스턴트볼륨 클레임과 퍼시스턴트 볼륨을 연결하는 역할.&lt;/p&gt;
+
+&lt;h3 id=&quot;컨트롤러-정리&quot;&gt;컨트롤러 정리&lt;/h3&gt;
+&lt;p&gt;컨트롤러는 API 서버로 API 오브젝트를 제어한다. 모든 컨트롤러는 kubelet과 직접 통신하거나 어떤 요청도 하지 않는다.&lt;br /&gt;
+컨트롤 플레인은 쿠버네티스 운영의 한 부분만 처리하기 때문에 내부 동작을 이해하기 위해선 kubelet과 쿠버네티스 서비스 프록시를 이해해야한다.&lt;/p&gt;
+
+&lt;h3 id=&quot;1117-kubelet이-하는-일&quot;&gt;11.1.7 Kubelet이 하는 일&lt;/h3&gt;
+&lt;p&gt;쿠버네티스 컨트롤 플레인의 일부로 Kubelet과 서비스 프록시는 워커 노드에서 실행된다.&lt;/p&gt;
+
+&lt;h3 id=&quot;kubelet의-작업-이해&quot;&gt;Kubelet의 작업 이해&lt;/h3&gt;
+&lt;p&gt;Kubelet은 워커 노드에서 실행하는 모든것을 담당하는 요소이다. Kubelet이 실행 중인 노드를 노드 리소스로 만들어 API 서버에 등록하여 API 서버를 모니터링 하여 스케줄링 이벤트를 처리한다. 
+또한 컨테이너를 게속 모니터링 하며 상태, 이벤트, 리소스 사용량 등을 API 서버에 보고한다. 
+Kubelet은 컨테이너 라이브니스 프로브를 실행하는 요소이기도 하며 프로브가 실패할 경우 컨테이너를 재시작 한다. 마지막으로 API 서버에서 파드가 삭제되면 컨테이너를 정지하고 파드가 종료된것을 서버에 통보한다.&lt;/p&gt;
+
+&lt;h3 id=&quot;api-서버-없이-정적-파드-실행&quot;&gt;API 서버 없이 정적 파드 실행&lt;/h3&gt;
+&lt;p&gt;Kubelet은 쿠버네티스 API 서버와 통신하여 파드 매니페스트를 가져오지만 특정 로컬 디렉토리안에 있는 매니페스트 기반으로 파드를 실행할 수 있다. 
+시스템 구성 요소 파드 매니페스트를 Kubelet의 매니페스트 디렉토리에 넣어 Kubelet이 관리 하도록 할 수 있다. 사용자 정의 컨테이너는 데몬셋을 활용하는 것을 추천한다.&lt;/p&gt;
+
+&lt;h3 id=&quot;쿠버네티스-서비스-프록시의-역할&quot;&gt;쿠버네티스 서비스 프록시의 역할&lt;/h3&gt;
+&lt;p&gt;모든 워커 노드는 클라이언트가 쿠버네티스 API로 정의한 서비스에 연결할 수 있도록 해주는 kube-proxy도 실행된다. kube-proxy는 서비스로 들어온 요청을 서비스를 지원하는 파드 중 하나로 연결해준다.&lt;br /&gt;
+서비스가 둘 이상의 파드에서 지원되는 경우 프록시는 로드밸런싱을 수행.&lt;/p&gt;
+
+&lt;h3 id=&quot;프록시라고-부르는-이유&quot;&gt;프록시라고 부르는 이유&lt;/h3&gt;
+&lt;p&gt;kube-proxy는 실제 프록시 이지만 현재는 iptables 규칙만 사용하여 프록시 서버를 거치지 않는다고 한다. 커널에서 요청을 처리하기 때문에 성능상 이점이 있다.&lt;/p&gt;
+
+&lt;h3 id=&quot;1119-쿠버네티스-에드온-소개&quot;&gt;11.1.9 쿠버네티스 에드온 소개&lt;/h3&gt;
+
+&lt;h3 id=&quot;애드온-배포-방식&quot;&gt;애드온 배포 방식&lt;/h3&gt;
+&lt;p&gt;애드온은 yaml 매니페스트를 API 서버에 게시해 파드로 배포된다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;디플로이먼트로 배포된 애드온
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl get deploy &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; kube-system
+NAME                          READY   UP-TO-DATE   AVAILABLE   AGE
+cilium-operator               1/1     1            1           63d
+coredns                       2/2     2            2           63d
+coredns-secondary             2/2     2            2           63d
+csi-cinder-controllerplugin   1/1     1            1           63d
+dns-autoscaler                1/1     1            1           63d
+dns-autoscaler-secondary      1/1     1            1           63d
+kubernetes-dashboard          1/1     1            1           63d
+kubernetes-metrics-scraper    1/1     1            1           63d
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;dns-서버-동작-방식&quot;&gt;DNS 서버 동작 방식&lt;/h3&gt;
+&lt;p&gt;파드는 기본적으로 클러스터 내부 DNS 서버를 사용하도록 설정되어 있다. DNS 서버 파드는 kube-dns 서비스로 노출되며 해당 서비스의 ip 주소는 클러스터에 배포된 모든 컨테이너가 가지고 있는 /etc/resolv.conf 파일안에 nameserver로 지정되어 있다. kube-dns 파드는 API 서버를 통해 서비스와 엔드포인트의 변화를 관절하고 갱신한다.&lt;/p&gt;
+
+&lt;h3 id=&quot;인그레스-컨트롤러-동작-방식&quot;&gt;인그레스 컨트롤러 동작 방식&lt;/h3&gt;
+&lt;p&gt;인그레스 컨트롤러는 리버스 프록시 서버(nginx)를 실행하고 클러스터에 정의된 인그레스, 서비스, 엔드포인트 리소스 설정을 유지한다. 컨트롤러는 이러한 리소스를 감시하고 변경한다.&lt;br /&gt;
+인그레스 컨트롤러는 트래픽을 서비스의 IP로 전달하지 않고 서비스의 파드로 전달한다.&lt;/p&gt;
+
+&lt;h2 id=&quot;112-컨트롤러가-협업하는-방법&quot;&gt;11.2 컨트롤러가 협업하는 방법&lt;/h2&gt;
+
+&lt;h3 id=&quot;1121-관련된-구성-요소-이해&quot;&gt;11.2.1 관련된 구성 요소 이해&lt;/h3&gt;
+
+&lt;p&gt;컨트롤러와 스케줄러, Kubelet은 API 서버에서 각 리소스 유형이 변경되는 것을 감지한다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/post/k8s/구성요소.png&quot; alt=&quot;구성요소&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;1122-이벤트-체인&quot;&gt;11.2.2 이벤트 체인&lt;/h3&gt;
+&lt;p&gt;디플로이먼트 매니페스트를 가진 YAML파일을 배포하는 경우 kubectl은 매니페스트를 API 서버에 전송, API 서버는 매니페스트를 검증하고 etcd에 저장한 뒤 응답한다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/post/k8s/deployment-flow.png&quot; alt=&quot;디플로이먼트 흐름&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;디플로이먼트-컨트롤러가-레플리카셋-생성&quot;&gt;디플로이먼트 컨트롤러가 레플리카셋 생성&lt;/h3&gt;
+&lt;p&gt;디플로이먼트 컨트롤러는 디플로이먼트를 담당하는 활성 구성요소이며 새로운 리소스가 감지되면 현재 디플로이먼트 정의를 이용하여 레플리카셋을 생성한다.&lt;/p&gt;
+
+&lt;h3 id=&quot;레플리카셋-컨트롤러가-파드-리소스-생성&quot;&gt;레플리카셋 컨트롤러가 파드 리소스 생성&lt;/h3&gt;
+&lt;p&gt;레플리카셋 컨트롤러는 새롭게 생성된 레플리카셋을 낚아채 정의된 파드 수와 파드 셀렉터와 일치하는 실행중인 파드가 충분한지 확인, 파드 템플릿 기반으로 파드 리소스를 생성한다.&lt;/p&gt;
+
+&lt;h3 id=&quot;스케줄러가-새로-생성한-파드에-노드-할당&quot;&gt;스케줄러가 새로 생성한 파드에 노드 할당&lt;/h3&gt;
+&lt;p&gt;생성된 파드는 etcd에 저장되며 아직 노드가 할당 되지 않은 상태 (nodename 속성이 안되어있다.)이다. 스케줄러는 파드를 감시하며 적절한 노드에 파드를 배치하는 역할을 한다.&lt;/p&gt;
+
+&lt;h3 id=&quot;kubelet은-파드의-컨테이너를-실행한다&quot;&gt;Kubelet은 파드의 컨테이너를 실행한다&lt;/h3&gt;
+&lt;p&gt;파드가 특정 노드로 스케줄링되면 해당 노드의 Kubelet이 동작하여 도커 또는 사용중인 컨테이너 런타임에 파드의 컨테이너를 시작하도록 지시한다.&lt;/p&gt;
+
+&lt;h3 id=&quot;1123-클러스터-이벤트-관찰&quot;&gt;11.2.3 클러스터 이벤트 관찰&lt;/h3&gt;
+&lt;p&gt;컨트롤 플레인 구성 요소와 Kubelet은 이러한 작업을 수행시 API 서버로 이벤트를 발송한다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;컨트롤러가 생성한 이벤트 관찰
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl get events &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; kube-system
+LAST SEEN   TYPE      REASON      OBJECT                                       MESSAGE
+7m33s       Normal    Pulled      pod/kube-controller-manager-docker-desktop   Container image &lt;span class=&quot;s2&quot;&gt;&quot;k8s.gcr.io/kube-controller-manager:v1.19.7&quot;&lt;/span&gt; already present on machine
+2m30s       Warning   BackOff     pod/kube-controller-manager-docker-desktop   Back-off restarting failed container
+155m        Warning   Unhealthy   pod/kube-controller-manager-docker-desktop   Startup probe failed: Get &lt;span class=&quot;s2&quot;&gt;&quot;https://127.0.0.1:10257/healthz&quot;&lt;/span&gt;: dial tcp 127.0.0.1:10257: connect: connection refused
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;113-실행-중인-파드에-관한-이해&quot;&gt;11.3 실행 중인 파드에 관한 이해&lt;/h3&gt;
+&lt;p&gt;Kubelet은 하나의 파드를 실행한고 해서 컨테이너 하나만 실행하지 않는다. 어플리케이션 컨테이너는 종료되고 다시 시작 될 수 있으므로 이런 컨테이너가 이전과 동일한 리눅스 네임스페이스 일부가 되어야 하기 때문에 인프라스트럭처 컨테이너와 같이 실행된다. 인프라스트럭처 컨테이너가 그 중간에 종료되는 경우 kubelet이 인프라스트럭처와 파드의 모든 컨테이너를 재생성한다. (현재도 동일한지 확인필요.)&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker desktop 기반 nginx 실행
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS     NAMES
+eecd6ede1b43   nginx     &lt;span class=&quot;s2&quot;&gt;&quot;/docker-entrypoint.…&quot;&lt;/span&gt;   3 minutes ago   Up 3 minutes             k8s_nginx_nginx_default_aa8551d4-4d32-41f7-949a-d416be762f40_0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;114-파드-간-네트워킹&quot;&gt;11.4 파드 간 네트워킹&lt;/h2&gt;
+
+&lt;h3 id=&quot;1141-네트워크는-어떤-모습이어야-하는가&quot;&gt;11.4.1 네트워크는 어떤 모습이어야 하는가&lt;/h3&gt;
+&lt;p&gt;쿠버네티스는 특정 네트워크 기술을 사용하는걸 요구하지는 않지만 파드간(컨테이너간) 통신할 수 있어야 한다. 파드가 통신하는데 사용하는 네트워크는 파드가 보는 자신의 IP 주소가 모든 다른 파드에서 해당 파드를 찾을떄 해당 IP 주소로 찾을 수 있어야 한다.&lt;/p&gt;
+
+&lt;p&gt;NAT가 없는 경우 파드A에서 파드B로 패킷을 전송할 때 출발지와 목적지 주소가 변경되지 않은 상태로 도작해야 한다. 파드 사이에 NAT가 없으면 내부에서 실행중인 어플리케이션이 다른 파드에 자동으로 등록 될 수 있다. 
+&lt;img src=&quot;/assets/images/post/k8s/kubenetwork.png&quot; alt=&quot;network&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;하지만 파드가 인터넷에 있는 서비스와 통신하는 경우 패킷의 출발지 IP를 변경하는 것이 필요하다. 파드의 IP는 사설IP 이기 때문이며 외부로 나가는 패킷의 출발지 IP는 호스트 워커 노드의 IP로 변경된다.&lt;/p&gt;
+
+&lt;h3 id=&quot;1142-네트워킹-동작-방식-자세히-알아보기&quot;&gt;11.4.2 네트워킹 동작 방식 자세히 알아보기&lt;/h3&gt;
+&lt;p&gt;파드의 네트워크 인터페이스는 인프라스트럭처 컨테이너에서 설정한다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/post/k8s/bridge-networking.png&quot; alt=&quot;network&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;동일한-노드에서-파드-간의-통신-활성화&quot;&gt;동일한 노드에서 파드 간의 통신 활성화&lt;/h3&gt;
+&lt;p&gt;인프라스트럭처 컨테이너가 시작되기전 컨테이너를 위한 가상 이더넷 인터페이스 쌍이 생성. 한쪽은 호스트의 네임스페이스에 남고, 다른쪽은 컨테이너 네트워크 네임스페이스안으로 이동하여 eth0로 변경된다. 
+호스트의 네트워크 네임스페이스에 있는 인터페이스는 컨테이너 런타임이 사용할 수 있는 네트워크 브리지에 연결되고 컨테이너 안의 eth0 인터페이스는 브리지의 주소 범위 안에서 IP를 할당 받는다. 
+어플리케이션에서 eth0 인터페이스로 요청을 보내면 veth 인터페이스로 나와 브리지로 전달된다.&lt;br /&gt;
+파드 A 에서 B로 패킷을 보내는 과정은 A의 veth 쌍을 통해 브리지로 전달되고 B의 veth 쌍을 통과한다. 노드에 있는 모든 컨테이너는 같은 브리지에 연결되어 있기 때문에 서로 통신이 가능하다.&lt;/p&gt;
+
+&lt;h3 id=&quot;서로-다른-노드에서-파드-간의-통신-활성화&quot;&gt;서로 다른 노드에서 파드 간의 통신 활성화&lt;/h3&gt;
+&lt;p&gt;파드 IP주소는 클러스터 내에서 유일해야 하기 때문에 노드 사이의 브리지는 겹치지 않는 주소 범위를 사용한다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/post/k8s/flannel-networking.png&quot; alt=&quot;network&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;위 그림은 일반 계층 3 네트워킹으로 노드간 통신을 하려면 노드의 물리 네트워크 인터페이스도 브리지에 연결해야 하는것을 보여준다. 이러한 유형은 패킷을 다른 노드에 있는 컨테이너로 보낼 때 패킷이 먼저 veth 쌍을 통과한 다음 브리지를 통해 노드의 물리 어댑터로 전달된다. 그 후 물리회선과 다른 노드의 브리지를 지나 패킷이 전송된다. 
+이러한 방식은 노드가 많아지고 라우터를 사용한다면 라우터의 갯수도 많아지며 오류가 발생할 여지가 늘어나기 때문에 소프트웨어 정의 네트워크 방식을 사용하는것이 더 쉽다. 
+SDN을 이용하면 네트워크 구조가 복잡해지더라도 노드들이 같은 네트워크에 연결된것으로 볼 수 있어 패킷이 캡슐화 되어 다른 파드로 전달할 수 있다.&lt;/p&gt;
+
+&lt;h3 id=&quot;1143-컨테이너-네트워크-인터페이스-소개&quot;&gt;11.4.3 컨테이너 네트워크 인터페이스 소개&lt;/h3&gt;
+&lt;p&gt;컨테이너를 네트워크에 쉽게 연결하기 위해, 컨테이너 네트워크 인터페이스(CNI)가 시작됬다.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Calico&lt;/li&gt;
+  &lt;li&gt;Flannel&lt;/li&gt;
+  &lt;li&gt;Romana&lt;/li&gt;
+  &lt;li&gt;Weave Net&lt;/li&gt;
+  &lt;li&gt;etc&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;115-서비스-구현-방식&quot;&gt;11.5 서비스 구현 방식&lt;/h2&gt;
+&lt;p&gt;서비스는 파드 집합을 길게 지속되는 안정적인 IP와 포트로 노출 시키는역할을 한다.&lt;/p&gt;
+
+&lt;h3 id=&quot;1151-kube-proxy-소개&quot;&gt;11.5.1 kube-proxy 소개&lt;/h3&gt;
+&lt;p&gt;서비스와 관련된 모든 동작은 kube-proxy를 통해 이루어진다. 초기엔 kube-proxy가 실제 프록시로 동작했지만 현재는 iptables 프록시 모드를 사용한다. 서비스는 안정적인 IP 주소와 포트를 얻고 클라이언트는 그 정보를 활용하여 접근한다. 서비스의 주요 핵심은 서비스가 IP와 포트의 쌍으로 구성된다는것과 서비스 IP만으로는 아무것도 나타내지 않는다는것이다.&lt;/p&gt;
+
+&lt;h3 id=&quot;1152-kube-proxy가-iptables를-사용하는-방법&quot;&gt;11.5.2 kube-proxy가 iptables를 사용하는 방법&lt;/h3&gt;
+&lt;p&gt;API 서버에서 서비스를 생성하면 IP 가 할당되고 워커 노드에서 실행중인 kube-proxy 에이전트에 알린다. 각 kube-proxy는 실행중인 노드에 해당 서비스 주소로 접근 할 수 있도록 만든다. 이러한 과정은 서비스의 ip/port 쌍으로 향하는 패킷을 가로채 목적지 주소를 변경하여 패킷이 서비스를 지원하는 여러 파드 중 하나로 리디렉션 되도록 하는 iptables 규칙을 설정함으로 이루어지는 것이다.&lt;br /&gt;
+kube-proxy는 API서버에서 서비스가 변경되는것을 감지하는것 이외에도 엔드 포인트 오브젝트가 변경되는것을 감시한다. 파드가 생성, 삭제 되거나 요청을 받지 못하는 상태가 되면 엔드 포인트 오브젝트가 변경된다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/post/k8s/iptables.png&quot; alt=&quot;iptables&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;116-고가용성-클러스터-실행&quot;&gt;11.6 고가용성 클러스터 실행&lt;/h2&gt;
+&lt;p&gt;서비스를 중단 없이 사용하기위하여 쿠버네티스 컨트롤 플레인 구성요소에 대해 알아보자.&lt;/p&gt;
+
+&lt;h3 id=&quot;1161-어플리케이션-가용성-높이기&quot;&gt;11.6.1 어플리케이션 가용성 높이기&lt;/h3&gt;
+&lt;p&gt;다양한 컨트롤러는 노드에 장애가 발생하여도 원할하게 동작할 수 있도록 도와준다. 어플리케이션의 가용성을 높이기 위해선 디플로이먼트 실행과 적잘한 레플리카 수만 할당해주면 되고, 나머지는 쿠버네티스가 알아서 해준다.&lt;/p&gt;
+
+&lt;h3 id=&quot;가동-중단-시간을-줄이기-위한-다중-인스턴스-실행&quot;&gt;가동 중단 시간을 줄이기 위한 다중 인스턴스 실행&lt;/h3&gt;
+&lt;p&gt;가동 중단 시간을 줄이기 위해선 어플리케이션을 수평으로 확장할 수 있는 구조가 되어야 한다. 그렇지 못하더라도 레플리카 수를 1로 설정한 디플로이먼트를 사용하여 장애가 일어나더라도 빠르게 복구 될 수 있도록 대비해야 한다.&lt;/p&gt;
+
+&lt;h3 id=&quot;수평-스케일링이-불가능한-어플리케이션을-위한-리더-선출-메커니즘-사용&quot;&gt;수평 스케일링이 불가능한 어플리케이션을 위한 리더 선출 메커니즘 사용&lt;/h3&gt;
+&lt;p&gt;활성 복제본과 비활성 복제본을 실행하여 빠른 임대 혹은 리더 선출 메커니즘을 이용하여 하나만 활성 상태로 만들 수 있다. 리더 선출 방식은 여러가지가 있는데, 리더가 작업에 실패하면 다른 인스턴스가 리더가 될 수 있고 리더만 쓰기를 하고 나머지는 읽기만 하는 기능을 제공할 수도 있다.&lt;/p&gt;
+
+&lt;h3 id=&quot;1162-쿠버네티스-컨트롤-플레인-구성-요소의-가용성-확장&quot;&gt;11.6.2 쿠버네티스 컨트롤 플레인 구성 요소의 가용성 확장&lt;/h3&gt;
+&lt;p&gt;쿠버네티스의 가용성을 높이기 위해 컨트롤 플레인을 구성하는 요소의 인스턴스들을 마스터 노드에서 실행해야 한다.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;etcd&lt;/li&gt;
+  &lt;li&gt;API 서버&lt;/li&gt;
+  &lt;li&gt;컨트롤러 메니저&lt;/li&gt;
+  &lt;li&gt;스케줄러&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/post/k8s/masternodes.png&quot; alt=&quot;masternodes&quot; /&gt;&lt;/p&gt;
+
 &lt;ul&gt;
   &lt;li&gt;이미지 출처
     &lt;ul&gt;
       &lt;li&gt;https://www.aquasec.com/cloud-native-academy/kubernetes-101/kubernetes-architecture/&lt;/li&gt;
       &lt;li&gt;https://kubernetes.io/ko/docs/concepts/security/controlling-access/&lt;/li&gt;
+      &lt;li&gt;https://velog.io/@pingping95/Kubernetes-Architecture&lt;/li&gt;
+      &lt;li&gt;https://azure.microsoft.com/ko-kr/overview/kubernetes-deployment-strategy/&lt;/li&gt;
+      &lt;li&gt;https://superuser.openstack.org/articles/review-of-pod-to-pod-communications-in-kubernetes/&lt;/li&gt;
+      &lt;li&gt;https://ronaknathani.com/blog/2020/08/how-a-kubernetes-pod-gets-an-ip-address/&lt;/li&gt;
+      &lt;li&gt;https://www.programmersought.com/article/740343148/&lt;/li&gt;
+      &lt;li&gt;https://www.programmersought.com/article/32457245519/&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
 &lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="kubernetes" /><summary type="html">Kubernetes In Action 정리 - 쿠버네티스 내부 이해</summary></entry><entry><title type="html">JPA Dirty Checking 사용시 주의점</title><link href="http://localhost:4000/dev/2021/04/05/jpa-dirty-checking/" rel="alternate" type="text/html" title="JPA Dirty Checking 사용시 주의점" /><published>2021-04-05T00:00:00+09:00</published><updated>2021-04-05T00:00:00+09:00</updated><id>http://localhost:4000/dev/2021/04/05/jpa-dirty-checking</id><content type="html" xml:base="http://localhost:4000/dev/2021/04/05/jpa-dirty-checking/">&lt;p&gt;이번 포스팅에서는 간단하지만 쉽게 놓칠 수 있는 부분을 소개해드리려고 합니다. :)&lt;/p&gt;
