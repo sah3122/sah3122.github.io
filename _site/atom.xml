@@ -1,4 +1,713 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-06-03T23:54:33+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">쿠버네티스 인 액션 - 11장 쿠버네티스 내부 이해</title><link href="http://localhost:4000/dev/2021/05/31/k8s-in-action11/" rel="alternate" type="text/html" title="쿠버네티스 인 액션 - 11장 쿠버네티스 내부 이해" /><published>2021-05-31T00:00:00+09:00</published><updated>2021-05-31T00:00:00+09:00</updated><id>http://localhost:4000/dev/2021/05/31/k8s-in-action11</id><content type="html" xml:base="http://localhost:4000/dev/2021/05/31/k8s-in-action11/">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.4">Jekyll</generator><link href="http://localhost:4000/atom.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-06-08T20:47:19+09:00</updated><id>http://localhost:4000/atom.xml</id><title type="html">천천히 걷는 방법</title><subtitle>사내 공유, 개인의 경험을 기록하는 블로그입니다.</subtitle><author><name>DongChul Lee</name></author><entry><title type="html">쿠버네티스 인 액션 - 12장 쿠버네티스 API 서버 보안</title><link href="http://localhost:4000/dev/2021/06/06/k8s-in-action12/" rel="alternate" type="text/html" title="쿠버네티스 인 액션 - 12장 쿠버네티스 API 서버 보안" /><published>2021-06-06T00:00:00+09:00</published><updated>2021-06-06T00:00:00+09:00</updated><id>http://localhost:4000/dev/2021/06/06/k8s-in-action12</id><content type="html" xml:base="http://localhost:4000/dev/2021/06/06/k8s-in-action12/">&lt;blockquote&gt;
+  &lt;p&gt;Kubernetes In Action 정리 - 쿠버네티스 API 서버 보안&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;인증에 대한 이해&lt;/li&gt;
+  &lt;li&gt;서비스 어카운트란 무엇이며 사용하는 이유&lt;/li&gt;
+  &lt;li&gt;역할 기반 액세스 제어(RBAC) 플러그인 이해&lt;/li&gt;
+  &lt;li&gt;롤과 롤바인딩 사용&lt;/li&gt;
+  &lt;li&gt;클러스터롤과 클러스터롤바인딩 사용&lt;/li&gt;
+  &lt;li&gt;디폴트 롤과 바인딩 이해&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;121-인증-이해&quot;&gt;12.1 인증 이해&lt;/h2&gt;
+&lt;p&gt;API 서버는 하나 이상의 인증 플러그인으로 구성할 수 있다. API 서버가 요청을 받으면 인증 플러그인 목록을 거쳐 요청이 전달, 각각 인증 플러그인이 요청을 검사한다.&lt;br /&gt;
+여러 인증 플러그인을 사용할 수 있으며 인증 플러그인은 다음 방법을 사용해 클라이언트의 아이덴티티를 얻는다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;클라이언트의 인증서&lt;/li&gt;
+  &lt;li&gt;HTTP 헤더로 전달된 인증 토큰&lt;/li&gt;
+  &lt;li&gt;기본 HTTP 인증&lt;/li&gt;
+  &lt;li&gt;기타&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;1211-사용자와-그룹&quot;&gt;12.1.1 사용자와 그룹&lt;/h3&gt;
+&lt;p&gt;인증 플러그인은 인증된 사용자의 이름과 그룹을 반환한다. 쿠버네티스는 해당 정보를 어디에도 저장하지 않으며 이를 사용해 사용자의 권한을 검사한다.&lt;/p&gt;
+
+&lt;h3 id=&quot;사용자&quot;&gt;사용자&lt;/h3&gt;
+&lt;p&gt;쿠버네티스는 API 서버에 접속하는 두 종류의 클라이언트를 구분&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;사용자&lt;/li&gt;
+  &lt;li&gt;파드(파드 내부에서 실행되는 어플리케이션)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;사용자는 싱글 사인 온과 같은 외부 시스템에 의해 관리되어야 하지만 파드는 서비스 어카운트라는 매커니즘을 사용하며 쿠버네티스 리소스로 생성되고 관리된다. 이와 대조적으로 사용자 계정을 나타내는 자원은 없으며 이는 API 서버를 통해 사용자를 생성, 변경, 삭제할 수 없다는 것이다.&lt;/p&gt;
+
+&lt;h3 id=&quot;그룹&quot;&gt;그룹&lt;/h3&gt;
+&lt;p&gt;사용자와 서비스 어카운트는 하나 이상의 그룹에 속할 수 있다. 그룹은 사용자 각각 권한을 부여하지 않고 여러 사용자를 한번에 그룹화 하기 위한 용도이다.&lt;br /&gt;
+인증 플러그인이 반환하는 그룹은 임의의 그룹을 나타내는 문자열이지만 내장된 그룹은 특별한 의미를 가진다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;system:unauthenticated 그룹은 어떤 인증 플러그인에서도 클라이언트를 인증할 수 없는 요청에 사용&lt;/li&gt;
+  &lt;li&gt;system:authenticated 그룹은 성공적으로 인증된 사용자에게 자동으로 할당&lt;/li&gt;
+  &lt;li&gt;system:serviceaccounts 그룹은 시스템의 모든 서비스어카운트를 포함&lt;/li&gt;
+  &lt;li&gt;system:serviceaccounts:&lt;namespace&gt; 는 특정 네임스페이스에 모든 서비스 어카운트를 포함&lt;/namespace&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;1212-서비스-어카운트-소개&quot;&gt;12.1.2 서비스 어카운트 소개&lt;/h3&gt;
+&lt;p&gt;모든 파드는 파드에서 실행중인 어플리케이션의 아이덴티티를 나타내는 서비스 어카운트와 연계되어 있다. 시크릿 볼륨으로 컨테이너 파일시스템에 마운트된 &lt;code class=&quot;highlighter-rouge&quot;&gt;/var/run/secrets/kubernetes.io/serviceaccount/token&lt;/code&gt; 파일은 서비스 어카운트의 인증 토큰을 가지고 있다. 어플리케이션이 토큰을 사용하여 API 서버에 접속하면 인증 플러그인이 인증을 시도하고 사용자 이름을 API 서버 코어로 전달한다.&lt;br /&gt;
+서비스 어카운트의 형식은 다음과 같다. &lt;code class=&quot;highlighter-rouge&quot;&gt;system:serviceaccount:&amp;lt;namespace&amp;gt;:&amp;lt;service account name&amp;gt;&lt;/code&gt;&lt;br /&gt;
+API 서버는 설정된 인가 플러그인에 사용자 이름을 전달하여 권한 검증을 거치게 된다.&lt;/p&gt;
+
+&lt;h3 id=&quot;서비스-어카운트-리소스&quot;&gt;서비스 어카운트 리소스&lt;/h3&gt;
+&lt;p&gt;서비스어카운트는 파드, 시크릿, 컨피그맵 등과 같은 리소스이며 개별 네임스페이스로 위치가 지정된다. 각 네임스페이스마다 default 서비스 어카운트가 자동으로 생성된다.&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl get sa
+NAME      SECRETS   AGE
+default   1         66d
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;파드는 하나의 서비스와 연계되지만 여러 파드는 같은 서비스 어카운트를 사용할 수 있다. 또한 파드는 같은 네임스페이스의 서비스 어카운트만 사용가능하다.&lt;/p&gt;
+
+&lt;h3 id=&quot;서비스어카운트가-인가와-어떻게-밀접하게-연계되어-있는지-이해&quot;&gt;서비스어카운트가 인가와 어떻게 밀접하게 연계되어 있는지 이해&lt;/h3&gt;
+&lt;p&gt;파드 매니페스트에 서비스 어카운트 이름을 지정하여 파드에 서비스 어카운트를 할당 할 수 있다. 할당하지 않을 경우 default 서비스 어카운트를 사용한다. 
+파드에 서로 다른 서비스 어카운트를 할당할 경우 각 파드 별로 액세스 가능한 리소스를 제어 할 수 있다. 현재는 역할 기반 액세스 제어((RBAC) 플러그인을 대부분 사용한다.&lt;/p&gt;
+
+&lt;h3 id=&quot;1213-서비스-어카운트-생성&quot;&gt;12.1.3 서비스 어카운트 생성&lt;/h3&gt;
+&lt;p&gt;모든 파드에 default 서비스 어카운트를 사용하지 않는 이유는 클러스터 보안을 위해서 이다. 메타데이터를 읽을 필요가 없는 파드는 API 요청을 제한 하여야 하고 권한이 필요한 파드에게만 권할을 줄 수 있어야 한다.&lt;/p&gt;
+
+&lt;h3 id=&quot;서비스-어카운트-생성&quot;&gt;서비스 어카운트 생성&lt;/h3&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl create serviceaccount foo
+serviceaccount/foo created
+
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl describe serviceaccount foo
+Name:                foo
+Namespace:           default
+Labels:              &amp;lt;none&amp;gt;
+Annotations:         &amp;lt;none&amp;gt;
+Image pull secrets:  &amp;lt;none&amp;gt; // 서비스 어카운트를 사용하는 파드에 이 필드의 값이 추가. 현재는 설정하지 않아 none이다.
+Mountable secrets:   foo-token-sh8nk // 마운트 가능한 시크릿이 강제화 된 경우 이 서비스 어카운트를 사용하는 파드만 해당 시크릿을 마운트 가능
+Tokens:              foo-token-sh8nk // 인증 토큰, 첫 번째 토큰이 마운드 된다.
+Events:              &amp;lt;none&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;사용자 정의 토큰 시크릿이 생성되어 서비스 어카운트와 연계된 것을 볼 수 있다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl describe secret foo-token-sh8nk
+Name:         foo-token-sh8nk
+Namespace:    default
+Labels:       &amp;lt;none&amp;gt;
+Annotations:  kubernetes.io/service-account.name: foo
+              kubernetes.io/service-account.uid: 6a10cc2d-1e57-428c-8e93-551d0649356c
+
+Type:  kubernetes.io/service-account-token
+
+Data
+&lt;span class=&quot;o&quot;&gt;====&lt;/span&gt;
+ca.crt:     1038 bytes
+namespace:  7 bytes
+token:      eyJhbGciOiJSUzI1NiIsImtpZCI...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;서비스어카운트의-마운트-가능한-시크릿-이해&quot;&gt;서비스어카운트의 마운트 가능한 시크릿 이해&lt;/h3&gt;
+&lt;p&gt;기본적으로 파드는 원하는 모든 시크릿을 마운트 할 수 있으며 파드가 서비스 어카운트의 마운트 가능한 시크릿 목록에 있는 시크릿만 마운트 하도록 파드의 서비스 어카운트를 설정할 수 있다.&lt;br /&gt;
+이 기능을 사용하려면 서비스 어카운트가 다음 어노테이션을 포함하고 있어야 한다. &lt;code class=&quot;highlighter-rouge&quot;&gt;kubernetes.io/enforce-mountable-secret=&quot;true&quot;&lt;/code&gt; 서비스 어카운트에 이 어노테이션을 달릴 경우 이를 사용하는 모든 파드는 서비스 어카운트에 마운트 가능한 시크릿만 마운트 할 수 있다.&lt;/p&gt;
+
+&lt;h3 id=&quot;서비스어카운트의-이미지-풀-시크릿-이해&quot;&gt;서비스어카운트의 이미지 풀 시크릿 이해&lt;/h3&gt;
+&lt;p&gt;이미지 풀 시크릿은 프라이빗 이미지 리포지터리에서 컨테이너 이미지를 가져오는 데 필요한 자격증명을 가진 시크릿이다. 
+서비스어카운트를 사용하여 모든 파드에 특정 이미지 풀 시크릿을 추가하여 각 파드마다 개별적으로 추가하지 않아도 된다.&lt;/p&gt;
+
+&lt;h3 id=&quot;1214-파드에-서비스-어카운트-할당&quot;&gt;12.1.4 파드에 서비스 어카운트 할당&lt;/h3&gt;
+
+&lt;h3 id=&quot;사용자-정의-서비스-어카운트를-사용하는-파드-생성&quot;&gt;사용자 정의 서비스 어카운트를 사용하는 파드 생성&lt;/h3&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;v1&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;pod&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; 
+  &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;curl-custom-sa&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;serviceAccountName&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;foo&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;...&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl &lt;span class=&quot;nb&quot;&gt;exec&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-it&lt;/span&gt; curl-custom-sa &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; main &lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; /var/run/secrets/kubernetes.io/serviceaccount/token
+eyJhbGciOiJSUzI1NiIsImtpZCI...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;122-역할-기반-액세스-제어로-클러스터-보안&quot;&gt;12.2 역할 기반 액세스 제어로 클러스터 보안&lt;/h2&gt;
+&lt;p&gt;RBAC는 권한이 없는 사용자가 클러스터 상태를 보거나 수정하지 못하게 막는다.&lt;/p&gt;
+
+&lt;h3 id=&quot;1221-rbac-인가-플러그인-소개&quot;&gt;12.2.1 RBAC 인가 플러그인 소개&lt;/h3&gt;
+&lt;p&gt;쿠버네티스 API 서버는 REST 인터페이스를 제공하므로 사용자는 서버에 HTTP 요청을 보내 액션을 수행한다. 사용자는 요청에 자격증명을 포함 시켜 자신을 인증한다.&lt;/p&gt;
+
+&lt;h3 id=&quot;액션-이해하기&quot;&gt;액션 이해하기&lt;/h3&gt;
+&lt;p&gt;REST 클라이언트는 get, post, put, delete등의 요청을 특정 REST 리소스를 타나내는 URL로 보낸다. 쿠버네티스에서 이러한 리소스에는 파드. 서비스, 시크릿 등이 있다.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;파드 가져오기 (GET)&lt;/li&gt;
+  &lt;li&gt;서비스 생성하기 (CREATE)&lt;/li&gt;
+  &lt;li&gt;시크릿 업데이트 (UPDATE)&lt;/li&gt;
+  &lt;li&gt;기타
+API 서버 내에서 실행되는 RBAC와 같은 인가 플러그인은 클라이언트가 요청한 자원에서 요청한 동사를 수행할 수 있는지 판별한다. 
+| HTTP 메서드 | 단일 리소스에 관한 동사 | 컬렉션에 관한 동사|
+|—|:—:|—:|
+| GET, HEAD | get (and watch for watching) | list(and watch) |
+| POST | create | n/a |
+| PUT | update | n/a |
+| PATCH | patch | n/a |
+| DELETE | delete | deletecollection |&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;rbac-플러그인-이해&quot;&gt;RBAC 플러그인 이해&lt;/h3&gt;
+&lt;p&gt;RBAC 인가 플러그인은 사용자가 액션을 수행할 수 있는지 여부를 결정하는 핵심 요소로 사용자 롤을 사용한다. 주체는 하나 이상의 롤과 연관되어 있고 각 롤은 특정 리소스에 특정 동사를 수행할 수 있다. 
+사용자에게 여러 롤이 있는 경우 롤에서 허용하는 모든 작업을 수행 할 수 있다.&lt;br /&gt;
+예를 들어 사용자에게 시크릿 정보를 업데이트 하는 권한이 없으면 API 서버는 시크릿 정보에 대해 PUT 또는 PATCH 요청을 수행하지 못하게 한다.&lt;/p&gt;
+
+&lt;h3 id=&quot;1222-rbac-리소스-소개&quot;&gt;12.2.2 RBAC 리소스 소개&lt;/h3&gt;
+&lt;p&gt;RBAC 인가 규칙은 네 개의 리소스로 구성되며 두 개의 그룹으로 분류할 수 있다.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;롤과 클러스터롤: 리소스에 수행할 수 있는 동사를 지정한다.&lt;/li&gt;
+  &lt;li&gt;롤바인딩과 클러스터롤바인딩: 위의 롤을 특정 사용자, 그룹, 또는 서비스 어카운트에 바인딩한다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;롤은 수행할수 있는 작업을 나타내고 바인딩은 이를 수행할 수 있는지를 정의한다. 
+&lt;img src=&quot;/assets/images/post/k8s/role.png&quot; alt=&quot;role&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;롤과 롤바인딩은 네임스페이스가 지정된 리소스이고, 클러스터롤과 클러스터롤 바인딩은 네임스페이스를 지정하지 않는 클러스터 수준의 리소스이다. 
+하나의 네임스페이스에 여러 롤 바인딩이 존재 가능하고 또한 여러 클러스터롤바인딩과 클러스터롤을 만들 수 있다.&lt;/p&gt;
+
+&lt;h3 id=&quot;네임스페이스-생성과-파드-실행&quot;&gt;네임스페이스 생성과 파드 실행&lt;/h3&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl create ns foo
+namespace/foo created
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl run &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--image&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;luksa/kubectl-proxy &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; foo
+kubectl run &lt;span class=&quot;nt&quot;&gt;--generator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;deployment/apps.v1 is DEPRECATED and will be removed &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;a future version. Use kubectl run &lt;span class=&quot;nt&quot;&gt;--generator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;run-pod/v1 or kubectl create instead.
+deployment.apps/test created
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl create ns bar
+namespace/bar created
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl run &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--image&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;luksa/kubectl-proxy &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; bar
+kubectl run &lt;span class=&quot;nt&quot;&gt;--generator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;deployment/apps.v1 is DEPRECATED and will be removed &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;a future version. Use kubectl run &lt;span class=&quot;nt&quot;&gt;--generator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;run-pod/v1 or kubectl create instead.
+deployment.apps/test created
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;파드에서-서비스-목록-나열하기&quot;&gt;파드에서 서비스 목록 나열하기&lt;/h3&gt;
+&lt;p&gt;RBAC가 활성화 되어 있는 상태에서 파드가 클러스터 상태 정보를 읽을 수 없다는 것을 확인&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl &lt;span class=&quot;nb&quot;&gt;exec&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-it&lt;/span&gt; test-7b4bb6b9ff-jptqp &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; foo sh
+&lt;span class=&quot;c&quot;&gt;# curl localhost:8001/api/v1/namespaces/foo/services&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;kind&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;Status&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;apiVersion&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;v1&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;metadata&quot;&lt;/span&gt;: &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;status&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;Failure&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;message&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;services is forbidden: User &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;system:serviceaccount:foo:default&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; cannot list resource &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;services&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; in API group &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; in the namespace &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;reason&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;Forbidden&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;details&quot;&lt;/span&gt;: &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;kind&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;services&quot;&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;code&quot;&lt;/span&gt;: 403
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;/ &lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;1223-롤과-롤바인딩-사용&quot;&gt;12.2.3 롤과 롤바인딩 사용&lt;/h3&gt;
+&lt;p&gt;롤 리소스는 어떤 리소스에 어떤 액션을 수행할 수 있는지를 정의한다. 
+아래 설정 파일은 사용자가 foo 네임스페이스에서 서비스를 가져오고 나열할 수 있는 롤을 정의한다.&lt;/p&gt;
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;rbac.authorization.k8s.io/v1&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Role&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; 
+  &lt;span class=&quot;na&quot;&gt;namespace&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;foo&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;service-reader&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;rules&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;apiGroups&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;verbs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;get&quot;&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;list&quot;&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;resources&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;services&quot;&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl create &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt;  service-reader.yaml &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; foo
+role.rbac.authorization.k8s.io/service-reader created
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;명령어를 사용하여 롤을 생성
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl create role service-reader &lt;span class=&quot;nt&quot;&gt;--verb&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;get &lt;span class=&quot;nt&quot;&gt;--verb&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;list &lt;span class=&quot;nt&quot;&gt;--resource&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;services &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; bar
+role.rbac.authorization.k8s.io/service-reader created
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;서비스어카운트에-롤을-바인딩하기&quot;&gt;서비스어카운트에 롤을 바인딩하기&lt;/h3&gt;
+&lt;p&gt;주체(사용자, 서비스어카운트, 그룹)에 롤을 바인딩 하는것은 롤바인딩 리소스를 만들어 수행한다. 롤을 default 서비스어카운트에 바인딩하기 위해 다음 명령을 실행한다.&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Foo 네임스페이스의 default 서비스어카운트에 service-reader롤을 바인딩하는 롤바인딩 생성 
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl create rolebinding &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--role&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;service-reader &lt;span class=&quot;nt&quot;&gt;--serviceaccount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;foo:default &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; foo
+rolebinding.rbac.authorization.k8s.io/test created
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;$ kubectl get rolebinding test -n foo -o yaml&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;rbac.authorization.k8s.io/v1&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;RoleBinding&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;creationTimestamp&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;2021-06-06T11:17:43Z&quot;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;test&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;namespace&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;foo&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;resourceVersion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;21557290&quot;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;selfLink&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/apis/rbac.authorization.k8s.io/v1/namespaces/foo/rolebindings/test&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;uid&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;4f4b39b1-d71d-4706-a654-6953485562a9&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;roleRef&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;apiGroup&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;rbac.authorization.k8s.io&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Role&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;service-reader&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;subjects&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ServiceAccount&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;default&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;namespace&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;foo&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;롤바인딩은 하나의 롤을 참조하지만 여러 주체(하나 이상의 서비스어카운트와 여러 사용자 또는 그룹)에 롤을 바인딩 할 수 있다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;API 서버에서 서비스 목록 가져오기
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl &lt;span class=&quot;nb&quot;&gt;exec&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-it&lt;/span&gt; test-7b4bb6b9ff-jptqp &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; foo sh
+&lt;span class=&quot;c&quot;&gt;# curl localhost:8001/api/v1/namespaces/foo/services&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;kind&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;ServiceList&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;apiVersion&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;v1&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;metadata&quot;&lt;/span&gt;: &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;selfLink&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;/api/v1/namespaces/foo/services&quot;&lt;/span&gt;,
+    &lt;span class=&quot;s2&quot;&gt;&quot;resourceVersion&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;21558396&quot;&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;items&quot;&lt;/span&gt;: &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;롤바인딩에서-다른-네임스페이스의-서비스어카운트-포함하기&quot;&gt;롤바인딩에서 다른 네임스페이스의 서비스어카운트 포함하기&lt;/h3&gt;
+&lt;p&gt;현재 bar 네임스페이스의 파드는 자신의 네임스페이스에 있는 서비스를 나열할수 없고 다른 네임 스페이스의 서비스 역시 나열하지 못한다. 
+foo 네임스페이스에 있는 롤바인딩을 편집하여 다른 네임스페이스에 있다 하더라도 다른 파드의 서비스어카운트를 추가한다.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ kubectl edit rolebinding test -n foo 
+// bar 네임스페이스의 서비스어카운트추가
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: bar
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;이제 bar 네임스페이스에서 실행되는 파드 내부에서 foo 네임스페이스의 서비스를 나열 할 수 있다.&lt;/p&gt;
+
+&lt;h3 id=&quot;1224-클러스터롤과-클러스터롤바인딩-사용하기&quot;&gt;12.2.4 클러스터롤과 클러스터롤바인딩 사용하기&lt;/h3&gt;
+&lt;p&gt;롤과 롤바인딩은 하나의 네임스페이스상에 상주하며 해당 네임스페이스의 리소스로 적용되는것을 의미하지만 롤바인딩은 다른 네임스페이스의 서비스 어카운트를 참조할 수있다.&lt;br /&gt;
+이와 같이 네임스페이스가 지정된 리소스 이외에도 클러스터롤, 클러스터롤바인딩이라는 클러스터 수준의 RBAC 리소스도 있다.&lt;br /&gt;
+클러스터롤은 네임스페이스가 지정되지 않은 리소스 혹은 URL에 접근을 클러스터 수준의 리소스로 각각 네임스페이스에 동일한 롤을 재 정의 할 필요 없이 사용가능하다.&lt;/p&gt;
+
+&lt;h3 id=&quot;클러스터-수준-리소스에-액세스-허용&quot;&gt;클러스터 수준 리소스에 액세스 허용&lt;/h3&gt;
+&lt;p&gt;클러스터에서 파드가 퍼시스턴트볼륨을 나열하도록 허용하는 예시&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;클러스터 롤 생성
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl create clusterrole pv-reader &lt;span class=&quot;nt&quot;&gt;--verb&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;get,list &lt;span class=&quot;nt&quot;&gt;--resource&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;persistentvolumes
+clusterrole.rbac.authorization.k8s.io/pv-reader created
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;$ kubectl get clusterrole pv-reader -o yaml&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;rbac.authorization.k8s.io/v1&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ClusterRole&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;creationTimestamp&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;2021-06-06T11:39:14Z&quot;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;pv-reader&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;resourceVersion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;21562072&quot;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;selfLink&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/apis/rbac.authorization.k8s.io/v1/clusterroles/pv-reader&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;uid&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;85da0799-5470-408b-82c5-466e345054ae&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;rules&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;apiGroups&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;resources&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;persistentvolumes&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;verbs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;get&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;list&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;클러스터 롤은 네임스페이스에 속하지 않아 필드가 없다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;퍼시스턴트 볼륨을 나열하지 못하는 상태
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl &lt;span class=&quot;nb&quot;&gt;exec&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-it&lt;/span&gt; test-7b4bb6b9ff-jptqp &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; foo sh
+&lt;span class=&quot;c&quot;&gt;# curl localhost:8001/api/v1/persistentvolumes&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;kind&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;Status&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;apiVersion&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;v1&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;metadata&quot;&lt;/span&gt;: &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;status&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;Failure&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;message&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;persistentvolumes is forbidden: User &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;system:serviceaccount:foo:default&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; cannot list resource &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;persistentvolumes&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; in API group &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; at the cluster scope&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;reason&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;Forbidden&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;details&quot;&lt;/span&gt;: &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;kind&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;persistentvolumes&quot;&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;code&quot;&lt;/span&gt;: 403
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;클러스터롤은 일반 롤바인딩을 상ㅇ해서 주체에 바인딩 할 수 있다.&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl create rolebinding pv-test &lt;span class=&quot;nt&quot;&gt;--clusterrole&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;pv-reader &lt;span class=&quot;nt&quot;&gt;--serviceaccount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;foo:default &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; foo
+rolebinding.rbac.authorization.k8s.io/pv-test created
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;여전히 퍼시스턴트 볼륨을 나열하지 못한다. 
+롤바인딩을 생성하고 클러스터롤을 참조하여 네임스테이스가 지정된 리소스에 액세스 하게 할 수 있지만 클러스터 수준 리소스에서는 동일한 방식을 사용할 수 없다.&lt;br /&gt;
+클러스터 수준 리소스에 액세스 권한을 부여하려면 클러스터롤바인딩을 사용해야 한다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;롤바인딩 삭제
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl delete rolebinding pv-test &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; foo
+rolebinding.rbac.authorization.k8s.io &lt;span class=&quot;s2&quot;&gt;&quot;pv-test&quot;&lt;/span&gt; deleted
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;클러스터롤 바인딩 생성
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl create clusterrolebinding pv-test &lt;span class=&quot;nt&quot;&gt;--clusterrole&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;pv-reader &lt;span class=&quot;nt&quot;&gt;--serviceaccount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;foo:default
+clusterrolebinding.rbac.authorization.k8s.io/pv-test created
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;클러스터롤바인딩을 생성한 뒤 퍼시스턴트볼륨 정보를 나열할 수 있게 되었다.
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl &lt;span class=&quot;nb&quot;&gt;exec&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-it&lt;/span&gt; test-7b4bb6b9ff-jptqp &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; foo sh
+&lt;span class=&quot;c&quot;&gt;# curl localhost:8001/api/v1/persistentvolumes&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;kind&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;PersistentVolumeList&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;apiVersion&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;v1&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;metadata&quot;&lt;/span&gt;: &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;selfLink&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;/api/v1/persistentvolumes&quot;&lt;/span&gt;,
+    &lt;span class=&quot;s2&quot;&gt;&quot;resourceVersion&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;21564658&quot;&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;items&quot;&lt;/span&gt;: &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;리소스가-아닌-url에-액세스-허용하기&quot;&gt;리소스가 아닌 URL에 액세스 허용하기&lt;/h3&gt;
+&lt;p&gt;API 서버는 리소스가 아닌 URL도 노출한다. 이 URL에 관한 액세스 권한도 명시적으로 부여해야한다. system:discovery 클러스터롤 및 동일한 이름의 클러스터롤바인딩을 통해 자동으로 수행&lt;/p&gt;
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;기본 system:discovery 클러스터롤&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;$ kubectl get clusterrole system:discovery -o yaml&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;rbac.authorization.k8s.io/v1&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ClusterRole&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;annotations&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;rbac.authorization.kubernetes.io/autoupdate&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;true&quot;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;creationTimestamp&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;2021-03-31T06:06:59Z&quot;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;labels&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;kubernetes.io/bootstrapping&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;rbac-defaults&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;system:discovery&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;resourceVersion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;46&quot;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;selfLink&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/apis/rbac.authorization.k8s.io/v1/clusterroles/system%3Adiscovery&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;uid&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;085b53a7-6c34-483c-b00c-ce194a40dd04&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;rules&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;nonResourceURLs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;// 이 규칙들은 리소스가 아닌 URL을 나타낸다.&lt;/span&gt; 
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/api&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/api/*&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/apis&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/apis/*&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/healthz&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/livez&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/openapi&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/openapi/*&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/readyz&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/version&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/version/&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;verbs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;get&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;클러스터 수준 리소스와 마찬가지로 리소스가 아닌 URL의 클러스터롤은 클러스터롤바인딩으로 바인딩 되어야 한다.&lt;/p&gt;
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;기본 system:discovery 클러스터롤바인딩&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;$ kubectl get clusterrolebinding system:discovery -o yaml&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;rbac.authorization.k8s.io/v1&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ClusterRoleBinding&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;annotations&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;rbac.authorization.kubernetes.io/autoupdate&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;true&quot;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;creationTimestamp&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;2021-03-31T06:06:59Z&quot;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;labels&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;kubernetes.io/bootstrapping&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;rbac-defaults&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;system:discovery&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;resourceVersion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;97&quot;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;selfLink&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/system%3Adiscovery&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;uid&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;91b7cf6e-d27b-47e8-9ab0-9c7149880c77&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;roleRef&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;// 클러스터롤바인딩은 system:discovery 클러스터롤을 참조&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;apiGroup&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;rbac.authorization.k8s.io&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ClusterRole&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;system:discovery&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;subjects&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;apiGroup&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;rbac.authorization.k8s.io // 인증된 사용자만 클러스터롤에 바인딩&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Group&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;system:authenticated&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;특정-네임스페이스의-리소스에-액세스-권한을-부여하기-위해-클러스터롤-사용&quot;&gt;특정 네임스페이스의 리소스에 액세스 권한을 부여하기 위해 클러스터롤 사용&lt;/h3&gt;
+&lt;p&gt;클러스터롤은 항상 클러스터 수준 클러스터롤바인딩과 바인딩 될 필요가 없으며 일반 롤바인딩과 바인딩 될 수 있다.&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s&quot;&gt;$ kubectl get clusterrole view -o yaml&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;rbac.authorization.k8s.io/v1&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ClusterRole&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;view&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;rules&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;apiGroups&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;resources&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;configmaps&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;endpoints&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;persistentvolumeclaims&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;persistentvolumeclaims/status&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;pods&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;replicationcontrollers&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;replicationcontrollers/scale&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;serviceaccounts&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;services&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;services/status&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;verbs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;get&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;list&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;watch&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;...&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;이 클러스터롤의 규칙은 네임스페이스가 지정된 리소스(configmap, endpoints…)의 get, list, watch를 허용하는 것이다.&lt;br /&gt;
+클러스터롤바인딩을 생성하고 클러스터롤을 참조하면 모든 네임스페이스에 지정된 리소스를 볼수 있는 반면 롤바인딩을 만들면 바인딩에 나열된 주체가 롤바인딩의 네임스페이스에 있는 리소스만 볼 수 있다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;바인딩 하기 전
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl &lt;span class=&quot;nb&quot;&gt;exec&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-it&lt;/span&gt; test-7b4bb6b9ff-jptqp &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; foo sh
+/ &lt;span class=&quot;c&quot;&gt;# curl localhost:8001/api/v1/pods&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;kind&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;Status&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;apiVersion&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;v1&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;metadata&quot;&lt;/span&gt;: &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;status&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;Failure&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;message&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;pods is forbidden: User &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;system:serviceaccount:foo:default&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; cannot list resource &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;pods&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; in API group &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; at the cluster scope&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;reason&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;Forbidden&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;details&quot;&lt;/span&gt;: &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;kind&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;pods&quot;&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;code&quot;&lt;/span&gt;: 403
+/ &lt;span class=&quot;c&quot;&gt;# curl localhost:8001/api/v1/namespaces/foo/pods&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;kind&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;Status&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;apiVersion&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;v1&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;metadata&quot;&lt;/span&gt;: &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;status&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;Failure&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;message&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;pods is forbidden: User &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;system:serviceaccount:foo:default&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; cannot list resource &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;pods&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; in API group &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; in the namespace &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;reason&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;Forbidden&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;details&quot;&lt;/span&gt;: &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;kind&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;pods&quot;&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;code&quot;&lt;/span&gt;: 403
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;/ &lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;클러스터롤바인딩을 하기전 이라 두 명령어 모두 실패한다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl create clusterrolebinding view-test &lt;span class=&quot;nt&quot;&gt;--clusterrole&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;view &lt;span class=&quot;nt&quot;&gt;--serviceaccount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;foo:default
+clusterrolebinding.rbac.authorization.k8s.io/view-test created
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# curl localhost:8001/api/v1/pods&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;kind&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;PodList&quot;&lt;/span&gt;,
+  ...
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# curl localhost:8001/api/v1/namespaces/bar/pods&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;kind&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;PodList&quot;&lt;/span&gt;,
+  ...
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;클러스터롤 바인딩을 만들었으므로 모든 네임스페이스에 적용된다. foo의 파드는 bar 네임스페이스의 파드도 나열할 수 있다. &lt;br /&gt;
+클러스터롤바인딩을 롤바인딩으로 교체&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl delete clusterrolebinding view-test
+clusterrolebinding.rbac.authorization.k8s.io &lt;span class=&quot;s2&quot;&gt;&quot;view-test&quot;&lt;/span&gt; deleted
+
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl create rolebinding view-test &lt;span class=&quot;nt&quot;&gt;--clusterrole&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;view &lt;span class=&quot;nt&quot;&gt;--serviceaccount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;foo:default &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; foo
+rolebinding.rbac.authorization.k8s.io/view-test created
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;foo 네임스페이스에 롤바인딩을 생성하여 같은 네임스페이스의 default 서비스어카운트를 view클러스터롤과 비인딩&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# curl localhost:8001/api/v1/namespaces/foo/pods&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;kind&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;PodList&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;apiVersion&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;v1&quot;&lt;/span&gt;,
+  ...
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# curl localhost:8001/api/v1/namespaces/bar/pods&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;kind&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;Status&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;apiVersion&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;v1&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;metadata&quot;&lt;/span&gt;: &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;status&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;Failure&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;message&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;pods is forbidden: User &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;system:serviceaccount:foo:default&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; cannot list resource &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;pods&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; in API group &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; in the namespace &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;reason&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;Forbidden&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;details&quot;&lt;/span&gt;: &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;kind&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;pods&quot;&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;code&quot;&lt;/span&gt;: 403
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# curl localhost:8001/api/v1/pods&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;kind&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;Status&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;apiVersion&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;v1&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;metadata&quot;&lt;/span&gt;: &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;status&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;Failure&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;message&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;pods is forbidden: User &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;system:serviceaccount:foo:default&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; cannot list resource &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;pods&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; in API group &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; at the cluster scope&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;reason&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;Forbidden&quot;&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;details&quot;&lt;/span&gt;: &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;kind&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;pods&quot;&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;code&quot;&lt;/span&gt;: 403
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;foo 네임스페이스에 잇는 파드는 나열할 수 있지만 다른 네임스페이스나 전체 네임스페이스에 걸쳐 파드는 나열할 수 없다.&lt;/p&gt;
+
+&lt;h3 id=&quot;롤-클러스터롤-롤바인딩과-클러스터롤바인딩-조합에-관한-요약&quot;&gt;롤, 클러스터롤, 롤바인딩과 클러스터롤바인딩 조합에 관한 요약&lt;/h3&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;접근&lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;롤 타입&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;사용할 바인딩 타입&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;클러스터 수준 리소스(노드, 퍼시스턴트 볼륨)&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;클러스터롤&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;클러스터롤바인딩&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;리소스가 아닌 URL(/api, /healthz)&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;클러스터롤&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;클러스터롤바인딩&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;모든 네임스페이스의 네임스페이스로 지정된 리소스&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;클러스터롤&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;클러스터롤바인딩&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;특정 네임스페이스의 네임스페이스로 지정된 리소스 (여러 네임스페이스에 동일한 클러스터롤 재사용)&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;클러스터롤&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;바인딩&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;특정 네임스페이스의 네임스페이스로 지정된 리소스 (각 네임스페이스에 롤을 정의)&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;롤&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;롤바인딩&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h3 id=&quot;디폴트-클러스터롤과-클러스터롤바인딩의-이해&quot;&gt;디폴트 클러스터롤과 클러스터롤바인딩의 이해&lt;/h3&gt;
+&lt;p&gt;쿠버네티스는 API 서버가 시작될 때 업데이트되는 클러스터롤과 클러스터롤바인딩의 디폴스 세트를 제공&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl get clusterrolebindings
+NAME                                                   AGE
+cilium                                                 67d
+cilium-operator                                        67d
+cluster-admin                                          67d
+csi-attacher-binding                                   67d
+csi-nodeplugin-binding                                 67d
+csi-provisioner-binding                                67d
+csi-resizer-binding                                    67d
+csi-snapshotter-binding                                67d
+...
+system:controller:attachdetach-controller              67d
+system:controller:certificate-controller               67d
+system:controller:clusterrole-aggregation-controller   67d
+system:controller:cronjob-controller                   67d
+system:controller:daemon-set-controller                67d
+system:controller:deployment-controller                67d
+system:controller:disruption-controller                67d
+system:controller:pv-protection-controller             67d
+system:controller:pvc-protection-controller            67d
+system:controller:replicaset-controller                67d
+system:controller:replication-controller               67d
+system:controller:resourcequota-controller             67d
+system:controller:route-controller                     67d
+system:controller:service-account-controller           67d
+system:controller:service-controller                   67d
+system:controller:statefulset-controller               67d
+system:controller:ttl-controller                       67d
+system:coredns                                         67d
+system:discovery                                       67d
+system:dns-autoscaler                                  67d
+system:kube-controller-manager                         67d
+system:kube-dns                                        67d
+system:kube-scheduler                                  67d
+system:node                                            67d
+system:node-proxier                                    67d
+system:node-webhook                                    67d
+system:public-info-viewer                              67d
+system:volume-scheduler                                67d
+
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl get clusterroles
+NAME                                                                   AGE
+admin                                                                  67d
+cilium                                                                 67d
+cilium-operator                                                        67d
+cluster-admin                                                          67d
+csi-attacher-role                                                      67d
+csi-nodeplugin-role                                                    67d
+csi-provisioner-role                                                   67d
+csi-resizer-role                                                       67d
+csi-snapshotter-role                                                   67d
+edit                                                                   67d
+...
+pv-reader                                                              16h
+snapshot-controller-runner                                             67d
+system:aggregate-to-admin                                              67d
+system:aggregate-to-edit                                               67d
+system:aggregate-to-view                                               67d
+system:auth-delegator                                                  67d
+system:basic-user                                                      67d
+system:controller:node-controller                                      67d
+system:controller:persistent-volume-binder                             67d
+system:controller:pod-garbage-collector                                67d
+system:controller:pv-protection-controller                             67d
+system:controller:pvc-protection-controller                            67d
+system:controller:replicaset-controller                                67d
+system:controller:replication-controller                               67d
+system:controller:resourcequota-controller                             67d
+system:controller:route-controller                                     67d
+system:controller:service-account-controller                           67d
+system:controller:service-controller                                   67d
+system:controller:statefulset-controller                               67d
+system:controller:ttl-controller                                       67d
+system:coredns                                                         67d
+system:discovery                                                       67d
+system:dns-autoscaler                                                  67d
+system:heapster                                                        67d
+system:kube-aggregator                                                 67d
+system:kube-controller-manager                                         67d
+system:kube-dns                                                        67d
+system:kube-scheduler                                                  67d
+system:kubelet-api-admin                                               67d
+system:node                                                            67d
+system:node-bootstrapper                                               67d
+system:node-problem-detector                                           67d
+system:node-proxier                                                    67d
+system:node-webhook                                                    67d
+system:persistent-volume-provisioner                                   67d
+system:public-info-viewer                                              67d
+system:volume-scheduler                                                67d
+view                                                                   67d
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;view-클러스터롤을-사용해-리소스에-읽기-전용-액세스-허용&quot;&gt;view 클러스터롤을 사용해 리소스에 읽기 전용 액세스 허용&lt;/h3&gt;
+&lt;p&gt;디폴트 view 클러스터롤을 사용하면 롤, 롤바인딩과 시크릿을 제외한 네임스페이스 내의 거의 모든 리소스를 읽을 수 있다. 시크릿은 읽을수 없는데 그 이유는 시크릿 중 view 클러스터롤에 정의된 것보다 더 큰 권한을 갖는 인증토큰이 포함될 수 있고 사용자가 다른 사용자로 가장해 추가 권한을 얻을 수 있기 때문.&lt;/p&gt;
+
+&lt;h3 id=&quot;edit-클러스터롤을-사용해-리소스에-변경-허용&quot;&gt;edit 클러스터롤을 사용해 리소스에 변경 허용&lt;/h3&gt;
+&lt;p&gt;edit 클러스터롤은 네임스페이스 내의 리소스와 시크릿을 읽고 수정할 수 있다. 그러나 롤, 롤바인딩을 보거나 수정하지는 못한다.&lt;/p&gt;
+
+&lt;h3 id=&quot;admin-클러스터롤을-사용해-네임스페이스에-제어-권한-허용&quot;&gt;admin 클러스터롤을 사용해 네임스페이스에 제어 권한 허용&lt;/h3&gt;
+&lt;p&gt;네임스페이스에 있는 리소스에 관한 완전한 제어 권한이 admin 클러스터롤에 부여된다. 이 롤을 가진 주체는 리소스 쿼터와 네임스페이스 리소스 자체를 제외한 네임스페이스 내의 모든 리소스를 읽고 수정할 수 있다.&lt;/p&gt;
+
+&lt;h3 id=&quot;cluster-admin-클러스터롤을-사용해-완전한-제어-허용&quot;&gt;cluster-admin 클러스터롤을 사용해 완전한 제어 허용&lt;/h3&gt;
+&lt;p&gt;쿠버네티스 클러스터를 완전히 제어하기 위해선 cluster-admin 클러스터롤을 주체에 할당하면 된다. admin 클러스터롤에선 사용자가 네임스페이스의 리소스쿼터 개체 또는 네임스페이스 리소스 자체를 수정할 수 없다. 이 작업을 허용하려면 cluster-admin 클러스터롤을 참조하는 롤바인딩을 생성.&lt;/p&gt;
+
+&lt;h3 id=&quot;1226-인가-권한을-현명하게-부여&quot;&gt;12.2.6 인가 권한을 현명하게 부여&lt;/h3&gt;
+&lt;p&gt;기본적으로 네임스페이스의 디폴트 서비스 어카운트에는 인증되지 않은 사용자의 권한 이외에는 어떤 권한도 없다. 모든 서비스어카운트에 cluster-admin 클러스터롤을 부여하는것 보단 적절한 권한만 부여하고 한가지 이상의 권한을 주지 않는 것이 좋다.&lt;/p&gt;
+
+&lt;h3 id=&quot;각-파드에-특정-서비스어카운트-생성&quot;&gt;각 파드에 특정 서비스어카운트 생성&lt;/h3&gt;
+&lt;p&gt;각 파드를 위한 특정 서비스어카운트를 생성한 다음 롤바인딩으로 맞춤형 롤과 연계하는 것이 바람직한 접근 방법이다. 파드중 하나는 읽은 권한을 부여하고 하나는 수정하는 권한을 부여하는 식으로 서도 다른 서비스어카운트를 생성하고 각 파드 펙의 serviceAccountName 속성에 서비스어카운트를 설정해 사용하는것을 권장한다. 
+양쪽 파드에 모든 권한을 네임스페이스의 디폴트 서비스어카운트에 추가하는것은 권장하지 않는다.&lt;/p&gt;
+
+&lt;h3 id=&quot;어플리케이션이-탈취될-가능성을-염두&quot;&gt;어플리케이션이 탈취될 가능성을 염두&lt;/h3&gt;
+&lt;p&gt;어플리케이션이 탈취당해 서비스어카운트의 인증토큰이 유출될 가능성을 예상하며 실제로 피해를 입지 않도록 서비스어카운트 생성에 제한을 둬야한다.&lt;/p&gt;</content><author><name>DongChul Lee</name></author><category term="kubernetes" /><summary type="html">Kubernetes In Action 정리 - 쿠버네티스 API 서버 보안</summary></entry><entry><title type="html">쿠버네티스 인 액션 - 11장 쿠버네티스 내부 이해</title><link href="http://localhost:4000/dev/2021/05/31/k8s-in-action11/" rel="alternate" type="text/html" title="쿠버네티스 인 액션 - 11장 쿠버네티스 내부 이해" /><published>2021-05-31T00:00:00+09:00</published><updated>2021-05-31T00:00:00+09:00</updated><id>http://localhost:4000/dev/2021/05/31/k8s-in-action11</id><content type="html" xml:base="http://localhost:4000/dev/2021/05/31/k8s-in-action11/">&lt;blockquote&gt;
   &lt;p&gt;Kubernetes In Action 정리 - 쿠버네티스 내부 이해&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -113,14 +822,11 @@ csi-cinder-controllerplugin-5b5f6f4f5f-65znq               dkosv3-hairshop-sandb
 kube-scheduler-dkosv3-hairshop-sandbox-master-1            dkosv3-hairshop-sandbox-master-1
 dns-autoscaler-85f898cd5c-6kvvr                            dkosv3-hairshop-sandbox-master-1
 dns-autoscaler-secondary-79b84d9867-9hp78                  dkosv3-hairshop-sandbox-master-1
-kakao-cluster-manager-5txq6                                dkosv3-hairshop-sandbox-master-1
-kakao-node-manager-bx87d                                   dkosv3-hairshop-sandbox-master-1
 kube-proxy-wrnnx                                           dkosv3-hairshop-sandbox-master-1
 kube-apiserver-dkosv3-hairshop-sandbox-master-1            dkosv3-hairshop-sandbox-master-1
 cilium-fc77v                                               dkosv3-hairshop-sandbox-master-1
 snapshot-controller-0                                      dkosv3-hairshop-sandbox-master-1
 kube-proxy-nrqz7                                           dkosv3-hairshop-sandbox-worker-1
-kakao-node-manager-nv6js                                   dkosv3-hairshop-sandbox-worker-1
 coredns-secondary-756cbdbd57-427hs                         dkosv3-hairshop-sandbox-worker-1
 coredns-5475448f89-x8ntn                                   dkosv3-hairshop-sandbox-worker-1
 nginx-proxy-dkosv3-hairshop-sandbox-worker-1               dkosv3-hairshop-sandbox-worker-1
@@ -453,6 +1159,38 @@ kube-proxy는 API서버에서 서비스가 변경되는것을 감지하는것 �
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/post/k8s/masternodes.png&quot; alt=&quot;masternodes&quot; /&gt;&lt;/p&gt;
 
+&lt;h3 id=&quot;etcd-클러스터-실행&quot;&gt;etcd 클러스터 실행&lt;/h3&gt;
+&lt;p&gt;etcd는 분산 시스템으로 설계되어 가용성을 높이는 것은 큰 문제가 되지 않음. 필요한 수의 인스턴스를 실행하고 서로를 인식할 수 있게 하면 된다.&lt;br /&gt;
+etcd는 모든 인스턴스에 걸쳐 데이터를 복제 하기 때문에 한 노드가 슬패하더라도 읽기, 쓰기 잡업을 수행 할 수 있다. 7대 이상의 etcd 인스턴스가 필요한 경우는 거의 없으며 오히려 성능에 영향을 미칠 수 있다.&lt;/p&gt;
+
+&lt;h3 id=&quot;여러-api-서버-인스턴스-실행&quot;&gt;여러 API 서버 인스턴스 실행&lt;/h3&gt;
+&lt;p&gt;API 서버의 가용성을 높이는 일은 더 간단하며 API 서버는 stateless한 상태 이기에 필요한 만큼 실행하면 된다. 일반적으로 etcd 인스턴스에 API 서버를 같이 띄운다. 
+이러한 구조일 경우 모든 API 서버가 로컬에 있는 etcd인스턴스와 통신하기 때문에 etcd 인스턴스 앞에 로드 밸런서를 둘 필요가 없고 API 서버는 로드 밸런서가 앞에 위치 하기 때문에 항상 정상적인 API 서버와 통신하게 된다.&lt;/p&gt;
+
+&lt;h3 id=&quot;컨트롤러와-스케줄러의-고가용성-확보&quot;&gt;컨트롤러와 스케줄러의 고가용성 확보&lt;/h3&gt;
+&lt;p&gt;컨트롤러 매니저나 스케줄러의 여러 인스턴스를 동시에 실행하는것은 쉽지 않다. 컨트롤러와 스케줄러는 클러스터 상태를 감시하고 상태가 변경될때 요청을 보내야 하는데 한번에 요청에 여러 인스턴스가 서로 경쟁하여 원하지 않은 결과가 발생할 수 있다. 이러한 이유 때문에 컨트롤러 매니저나 스케줄러는 하나의 인스턴스만 활성화 하도록 되어 있다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/post/k8s/High-Availability-master-node-soln.jpeg&quot; alt=&quot;masternode&quot; /&gt;
+컨트롤러 매니저와 스케줄러는 API 서버 그리고 etcd와 같이 실행되거나 다른 머신에서 실행 가능하다. 같이 실행될 경우 로컨 API 서버와 통신하고 다른 머신에서 실행될 경우 로드밸런서를 통한다.&lt;/p&gt;
+
+&lt;h3 id=&quot;컨트롤-플레인-구성-요소에서-사용되는-리더-선출-메커니즘-이해&quot;&gt;컨트롤 플레인 구성 요소에서 사용되는 리더 선출 메커니즘 이해&lt;/h3&gt;
+&lt;p&gt;리더 선출 메커니즘은 API 서버에 오브젝트를 생성하는것으로 완벽히 동작한다. 특별한 리소스를 사용하는것도 아니며 엔드포인트 리소스를 사용한다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kubectl get endpoints kube-scheduler &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; kube-system &lt;span class=&quot;nt&quot;&gt;-o&lt;/span&gt; yaml
+apiVersion: v1
+kind: Endpoints
+metadata:
+  annotations:
+    control-plane.alpha.kubernetes.io/leader: &lt;span class=&quot;s1&quot;&gt;'{&quot;holderIdentity&quot;:&quot;dkosv3-hairshop-sandbox-master-1_569aa600-4485-4ebe-8ae6-d1875b5cf66b&quot;,&quot;leaseDurationSeconds&quot;:15,&quot;acquireTime&quot;:&quot;2021-03-31T06:07:43Z&quot;,&quot;renewTime&quot;:&quot;2021-06-05T07:51:43Z&quot;,&quot;leaderTransitions&quot;:1}'&lt;/span&gt;
+  creationTimestamp: &lt;span class=&quot;s2&quot;&gt;&quot;2021-03-31T06:07:00Z&quot;&lt;/span&gt;
+  name: kube-scheduler
+  namespace: kube-system
+  resourceVersion: &lt;span class=&quot;s2&quot;&gt;&quot;21191195&quot;&lt;/span&gt;
+  selfLink: /api/v1/namespaces/kube-system/endpoints/kube-scheduler
+  uid: abda44ba-2b81-45a8-9b47-2eb5ea7ea0d6
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;control-plane.alpha.kubernetes.io/leader 를 보면 리더의 이름을 가지고 있는 holderIdentity 필드가 있다. 해당 필드에 등록된 인스턴스가 리더가 된다.&lt;/p&gt;
+
 &lt;ul&gt;
   &lt;li&gt;이미지 출처
     &lt;ul&gt;
@@ -464,6 +1202,7 @@ kube-proxy는 API서버에서 서비스가 변경되는것을 감지하는것 �
       &lt;li&gt;https://ronaknathani.com/blog/2020/08/how-a-kubernetes-pod-gets-an-ip-address/&lt;/li&gt;
       &lt;li&gt;https://www.programmersought.com/article/740343148/&lt;/li&gt;
       &lt;li&gt;https://www.programmersought.com/article/32457245519/&lt;/li&gt;
+      &lt;li&gt;https://www.suse.com/c/kubernetes-cluster-vs-master-node/&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
 &lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="kubernetes" /><summary type="html">Kubernetes In Action 정리 - 쿠버네티스 내부 이해</summary></entry><entry><title type="html">JPA Dirty Checking 사용시 주의점</title><link href="http://localhost:4000/dev/2021/04/05/jpa-dirty-checking/" rel="alternate" type="text/html" title="JPA Dirty Checking 사용시 주의점" /><published>2021-04-05T00:00:00+09:00</published><updated>2021-04-05T00:00:00+09:00</updated><id>http://localhost:4000/dev/2021/04/05/jpa-dirty-checking</id><content type="html" xml:base="http://localhost:4000/dev/2021/04/05/jpa-dirty-checking/">&lt;p&gt;이번 포스팅에서는 간단하지만 쉽게 놓칠 수 있는 부분을 소개해드리려고 합니다. :)&lt;/p&gt;
@@ -2056,179 +2795,4 @@ interface Subscription {
   &lt;li&gt;박스와 채널 모델을 이용해 비동기 시스템을 시각화 할 수 있다.&lt;/li&gt;
   &lt;li&gt;CompletableFuture 클래스는 한 번의 비동기 연산을 표현한다. 콤비네이터로 비동기 연산을 조합함으로 Future를 이용할 때 발생한 블로킹 문제를 해결할 수 있다.&lt;/li&gt;
   &lt;li&gt;Flow API는 pub - sub 구조, 역얍력을 이용하면 자바의 리액티브 프로그래밍의 기초를 제공.&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><summary type="html">Modern Java In Action 정리 - CompletableFuture와 리액티브 프로그래밍 컨셉의 기초</summary></entry><entry><title type="html">모던 자바 인 액션 - 13장 디폴트 메서드</title><link href="http://localhost:4000/dev/2020/12/01/modern-java10/" rel="alternate" type="text/html" title="모던 자바 인 액션 - 13장 디폴트 메서드" /><published>2020-12-01T00:00:00+09:00</published><updated>2020-12-01T00:00:00+09:00</updated><id>http://localhost:4000/dev/2020/12/01/modern-java10</id><content type="html" xml:base="http://localhost:4000/dev/2020/12/01/modern-java10/">&lt;blockquote&gt;
-  &lt;p&gt;Modern Java In Action 정리 - 디폴트 메서드&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;디폴트 메서드란 무엇인가 ?&lt;/li&gt;
-  &lt;li&gt;진화하는 API가 호환성을 유지하는 방법&lt;/li&gt;
-  &lt;li&gt;디폴트 메서드의 활용패턴&lt;/li&gt;
-  &lt;li&gt;해결 규칙&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;모던 자바 인 액션 책을 보고 정리한 글입니다.&lt;/code&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;변화하는-api&quot;&gt;변화하는 API&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;API를 변경하는것이 왜 어려운지에 대해 예제를 통해 알아보자.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;api-버전-1&quot;&gt;API 버전 1&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;Resizable 인터페이스 초기 버전은 다음과 같은 메서드를 지원한다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Resizable&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Drawable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getWidth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-  &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getHeight&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-  &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setWidth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-  &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setHeight&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-  &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setAbsoluteSize&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;api-버전-2&quot;&gt;API 버전 2&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;요구사항의 변화로 Resizable 에 메서드가 추가되었다고 가정하자.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Resizable&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Drawable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getWidth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-  &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getHeight&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-  &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setWidth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-  &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setHeight&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-  &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setAbsoluteSize&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-  &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setRelativeSize&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wFactor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hFactor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;사용자가 겪는 문제&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;Resizable을 고치면 Resizable을 구현하는 모든 클래스는 추가된 메소드 또는 변경된 메소드를 구현해야 한다.&lt;/li&gt;
-  &lt;li&gt;인터페이스에 새로운 메서드를 추가하면 바이너리 호환성은 유지되지만 컴파일 단계에서 에러가 발생할 것이다&lt;/li&gt;
-  &lt;li&gt;공개된 API를 고치면 기존 버전과의 호환성 문제가 발생했다. 디폴트 메서드가 나온 이후로는 이러한 문제들을 해결할 수 있게 되었다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;디폴트-메서드란-무엇인가-&quot;&gt;디폴트 메서드란 무엇인가 ?&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;Java8에서는 호환성을 유지하면서 API를 바꿀수 있도록 새로운 기능인 &lt;strong&gt;디폴트 메서드&lt;/strong&gt;를 제공한다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Sized&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; 
-  &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;default&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;boolean&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;isEmpty&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;@FuntionalInterface는 오직 하나의 &lt;strong&gt;추상 메서드&lt;/strong&gt;를 포함한다. 디폴트 메서드는 추상 메서드에 해당하지 않는 사실을 기억하자.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;디폴트-메서드-활용-패턴&quot;&gt;디폴트 메서드 활용 패턴&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;디폴트 메서드를 이용하는 두가지 방식, Optional Method와 Multiple Inheritance of Behavior 를 알아보자.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;선택형-메서드&quot;&gt;선택형 메서드&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;인터페이스를 구현하는 클래스에서 비어있는 메서드를 확인한 적이 있을것이다. 인터페이스에 정의된 메서드이지만 실제로 사용하지 않는 메서드라 빈 메서드를 정의해야 하는 상황이다.&lt;/li&gt;
-  &lt;li&gt;디폴트 메서드를 이용하면 이러한 메서드에 기본 구현을 제공해줄 수 있다. Iterator 인터페이스를 살펴보자.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Iterator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;kt&quot;&gt;boolean&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hasNext&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;T&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;default&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;remove&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;throw&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;UnsupportedOperationException&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;동작-다중-상속&quot;&gt;동작 다중 상속&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;디폴트 메서드를 이용하면 기존에는 불가능했던 동작 다중 상속 기능도 구현할 수있다.&lt;/li&gt;
-  &lt;li&gt;자바에서는 한개의 클래스 상속만 가능하지만 인터페이스는 여러 개를 구현할 수 있도록 되어 있다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ArrayList&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;E&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AbstractList&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;E&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;E&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;RandomAeccess&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Cloneable&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Serialiizable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;다중 상속 형식&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;ArrayList는 AbstractList, List&lt;E&gt;, RandomAeccess, Cloneable, Serialiizable의 서브 형식이 된다.&lt;/E&gt;&lt;/li&gt;
-  &lt;li&gt;Java8 에서는 인터페이스가 구현을 포함할 수 있으므로 클래스는 여러 인터페이스에서 동작을 상속받을 수 있다. 중복되지 않는 최소한의 인터페이스를 유지한다면 재사용과 조합을 쉽게 할 수 있다.&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;기능이 중복되지 않는 최소의 인터페이스&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;기존의 코드를 재사용하며 새로운 기능을 제공할때 디폴트 메서드를 활용할 수 있다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Rotatable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setAngle&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;angle&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-  &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getAngle&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;default&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;rotateBy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;angle&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;setAngle&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getAngle&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;angle&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;360&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;위 인터페이스는 템플릿 메서드 패턴과 비슷해보인다. 템플릿 메서드 패턴은 추상 클래스를 상속 받아 구현하게 되어 다중상속이 불가능 하다는 차이점이 있다.&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;인터페이스 조합&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;여러 인터페이스를 조합하여 기존 기능들을 재사용할 수 있다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Monster&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Rotatable&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Moveable&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Resizable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Monster 클래스는 3가지 인터페이스의 디폴트 메서드를 자동으로 상속 받는다. 움직일수 있고, 회전가능하며 크기도 조절할 수 있는 클래스가 되었다. &lt;br /&gt;
-반면 움직일수 있고, 회전 가능하지만 크기는 조절할 수 없는 클래스를 만드려면 2가지 인터페이스만 구현하면 될것이다.&lt;/li&gt;
-  &lt;li&gt;인터페이스에 디폴트 구현을 포함하면 또 다른 장점이 생긴다. 특정 요구사항이 변경되었을 경우 해당하는 인터페이스의 디폴트 메서드만 변경하면 상속 받는 모든 클래스에 요구사항이 반영된다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;해석-규칙&quot;&gt;해석 규칙&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;Java 8에는 디폴트 메서드가 추가되어 같은 시그니처를 갖는 디폴트 메서드를 상속받는 상황이 생길 수 있다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;A&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;default&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hello&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;A&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;B&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;A&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;default&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hello&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;B&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;C&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;B&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;A&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;hello&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;알아야-할-세-가지-해결-규칙&quot;&gt;알아야 할 세 가지 해결 규칙&lt;/h3&gt;
-&lt;ol&gt;
-  &lt;li&gt;클래스가 항상 이긴다. 클래스나 슈퍼 클래스에서 정의한 메서드가 디폴트 메서드보다 우선권을 갖는다.&lt;/li&gt;
-  &lt;li&gt;1번 규칙 이외의 상황에서는 서브 인터페이스가 이긴다. 상속관계를 갖는 인터페이스에서 같은 시그니처를 갖는 메서드를 정의할 때는 서브 인터페이스가 이긴다. 즉 B가 A를 상속받는다면 B가 A를 이긴다.&lt;/li&gt;
-  &lt;li&gt;디폴트 메서드의 우선순위가 결정되지 않았다면 여러 인터페이스를 상속받는 클래스가 명시적으로 디폴트 메서드를 오버라이드하고 호출해야 한다.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&quot;정리&quot;&gt;정리&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;Java 8의 인터페이스는 구현 코드를 포함하는 디폴트 메서드, 정적 메서드를 정의할 수 있다.&lt;/li&gt;
-  &lt;li&gt;디폴트 메서드의 정의는 defualt 키워드로 시작하며 일반 메서드처럼 바디를 갖는다.&lt;/li&gt;
-  &lt;li&gt;공개된 인터페이스에 추상 메서드를 추가하면 소스 호환성이 깨진다.&lt;/li&gt;
-  &lt;li&gt;디폴트 메서드를 사용하면 소스 호환성을 유지할 수 있다.&lt;/li&gt;
-  &lt;li&gt;선택형 메서드와 동작 다중 상속에도 디폴트 메서드를 사용할 수 있다.&lt;/li&gt;
-  &lt;li&gt;클래스가 같은 시그니처를 갖는 여러 디폴트 메서드를 상속하며 생기는 충돌 문제를 해결하는 규칙이 있다.&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><summary type="html">Modern Java In Action 정리 - 디폴트 메서드</summary></entry></feed>
+&lt;/ul&gt;</content><author><name>DongChul Lee</name></author><category term="java" /><summary type="html">Modern Java In Action 정리 - CompletableFuture와 리액티브 프로그래밍 컨셉의 기초</summary></entry></feed>

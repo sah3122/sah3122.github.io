@@ -1,0 +1,1580 @@
+
+<!doctype html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="theme-next muse use-motion" lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/assets/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/assets/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/assets/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="kubernetes," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="천천히 걷는 방법" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="쿠버네티스 인 액션 - 12장 쿠버네티스 API 서버 보안">
+<meta name="keywords" content="kubernetes">
+<meta property="og:type" content="article">
+<meta property="og:title" content="쿠버네티스 인 액션 - 12장 쿠버네티스 API 서버 보안">
+<meta property="og:url" content="http://localhost:4000/dev/2021/06/06/k8s-in-action12/">
+<meta property="og:site_name" content="천천히 걷는 방법">
+<meta property="og:description" content="쿠버네티스 인 액션 - 12장 쿠버네티스 API 서버 보안">
+<meta property="og:locale" content="ko">
+<meta property="og:image" content="/assets/images/post/k8s/role.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="쿠버네티스 인 액션 - 12장 쿠버네티스 API 서버 보안">
+<meta name="twitter:description" content="쿠버네티스 인 액션 - 12장 쿠버네티스 API 서버 보안">
+<meta name="twitter:image" content="/assets/images/post/k8s/role.png">
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '작성자'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://localhost:4000/"/>
+
+
+
+
+
+  <title>쿠버네티스 인 액션 - 12장 쿠버네티스 API 서버 보안 | 천천히 걷는 방법</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="ko">
+
+  
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">천천히 걷는 방법</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">적당히 잘하는 개발자가 되기 위한 기록 저장소</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            홈
+          </a>
+        </li>
+      
+        
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            아카이브
+          </a>
+        </li>
+      
+        
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            태그
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+<div id="posts" class="posts-expand">
+  
+  
+
+  
+
+  
+  
+  
+
+  <article class="post post-type- " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://localhost:4000/dev/2021/06/06/k8s-in-action12/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="DongChul Lee">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="assets/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="천천히 걷는 방법">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+          
+          
+            쿠버네티스 인 액션 - 12장 쿠버네티스 API 서버 보안
+          
+        </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">작성일</span>
+              
+              <time title="" itemprop="dateCreated datePublished" datetime="2021-06-06T00:00:00+09:00">
+                2021-06-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/category/#/dev" itemprop="url" rel="index">
+                    <span itemprop="name">dev</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+            
+                <div class="post-description">
+                    쿠버네티스 인 액션 - 12장 쿠버네티스 API 서버 보안
+                </div>
+            
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <blockquote>
+  <p>Kubernetes In Action 정리 - 쿠버네티스 API 서버 보안</p>
+</blockquote>
+
+<ul>
+  <li>인증에 대한 이해</li>
+  <li>서비스 어카운트란 무엇이며 사용하는 이유</li>
+  <li>역할 기반 액세스 제어(RBAC) 플러그인 이해</li>
+  <li>롤과 롤바인딩 사용</li>
+  <li>클러스터롤과 클러스터롤바인딩 사용</li>
+  <li>디폴트 롤과 바인딩 이해</li>
+</ul>
+
+<h2 id="121-인증-이해">12.1 인증 이해</h2>
+<p>API 서버는 하나 이상의 인증 플러그인으로 구성할 수 있다. API 서버가 요청을 받으면 인증 플러그인 목록을 거쳐 요청이 전달, 각각 인증 플러그인이 요청을 검사한다.<br />
+여러 인증 플러그인을 사용할 수 있으며 인증 플러그인은 다음 방법을 사용해 클라이언트의 아이덴티티를 얻는다.</p>
+
+<ul>
+  <li>클라이언트의 인증서</li>
+  <li>HTTP 헤더로 전달된 인증 토큰</li>
+  <li>기본 HTTP 인증</li>
+  <li>기타</li>
+</ul>
+
+<h3 id="1211-사용자와-그룹">12.1.1 사용자와 그룹</h3>
+<p>인증 플러그인은 인증된 사용자의 이름과 그룹을 반환한다. 쿠버네티스는 해당 정보를 어디에도 저장하지 않으며 이를 사용해 사용자의 권한을 검사한다.</p>
+
+<h3 id="사용자">사용자</h3>
+<p>쿠버네티스는 API 서버에 접속하는 두 종류의 클라이언트를 구분</p>
+<ul>
+  <li>사용자</li>
+  <li>파드(파드 내부에서 실행되는 어플리케이션)</li>
+</ul>
+
+<p>사용자는 싱글 사인 온과 같은 외부 시스템에 의해 관리되어야 하지만 파드는 서비스 어카운트라는 매커니즘을 사용하며 쿠버네티스 리소스로 생성되고 관리된다. 이와 대조적으로 사용자 계정을 나타내는 자원은 없으며 이는 API 서버를 통해 사용자를 생성, 변경, 삭제할 수 없다는 것이다.</p>
+
+<h3 id="그룹">그룹</h3>
+<p>사용자와 서비스 어카운트는 하나 이상의 그룹에 속할 수 있다. 그룹은 사용자 각각 권한을 부여하지 않고 여러 사용자를 한번에 그룹화 하기 위한 용도이다.<br />
+인증 플러그인이 반환하는 그룹은 임의의 그룹을 나타내는 문자열이지만 내장된 그룹은 특별한 의미를 가진다.</p>
+
+<ul>
+  <li>system:unauthenticated 그룹은 어떤 인증 플러그인에서도 클라이언트를 인증할 수 없는 요청에 사용</li>
+  <li>system:authenticated 그룹은 성공적으로 인증된 사용자에게 자동으로 할당</li>
+  <li>system:serviceaccounts 그룹은 시스템의 모든 서비스어카운트를 포함</li>
+  <li>system:serviceaccounts:<namespace> 는 특정 네임스페이스에 모든 서비스 어카운트를 포함</namespace></li>
+</ul>
+
+<h3 id="1212-서비스-어카운트-소개">12.1.2 서비스 어카운트 소개</h3>
+<p>모든 파드는 파드에서 실행중인 어플리케이션의 아이덴티티를 나타내는 서비스 어카운트와 연계되어 있다. 시크릿 볼륨으로 컨테이너 파일시스템에 마운트된 <code class="highlighter-rouge">/var/run/secrets/kubernetes.io/serviceaccount/token</code> 파일은 서비스 어카운트의 인증 토큰을 가지고 있다. 어플리케이션이 토큰을 사용하여 API 서버에 접속하면 인증 플러그인이 인증을 시도하고 사용자 이름을 API 서버 코어로 전달한다.<br />
+서비스 어카운트의 형식은 다음과 같다. <code class="highlighter-rouge">system:serviceaccount:&lt;namespace&gt;:&lt;service account name&gt;</code><br />
+API 서버는 설정된 인가 플러그인에 사용자 이름을 전달하여 권한 검증을 거치게 된다.</p>
+
+<h3 id="서비스-어카운트-리소스">서비스 어카운트 리소스</h3>
+<p>서비스어카운트는 파드, 시크릿, 컨피그맵 등과 같은 리소스이며 개별 네임스페이스로 위치가 지정된다. 각 네임스페이스마다 default 서비스 어카운트가 자동으로 생성된다.</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code><span class="nv">$ </span>kubectl get sa
+NAME      SECRETS   AGE
+default   1         66d
+</code></pre></td></tr></tbody></table></div></div>
+<p>파드는 하나의 서비스와 연계되지만 여러 파드는 같은 서비스 어카운트를 사용할 수 있다. 또한 파드는 같은 네임스페이스의 서비스 어카운트만 사용가능하다.</p>
+
+<h3 id="서비스어카운트가-인가와-어떻게-밀접하게-연계되어-있는지-이해">서비스어카운트가 인가와 어떻게 밀접하게 연계되어 있는지 이해</h3>
+<p>파드 매니페스트에 서비스 어카운트 이름을 지정하여 파드에 서비스 어카운트를 할당 할 수 있다. 할당하지 않을 경우 default 서비스 어카운트를 사용한다. 
+파드에 서로 다른 서비스 어카운트를 할당할 경우 각 파드 별로 액세스 가능한 리소스를 제어 할 수 있다. 현재는 역할 기반 액세스 제어((RBAC) 플러그인을 대부분 사용한다.</p>
+
+<h3 id="1213-서비스-어카운트-생성">12.1.3 서비스 어카운트 생성</h3>
+<p>모든 파드에 default 서비스 어카운트를 사용하지 않는 이유는 클러스터 보안을 위해서 이다. 메타데이터를 읽을 필요가 없는 파드는 API 요청을 제한 하여야 하고 권한이 필요한 파드에게만 권할을 줄 수 있어야 한다.</p>
+
+<h3 id="서비스-어카운트-생성">서비스 어카운트 생성</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12</pre></td><td class="code"><pre class="highlight"><code><span class="nv">$ </span>kubectl create serviceaccount foo
+serviceaccount/foo created
+
+<span class="nv">$ </span>kubectl describe serviceaccount foo
+Name:                foo
+Namespace:           default
+Labels:              &lt;none&gt;
+Annotations:         &lt;none&gt;
+Image pull secrets:  &lt;none&gt; // 서비스 어카운트를 사용하는 파드에 이 필드의 값이 추가. 현재는 설정하지 않아 none이다.
+Mountable secrets:   foo-token-sh8nk // 마운트 가능한 시크릿이 강제화 된 경우 이 서비스 어카운트를 사용하는 파드만 해당 시크릿을 마운트 가능
+Tokens:              foo-token-sh8nk // 인증 토큰, 첫 번째 토큰이 마운드 된다.
+Events:              &lt;none&gt;
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>사용자 정의 토큰 시크릿이 생성되어 서비스 어카운트와 연계된 것을 볼 수 있다.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14</pre></td><td class="code"><pre class="highlight"><code><span class="nv">$ </span>kubectl describe secret foo-token-sh8nk
+Name:         foo-token-sh8nk
+Namespace:    default
+Labels:       &lt;none&gt;
+Annotations:  kubernetes.io/service-account.name: foo
+              kubernetes.io/service-account.uid: 6a10cc2d-1e57-428c-8e93-551d0649356c
+
+Type:  kubernetes.io/service-account-token
+
+Data
+<span class="o">====</span>
+ca.crt:     1038 bytes
+namespace:  7 bytes
+token:      eyJhbGciOiJSUzI1NiIsImtpZCI...
+</code></pre></td></tr></tbody></table></div></div>
+
+<h3 id="서비스어카운트의-마운트-가능한-시크릿-이해">서비스어카운트의 마운트 가능한 시크릿 이해</h3>
+<p>기본적으로 파드는 원하는 모든 시크릿을 마운트 할 수 있으며 파드가 서비스 어카운트의 마운트 가능한 시크릿 목록에 있는 시크릿만 마운트 하도록 파드의 서비스 어카운트를 설정할 수 있다.<br />
+이 기능을 사용하려면 서비스 어카운트가 다음 어노테이션을 포함하고 있어야 한다. <code class="highlighter-rouge">kubernetes.io/enforce-mountable-secret="true"</code> 서비스 어카운트에 이 어노테이션을 달릴 경우 이를 사용하는 모든 파드는 서비스 어카운트에 마운트 가능한 시크릿만 마운트 할 수 있다.</p>
+
+<h3 id="서비스어카운트의-이미지-풀-시크릿-이해">서비스어카운트의 이미지 풀 시크릿 이해</h3>
+<p>이미지 풀 시크릿은 프라이빗 이미지 리포지터리에서 컨테이너 이미지를 가져오는 데 필요한 자격증명을 가진 시크릿이다. 
+서비스어카운트를 사용하여 모든 파드에 특정 이미지 풀 시크릿을 추가하여 각 파드마다 개별적으로 추가하지 않아도 된다.</p>
+
+<h3 id="1214-파드에-서비스-어카운트-할당">12.1.4 파드에 서비스 어카운트 할당</h3>
+
+<h3 id="사용자-정의-서비스-어카운트를-사용하는-파드-생성">사용자 정의 서비스 어카운트를 사용하는 파드 생성</h3>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7</pre></td><td class="code"><pre class="highlight"><code><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">pod</span>
+<span class="na">metadata</span><span class="pi">:</span> 
+  <span class="na">name</span><span class="pi">:</span> <span class="s">curl-custom-sa</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">serviceAccountName</span><span class="pi">:</span> <span class="s">foo</span>
+  <span class="s">...</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2</pre></td><td class="code"><pre class="highlight"><code><span class="nv">$ </span>kubectl <span class="nb">exec</span> <span class="nt">-it</span> curl-custom-sa <span class="nt">-c</span> main <span class="nb">cat</span> /var/run/secrets/kubernetes.io/serviceaccount/token
+eyJhbGciOiJSUzI1NiIsImtpZCI...
+</code></pre></td></tr></tbody></table></div></div>
+
+<h2 id="122-역할-기반-액세스-제어로-클러스터-보안">12.2 역할 기반 액세스 제어로 클러스터 보안</h2>
+<p>RBAC는 권한이 없는 사용자가 클러스터 상태를 보거나 수정하지 못하게 막는다.</p>
+
+<h3 id="1221-rbac-인가-플러그인-소개">12.2.1 RBAC 인가 플러그인 소개</h3>
+<p>쿠버네티스 API 서버는 REST 인터페이스를 제공하므로 사용자는 서버에 HTTP 요청을 보내 액션을 수행한다. 사용자는 요청에 자격증명을 포함 시켜 자신을 인증한다.</p>
+
+<h3 id="액션-이해하기">액션 이해하기</h3>
+<p>REST 클라이언트는 get, post, put, delete등의 요청을 특정 REST 리소스를 타나내는 URL로 보낸다. 쿠버네티스에서 이러한 리소스에는 파드. 서비스, 시크릿 등이 있다.</p>
+<ul>
+  <li>파드 가져오기 (GET)</li>
+  <li>서비스 생성하기 (CREATE)</li>
+  <li>시크릿 업데이트 (UPDATE)</li>
+  <li>기타
+API 서버 내에서 실행되는 RBAC와 같은 인가 플러그인은 클라이언트가 요청한 자원에서 요청한 동사를 수행할 수 있는지 판별한다. 
+| HTTP 메서드 | 단일 리소스에 관한 동사 | 컬렉션에 관한 동사|
+|—|:—:|—:|
+| GET, HEAD | get (and watch for watching) | list(and watch) |
+| POST | create | n/a |
+| PUT | update | n/a |
+| PATCH | patch | n/a |
+| DELETE | delete | deletecollection |</li>
+</ul>
+
+<h3 id="rbac-플러그인-이해">RBAC 플러그인 이해</h3>
+<p>RBAC 인가 플러그인은 사용자가 액션을 수행할 수 있는지 여부를 결정하는 핵심 요소로 사용자 롤을 사용한다. 주체는 하나 이상의 롤과 연관되어 있고 각 롤은 특정 리소스에 특정 동사를 수행할 수 있다. 
+사용자에게 여러 롤이 있는 경우 롤에서 허용하는 모든 작업을 수행 할 수 있다.<br />
+예를 들어 사용자에게 시크릿 정보를 업데이트 하는 권한이 없으면 API 서버는 시크릿 정보에 대해 PUT 또는 PATCH 요청을 수행하지 못하게 한다.</p>
+
+<h3 id="1222-rbac-리소스-소개">12.2.2 RBAC 리소스 소개</h3>
+<p>RBAC 인가 규칙은 네 개의 리소스로 구성되며 두 개의 그룹으로 분류할 수 있다.</p>
+<ul>
+  <li>롤과 클러스터롤: 리소스에 수행할 수 있는 동사를 지정한다.</li>
+  <li>롤바인딩과 클러스터롤바인딩: 위의 롤을 특정 사용자, 그룹, 또는 서비스 어카운트에 바인딩한다.</li>
+</ul>
+
+<p>롤은 수행할수 있는 작업을 나타내고 바인딩은 이를 수행할 수 있는지를 정의한다. 
+<img src="/assets/images/post/k8s/role.png" alt="role" /></p>
+
+<p>롤과 롤바인딩은 네임스페이스가 지정된 리소스이고, 클러스터롤과 클러스터롤 바인딩은 네임스페이스를 지정하지 않는 클러스터 수준의 리소스이다. 
+하나의 네임스페이스에 여러 롤 바인딩이 존재 가능하고 또한 여러 클러스터롤바인딩과 클러스터롤을 만들 수 있다.</p>
+
+<h3 id="네임스페이스-생성과-파드-실행">네임스페이스 생성과 파드 실행</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10</pre></td><td class="code"><pre class="highlight"><code><span class="nv">$ </span>kubectl create ns foo
+namespace/foo created
+<span class="nv">$ </span>kubectl run <span class="nb">test</span> <span class="nt">--image</span><span class="o">=</span>luksa/kubectl-proxy <span class="nt">-n</span> foo
+kubectl run <span class="nt">--generator</span><span class="o">=</span>deployment/apps.v1 is DEPRECATED and will be removed <span class="k">in </span>a future version. Use kubectl run <span class="nt">--generator</span><span class="o">=</span>run-pod/v1 or kubectl create instead.
+deployment.apps/test created
+<span class="nv">$ </span>kubectl create ns bar
+namespace/bar created
+<span class="nv">$ </span>kubectl run <span class="nb">test</span> <span class="nt">--image</span><span class="o">=</span>luksa/kubectl-proxy <span class="nt">-n</span> bar
+kubectl run <span class="nt">--generator</span><span class="o">=</span>deployment/apps.v1 is DEPRECATED and will be removed <span class="k">in </span>a future version. Use kubectl run <span class="nt">--generator</span><span class="o">=</span>run-pod/v1 or kubectl create instead.
+deployment.apps/test created
+</code></pre></td></tr></tbody></table></div></div>
+
+<h3 id="파드에서-서비스-목록-나열하기">파드에서 서비스 목록 나열하기</h3>
+<p>RBAC가 활성화 되어 있는 상태에서 파드가 클러스터 상태 정보를 읽을 수 없다는 것을 확인</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16</pre></td><td class="code"><pre class="highlight"><code><span class="nv">$ </span>kubectl <span class="nb">exec</span> <span class="nt">-it</span> test-7b4bb6b9ff-jptqp <span class="nt">-n</span> foo sh
+<span class="c"># curl localhost:8001/api/v1/namespaces/foo/services</span>
+<span class="o">{</span>
+  <span class="s2">"kind"</span>: <span class="s2">"Status"</span>,
+  <span class="s2">"apiVersion"</span>: <span class="s2">"v1"</span>,
+  <span class="s2">"metadata"</span>: <span class="o">{</span>
+
+  <span class="o">}</span>,
+  <span class="s2">"status"</span>: <span class="s2">"Failure"</span>,
+  <span class="s2">"message"</span>: <span class="s2">"services is forbidden: User </span><span class="se">\"</span><span class="s2">system:serviceaccount:foo:default</span><span class="se">\"</span><span class="s2"> cannot list resource </span><span class="se">\"</span><span class="s2">services</span><span class="se">\"</span><span class="s2"> in API group </span><span class="se">\"\"</span><span class="s2"> in the namespace </span><span class="se">\"</span><span class="s2">foo</span><span class="se">\"</span><span class="s2">"</span>,
+  <span class="s2">"reason"</span>: <span class="s2">"Forbidden"</span>,
+  <span class="s2">"details"</span>: <span class="o">{</span>
+    <span class="s2">"kind"</span>: <span class="s2">"services"</span>
+  <span class="o">}</span>,
+  <span class="s2">"code"</span>: 403
+<span class="o">}</span>/ <span class="c">#</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<h3 id="1223-롤과-롤바인딩-사용">12.2.3 롤과 롤바인딩 사용</h3>
+<p>롤 리소스는 어떤 리소스에 어떤 액션을 수행할 수 있는지를 정의한다. 
+아래 설정 파일은 사용자가 foo 네임스페이스에서 서비스를 가져오고 나열할 수 있는 롤을 정의한다.</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9</pre></td><td class="code"><pre class="highlight"><code><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">rbac.authorization.k8s.io/v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Role</span>
+<span class="na">metadata</span><span class="pi">:</span> 
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">foo</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">service-reader</span>
+<span class="na">rules</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">apiGroups</span><span class="pi">:</span> <span class="pi">[</span><span class="s2">"</span><span class="s">"</span><span class="pi">]</span>
+    <span class="na">verbs</span><span class="pi">:</span> <span class="pi">[</span><span class="s2">"</span><span class="s">get"</span><span class="pi">,</span> <span class="s2">"</span><span class="s">list"</span><span class="pi">]</span>
+    <span class="na">resources</span><span class="pi">:</span> <span class="pi">[</span><span class="s2">"</span><span class="s">services"</span><span class="pi">]</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2</pre></td><td class="code"><pre class="highlight"><code><span class="nv">$ </span>kubectl create <span class="nt">-f</span>  service-reader.yaml <span class="nt">-n</span> foo
+role.rbac.authorization.k8s.io/service-reader created
+</code></pre></td></tr></tbody></table></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code>명령어를 사용하여 롤을 생성
+<span class="nv">$ </span>kubectl create role service-reader <span class="nt">--verb</span><span class="o">=</span>get <span class="nt">--verb</span><span class="o">=</span>list <span class="nt">--resource</span><span class="o">=</span>services <span class="nt">-n</span> bar
+role.rbac.authorization.k8s.io/service-reader created
+</code></pre></td></tr></tbody></table></div></div>
+
+<h3 id="서비스어카운트에-롤을-바인딩하기">서비스어카운트에 롤을 바인딩하기</h3>
+<p>주체(사용자, 서비스어카운트, 그룹)에 롤을 바인딩 하는것은 롤바인딩 리소스를 만들어 수행한다. 롤을 default 서비스어카운트에 바인딩하기 위해 다음 명령을 실행한다.</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code>Foo 네임스페이스의 default 서비스어카운트에 service-reader롤을 바인딩하는 롤바인딩 생성 
+<span class="nv">$ </span>kubectl create rolebinding <span class="nb">test</span> <span class="nt">--role</span><span class="o">=</span>service-reader <span class="nt">--serviceaccount</span><span class="o">=</span>foo:default <span class="nt">-n</span> foo
+rolebinding.rbac.authorization.k8s.io/test created
+</code></pre></td></tr></tbody></table></div></div>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18</pre></td><td class="code"><pre class="highlight"><code><span class="s">$ kubectl get rolebinding test -n foo -o yaml</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">rbac.authorization.k8s.io/v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">RoleBinding</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="s2">"</span><span class="s">2021-06-06T11:17:43Z"</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">test</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">foo</span>
+  <span class="na">resourceVersion</span><span class="pi">:</span> <span class="s2">"</span><span class="s">21557290"</span>
+  <span class="na">selfLink</span><span class="pi">:</span> <span class="s">/apis/rbac.authorization.k8s.io/v1/namespaces/foo/rolebindings/test</span>
+  <span class="na">uid</span><span class="pi">:</span> <span class="s">4f4b39b1-d71d-4706-a654-6953485562a9</span>
+<span class="na">roleRef</span><span class="pi">:</span>
+  <span class="na">apiGroup</span><span class="pi">:</span> <span class="s">rbac.authorization.k8s.io</span>
+  <span class="na">kind</span><span class="pi">:</span> <span class="s">Role</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">service-reader</span>
+<span class="na">subjects</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="na">kind</span><span class="pi">:</span> <span class="s">ServiceAccount</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">default</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">foo</span>
+</code></pre></td></tr></tbody></table></div></div>
+<p>롤바인딩은 하나의 롤을 참조하지만 여러 주체(하나 이상의 서비스어카운트와 여러 사용자 또는 그룹)에 롤을 바인딩 할 수 있다.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11</pre></td><td class="code"><pre class="highlight"><code>API 서버에서 서비스 목록 가져오기
+<span class="nv">$ </span>kubectl <span class="nb">exec</span> <span class="nt">-it</span> test-7b4bb6b9ff-jptqp <span class="nt">-n</span> foo sh
+<span class="c"># curl localhost:8001/api/v1/namespaces/foo/services</span>
+<span class="o">{</span>
+  <span class="s2">"kind"</span>: <span class="s2">"ServiceList"</span>,
+  <span class="s2">"apiVersion"</span>: <span class="s2">"v1"</span>,
+  <span class="s2">"metadata"</span>: <span class="o">{</span>
+    <span class="s2">"selfLink"</span>: <span class="s2">"/api/v1/namespaces/foo/services"</span>,
+    <span class="s2">"resourceVersion"</span>: <span class="s2">"21558396"</span>
+  <span class="o">}</span>,
+  <span class="s2">"items"</span>: <span class="o">[]</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<h3 id="롤바인딩에서-다른-네임스페이스의-서비스어카운트-포함하기">롤바인딩에서 다른 네임스페이스의 서비스어카운트 포함하기</h3>
+<p>현재 bar 네임스페이스의 파드는 자신의 네임스페이스에 있는 서비스를 나열할수 없고 다른 네임 스페이스의 서비스 역시 나열하지 못한다. 
+foo 네임스페이스에 있는 롤바인딩을 편집하여 다른 네임스페이스에 있다 하더라도 다른 파드의 서비스어카운트를 추가한다.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6</pre></td><td class="code"><pre class="highlight"><code>$ kubectl edit rolebinding test -n foo 
+// bar 네임스페이스의 서비스어카운트추가
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: bar
+</code></pre></td></tr></tbody></table></div></div>
+<p>이제 bar 네임스페이스에서 실행되는 파드 내부에서 foo 네임스페이스의 서비스를 나열 할 수 있다.</p>
+
+<h3 id="1224-클러스터롤과-클러스터롤바인딩-사용하기">12.2.4 클러스터롤과 클러스터롤바인딩 사용하기</h3>
+<p>롤과 롤바인딩은 하나의 네임스페이스상에 상주하며 해당 네임스페이스의 리소스로 적용되는것을 의미하지만 롤바인딩은 다른 네임스페이스의 서비스 어카운트를 참조할 수있다.<br />
+이와 같이 네임스페이스가 지정된 리소스 이외에도 클러스터롤, 클러스터롤바인딩이라는 클러스터 수준의 RBAC 리소스도 있다.<br />
+클러스터롤은 네임스페이스가 지정되지 않은 리소스 혹은 URL에 접근을 클러스터 수준의 리소스로 각각 네임스페이스에 동일한 롤을 재 정의 할 필요 없이 사용가능하다.</p>
+
+<h3 id="클러스터-수준-리소스에-액세스-허용">클러스터 수준 리소스에 액세스 허용</h3>
+<p>클러스터에서 파드가 퍼시스턴트볼륨을 나열하도록 허용하는 예시</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code>클러스터 롤 생성
+<span class="nv">$ </span>kubectl create clusterrole pv-reader <span class="nt">--verb</span><span class="o">=</span>get,list <span class="nt">--resource</span><span class="o">=</span>persistentvolumes
+clusterrole.rbac.authorization.k8s.io/pv-reader created
+</code></pre></td></tr></tbody></table></div></div>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17</pre></td><td class="code"><pre class="highlight"><code><span class="s">$ kubectl get clusterrole pv-reader -o yaml</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">rbac.authorization.k8s.io/v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">ClusterRole</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="s2">"</span><span class="s">2021-06-06T11:39:14Z"</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">pv-reader</span>
+  <span class="na">resourceVersion</span><span class="pi">:</span> <span class="s2">"</span><span class="s">21562072"</span>
+  <span class="na">selfLink</span><span class="pi">:</span> <span class="s">/apis/rbac.authorization.k8s.io/v1/clusterroles/pv-reader</span>
+  <span class="na">uid</span><span class="pi">:</span> <span class="s">85da0799-5470-408b-82c5-466e345054ae</span>
+<span class="na">rules</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="na">apiGroups</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s2">"</span><span class="s">"</span>
+  <span class="na">resources</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">persistentvolumes</span>
+  <span class="na">verbs</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">get</span>
+  <span class="pi">-</span> <span class="s">list</span>
+</code></pre></td></tr></tbody></table></div></div>
+<p>클러스터 롤은 네임스페이스에 속하지 않아 필드가 없다.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17</pre></td><td class="code"><pre class="highlight"><code>퍼시스턴트 볼륨을 나열하지 못하는 상태
+<span class="nv">$ </span>kubectl <span class="nb">exec</span> <span class="nt">-it</span> test-7b4bb6b9ff-jptqp <span class="nt">-n</span> foo sh
+<span class="c"># curl localhost:8001/api/v1/persistentvolumes</span>
+<span class="o">{</span>
+  <span class="s2">"kind"</span>: <span class="s2">"Status"</span>,
+  <span class="s2">"apiVersion"</span>: <span class="s2">"v1"</span>,
+  <span class="s2">"metadata"</span>: <span class="o">{</span>
+
+  <span class="o">}</span>,
+  <span class="s2">"status"</span>: <span class="s2">"Failure"</span>,
+  <span class="s2">"message"</span>: <span class="s2">"persistentvolumes is forbidden: User </span><span class="se">\"</span><span class="s2">system:serviceaccount:foo:default</span><span class="se">\"</span><span class="s2"> cannot list resource </span><span class="se">\"</span><span class="s2">persistentvolumes</span><span class="se">\"</span><span class="s2"> in API group </span><span class="se">\"\"</span><span class="s2"> at the cluster scope"</span>,
+  <span class="s2">"reason"</span>: <span class="s2">"Forbidden"</span>,
+  <span class="s2">"details"</span>: <span class="o">{</span>
+    <span class="s2">"kind"</span>: <span class="s2">"persistentvolumes"</span>
+  <span class="o">}</span>,
+  <span class="s2">"code"</span>: 403
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>클러스터롤은 일반 롤바인딩을 상ㅇ해서 주체에 바인딩 할 수 있다.</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2</pre></td><td class="code"><pre class="highlight"><code><span class="nv">$ </span>kubectl create rolebinding pv-test <span class="nt">--clusterrole</span><span class="o">=</span>pv-reader <span class="nt">--serviceaccount</span><span class="o">=</span>foo:default <span class="nt">-n</span> foo
+rolebinding.rbac.authorization.k8s.io/pv-test created
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>여전히 퍼시스턴트 볼륨을 나열하지 못한다. 
+롤바인딩을 생성하고 클러스터롤을 참조하여 네임스테이스가 지정된 리소스에 액세스 하게 할 수 있지만 클러스터 수준 리소스에서는 동일한 방식을 사용할 수 없다.<br />
+클러스터 수준 리소스에 액세스 권한을 부여하려면 클러스터롤바인딩을 사용해야 한다.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code>롤바인딩 삭제
+<span class="nv">$ </span>kubectl delete rolebinding pv-test <span class="nt">-n</span> foo
+rolebinding.rbac.authorization.k8s.io <span class="s2">"pv-test"</span> deleted
+</code></pre></td></tr></tbody></table></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3</pre></td><td class="code"><pre class="highlight"><code>클러스터롤 바인딩 생성
+<span class="nv">$ </span>kubectl create clusterrolebinding pv-test <span class="nt">--clusterrole</span><span class="o">=</span>pv-reader <span class="nt">--serviceaccount</span><span class="o">=</span>foo:default
+clusterrolebinding.rbac.authorization.k8s.io/pv-test created
+</code></pre></td></tr></tbody></table></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12</pre></td><td class="code"><pre class="highlight"><code>클러스터롤바인딩을 생성한 뒤 퍼시스턴트볼륨 정보를 나열할 수 있게 되었다.
+<span class="nv">$ </span>kubectl <span class="nb">exec</span> <span class="nt">-it</span> test-7b4bb6b9ff-jptqp <span class="nt">-n</span> foo sh
+<span class="c"># curl localhost:8001/api/v1/persistentvolumes</span>
+<span class="o">{</span>
+  <span class="s2">"kind"</span>: <span class="s2">"PersistentVolumeList"</span>,
+  <span class="s2">"apiVersion"</span>: <span class="s2">"v1"</span>,
+  <span class="s2">"metadata"</span>: <span class="o">{</span>
+    <span class="s2">"selfLink"</span>: <span class="s2">"/api/v1/persistentvolumes"</span>,
+    <span class="s2">"resourceVersion"</span>: <span class="s2">"21564658"</span>
+  <span class="o">}</span>,
+  <span class="s2">"items"</span>: <span class="o">[]</span>
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<h3 id="리소스가-아닌-url에-액세스-허용하기">리소스가 아닌 URL에 액세스 허용하기</h3>
+<p>API 서버는 리소스가 아닌 URL도 노출한다. 이 URL에 관한 액세스 권한도 명시적으로 부여해야한다. system:discovery 클러스터롤 및 동일한 이름의 클러스터롤바인딩을 통해 자동으로 수행</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26<br/>27<br/>28<br/>29</pre></td><td class="code"><pre class="highlight"><code><span class="s">기본 system:discovery 클러스터롤</span>
+<span class="s">$ kubectl get clusterrole system:discovery -o yaml</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">rbac.authorization.k8s.io/v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">ClusterRole</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">annotations</span><span class="pi">:</span>
+    <span class="s">rbac.authorization.kubernetes.io/autoupdate</span><span class="pi">:</span> <span class="s2">"</span><span class="s">true"</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="s2">"</span><span class="s">2021-03-31T06:06:59Z"</span>
+  <span class="na">labels</span><span class="pi">:</span>
+    <span class="s">kubernetes.io/bootstrapping</span><span class="pi">:</span> <span class="s">rbac-defaults</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">system:discovery</span>
+  <span class="na">resourceVersion</span><span class="pi">:</span> <span class="s2">"</span><span class="s">46"</span>
+  <span class="na">selfLink</span><span class="pi">:</span> <span class="s">/apis/rbac.authorization.k8s.io/v1/clusterroles/system%3Adiscovery</span>
+  <span class="na">uid</span><span class="pi">:</span> <span class="s">085b53a7-6c34-483c-b00c-ce194a40dd04</span>
+<span class="na">rules</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="na">nonResourceURLs</span><span class="pi">:</span> <span class="s">// 이 규칙들은 리소스가 아닌 URL을 나타낸다.</span> 
+  <span class="pi">-</span> <span class="s">/api</span>
+  <span class="pi">-</span> <span class="s">/api/*</span>
+  <span class="pi">-</span> <span class="s">/apis</span>
+  <span class="pi">-</span> <span class="s">/apis/*</span>
+  <span class="pi">-</span> <span class="s">/healthz</span>
+  <span class="pi">-</span> <span class="s">/livez</span>
+  <span class="pi">-</span> <span class="s">/openapi</span>
+  <span class="pi">-</span> <span class="s">/openapi/*</span>
+  <span class="pi">-</span> <span class="s">/readyz</span>
+  <span class="pi">-</span> <span class="s">/version</span>
+  <span class="pi">-</span> <span class="s">/version/</span>
+  <span class="na">verbs</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">get</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>클러스터 수준 리소스와 마찬가지로 리소스가 아닌 URL의 클러스터롤은 클러스터롤바인딩으로 바인딩 되어야 한다.</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22</pre></td><td class="code"><pre class="highlight"><code><span class="s">기본 system:discovery 클러스터롤바인딩</span>
+<span class="s">$ kubectl get clusterrolebinding system:discovery -o yaml</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">rbac.authorization.k8s.io/v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">ClusterRoleBinding</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">annotations</span><span class="pi">:</span>
+    <span class="s">rbac.authorization.kubernetes.io/autoupdate</span><span class="pi">:</span> <span class="s2">"</span><span class="s">true"</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="s2">"</span><span class="s">2021-03-31T06:06:59Z"</span>
+  <span class="na">labels</span><span class="pi">:</span>
+    <span class="s">kubernetes.io/bootstrapping</span><span class="pi">:</span> <span class="s">rbac-defaults</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">system:discovery</span>
+  <span class="na">resourceVersion</span><span class="pi">:</span> <span class="s2">"</span><span class="s">97"</span>
+  <span class="na">selfLink</span><span class="pi">:</span> <span class="s">/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/system%3Adiscovery</span>
+  <span class="na">uid</span><span class="pi">:</span> <span class="s">91b7cf6e-d27b-47e8-9ab0-9c7149880c77</span>
+<span class="na">roleRef</span><span class="pi">:</span> <span class="s">// 클러스터롤바인딩은 system:discovery 클러스터롤을 참조</span>
+  <span class="s">apiGroup</span><span class="pi">:</span> <span class="s">rbac.authorization.k8s.io</span>
+  <span class="s">kind</span><span class="pi">:</span> <span class="s">ClusterRole</span>
+  <span class="s">name</span><span class="pi">:</span> <span class="s">system:discovery</span>
+<span class="na">subjects</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="na">apiGroup</span><span class="pi">:</span> <span class="s">rbac.authorization.k8s.io // 인증된 사용자만 클러스터롤에 바인딩</span>
+  <span class="na">kind</span><span class="pi">:</span> <span class="s">Group</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">system:authenticated</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<h3 id="특정-네임스페이스의-리소스에-액세스-권한을-부여하기-위해-클러스터롤-사용">특정 네임스페이스의 리소스에 액세스 권한을 부여하기 위해 클러스터롤 사용</h3>
+<p>클러스터롤은 항상 클러스터 수준 클러스터롤바인딩과 바인딩 될 필요가 없으며 일반 롤바인딩과 바인딩 될 수 있다.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24</pre></td><td class="code"><pre class="highlight"><code><span class="s">$ kubectl get clusterrole view -o yaml</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">rbac.authorization.k8s.io/v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">ClusterRole</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">view</span>
+<span class="na">rules</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="na">apiGroups</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s2">"</span><span class="s">"</span>
+  <span class="na">resources</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">configmaps</span>
+  <span class="pi">-</span> <span class="s">endpoints</span>
+  <span class="pi">-</span> <span class="s">persistentvolumeclaims</span>
+  <span class="pi">-</span> <span class="s">persistentvolumeclaims/status</span>
+  <span class="pi">-</span> <span class="s">pods</span>
+  <span class="pi">-</span> <span class="s">replicationcontrollers</span>
+  <span class="pi">-</span> <span class="s">replicationcontrollers/scale</span>
+  <span class="pi">-</span> <span class="s">serviceaccounts</span>
+  <span class="pi">-</span> <span class="s">services</span>
+  <span class="pi">-</span> <span class="s">services/status</span>
+  <span class="na">verbs</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">get</span>
+  <span class="pi">-</span> <span class="s">list</span>
+  <span class="pi">-</span> <span class="s">watch</span>
+  <span class="s">...</span>
+</code></pre></td></tr></tbody></table></div></div>
+<p>이 클러스터롤의 규칙은 네임스페이스가 지정된 리소스(configmap, endpoints…)의 get, list, watch를 허용하는 것이다.<br />
+클러스터롤바인딩을 생성하고 클러스터롤을 참조하면 모든 네임스페이스에 지정된 리소스를 볼수 있는 반면 롤바인딩을 만들면 바인딩에 나열된 주체가 롤바인딩의 네임스페이스에 있는 리소스만 볼 수 있다.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26<br/>27<br/>28<br/>29<br/>30<br/>31</pre></td><td class="code"><pre class="highlight"><code>바인딩 하기 전
+<span class="nv">$ </span>kubectl <span class="nb">exec</span> <span class="nt">-it</span> test-7b4bb6b9ff-jptqp <span class="nt">-n</span> foo sh
+/ <span class="c"># curl localhost:8001/api/v1/pods</span>
+<span class="o">{</span>
+  <span class="s2">"kind"</span>: <span class="s2">"Status"</span>,
+  <span class="s2">"apiVersion"</span>: <span class="s2">"v1"</span>,
+  <span class="s2">"metadata"</span>: <span class="o">{</span>
+
+  <span class="o">}</span>,
+  <span class="s2">"status"</span>: <span class="s2">"Failure"</span>,
+  <span class="s2">"message"</span>: <span class="s2">"pods is forbidden: User </span><span class="se">\"</span><span class="s2">system:serviceaccount:foo:default</span><span class="se">\"</span><span class="s2"> cannot list resource </span><span class="se">\"</span><span class="s2">pods</span><span class="se">\"</span><span class="s2"> in API group </span><span class="se">\"\"</span><span class="s2"> at the cluster scope"</span>,
+  <span class="s2">"reason"</span>: <span class="s2">"Forbidden"</span>,
+  <span class="s2">"details"</span>: <span class="o">{</span>
+    <span class="s2">"kind"</span>: <span class="s2">"pods"</span>
+  <span class="o">}</span>,
+  <span class="s2">"code"</span>: 403
+/ <span class="c"># curl localhost:8001/api/v1/namespaces/foo/pods</span>
+<span class="o">{</span>
+  <span class="s2">"kind"</span>: <span class="s2">"Status"</span>,
+  <span class="s2">"apiVersion"</span>: <span class="s2">"v1"</span>,
+  <span class="s2">"metadata"</span>: <span class="o">{</span>
+
+  <span class="o">}</span>,
+  <span class="s2">"status"</span>: <span class="s2">"Failure"</span>,
+  <span class="s2">"message"</span>: <span class="s2">"pods is forbidden: User </span><span class="se">\"</span><span class="s2">system:serviceaccount:foo:default</span><span class="se">\"</span><span class="s2"> cannot list resource </span><span class="se">\"</span><span class="s2">pods</span><span class="se">\"</span><span class="s2"> in API group </span><span class="se">\"\"</span><span class="s2"> in the namespace </span><span class="se">\"</span><span class="s2">foo</span><span class="se">\"</span><span class="s2">"</span>,
+  <span class="s2">"reason"</span>: <span class="s2">"Forbidden"</span>,
+  <span class="s2">"details"</span>: <span class="o">{</span>
+    <span class="s2">"kind"</span>: <span class="s2">"pods"</span>
+  <span class="o">}</span>,
+  <span class="s2">"code"</span>: 403
+<span class="o">}</span>/ <span class="c">#</span>
+</code></pre></td></tr></tbody></table></div></div>
+<p>클러스터롤바인딩을 하기전 이라 두 명령어 모두 실패한다.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2</pre></td><td class="code"><pre class="highlight"><code><span class="nv">$ </span>kubectl create clusterrolebinding view-test <span class="nt">--clusterrole</span><span class="o">=</span>view <span class="nt">--serviceaccount</span><span class="o">=</span>foo:default
+clusterrolebinding.rbac.authorization.k8s.io/view-test created
+</code></pre></td></tr></tbody></table></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11</pre></td><td class="code"><pre class="highlight"><code><span class="c"># curl localhost:8001/api/v1/pods</span>
+<span class="o">{</span>
+  <span class="s2">"kind"</span>: <span class="s2">"PodList"</span>,
+  ...
+<span class="o">}</span>
+
+<span class="c"># curl localhost:8001/api/v1/namespaces/bar/pods</span>
+<span class="o">{</span>
+  <span class="s2">"kind"</span>: <span class="s2">"PodList"</span>,
+  ...
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>클러스터롤 바인딩을 만들었으므로 모든 네임스페이스에 적용된다. foo의 파드는 bar 네임스페이스의 파드도 나열할 수 있다. <br />
+클러스터롤바인딩을 롤바인딩으로 교체</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5</pre></td><td class="code"><pre class="highlight"><code><span class="nv">$ </span>kubectl delete clusterrolebinding view-test
+clusterrolebinding.rbac.authorization.k8s.io <span class="s2">"view-test"</span> deleted
+
+<span class="nv">$ </span>kubectl create rolebinding view-test <span class="nt">--clusterrole</span><span class="o">=</span>view <span class="nt">--serviceaccount</span><span class="o">=</span>foo:default <span class="nt">-n</span> foo
+rolebinding.rbac.authorization.k8s.io/view-test created
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>foo 네임스페이스에 롤바인딩을 생성하여 같은 네임스페이스의 default 서비스어카운트를 view클러스터롤과 비인딩</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26<br/>27<br/>28<br/>29<br/>30<br/>31<br/>32<br/>33<br/>34<br/>35<br/>36<br/>37<br/>38</pre></td><td class="code"><pre class="highlight"><code><span class="c"># curl localhost:8001/api/v1/namespaces/foo/pods</span>
+<span class="o">{</span>
+  <span class="s2">"kind"</span>: <span class="s2">"PodList"</span>,
+  <span class="s2">"apiVersion"</span>: <span class="s2">"v1"</span>,
+  ...
+<span class="o">}</span>
+
+<span class="c"># curl localhost:8001/api/v1/namespaces/bar/pods</span>
+<span class="o">{</span>
+  <span class="s2">"kind"</span>: <span class="s2">"Status"</span>,
+  <span class="s2">"apiVersion"</span>: <span class="s2">"v1"</span>,
+  <span class="s2">"metadata"</span>: <span class="o">{</span>
+
+  <span class="o">}</span>,
+  <span class="s2">"status"</span>: <span class="s2">"Failure"</span>,
+  <span class="s2">"message"</span>: <span class="s2">"pods is forbidden: User </span><span class="se">\"</span><span class="s2">system:serviceaccount:foo:default</span><span class="se">\"</span><span class="s2"> cannot list resource </span><span class="se">\"</span><span class="s2">pods</span><span class="se">\"</span><span class="s2"> in API group </span><span class="se">\"\"</span><span class="s2"> in the namespace </span><span class="se">\"</span><span class="s2">bar</span><span class="se">\"</span><span class="s2">"</span>,
+  <span class="s2">"reason"</span>: <span class="s2">"Forbidden"</span>,
+  <span class="s2">"details"</span>: <span class="o">{</span>
+    <span class="s2">"kind"</span>: <span class="s2">"pods"</span>
+  <span class="o">}</span>,
+  <span class="s2">"code"</span>: 403
+<span class="o">}</span>
+
+<span class="c"># curl localhost:8001/api/v1/pods</span>
+<span class="o">{</span>
+  <span class="s2">"kind"</span>: <span class="s2">"Status"</span>,
+  <span class="s2">"apiVersion"</span>: <span class="s2">"v1"</span>,
+  <span class="s2">"metadata"</span>: <span class="o">{</span>
+
+  <span class="o">}</span>,
+  <span class="s2">"status"</span>: <span class="s2">"Failure"</span>,
+  <span class="s2">"message"</span>: <span class="s2">"pods is forbidden: User </span><span class="se">\"</span><span class="s2">system:serviceaccount:foo:default</span><span class="se">\"</span><span class="s2"> cannot list resource </span><span class="se">\"</span><span class="s2">pods</span><span class="se">\"</span><span class="s2"> in API group </span><span class="se">\"\"</span><span class="s2"> at the cluster scope"</span>,
+  <span class="s2">"reason"</span>: <span class="s2">"Forbidden"</span>,
+  <span class="s2">"details"</span>: <span class="o">{</span>
+    <span class="s2">"kind"</span>: <span class="s2">"pods"</span>
+  <span class="o">}</span>,
+  <span class="s2">"code"</span>: 403
+<span class="o">}</span>
+</code></pre></td></tr></tbody></table></div></div>
+
+<p>foo 네임스페이스에 잇는 파드는 나열할 수 있지만 다른 네임스페이스나 전체 네임스페이스에 걸쳐 파드는 나열할 수 없다.</p>
+
+<h3 id="롤-클러스터롤-롤바인딩과-클러스터롤바인딩-조합에-관한-요약">롤, 클러스터롤, 롤바인딩과 클러스터롤바인딩 조합에 관한 요약</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>접근</th>
+      <th style="text-align: center">롤 타입</th>
+      <th style="text-align: right">사용할 바인딩 타입</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>클러스터 수준 리소스(노드, 퍼시스턴트 볼륨)</td>
+      <td style="text-align: center">클러스터롤</td>
+      <td style="text-align: right">클러스터롤바인딩</td>
+    </tr>
+    <tr>
+      <td>리소스가 아닌 URL(/api, /healthz)</td>
+      <td style="text-align: center">클러스터롤</td>
+      <td style="text-align: right">클러스터롤바인딩</td>
+    </tr>
+    <tr>
+      <td>모든 네임스페이스의 네임스페이스로 지정된 리소스</td>
+      <td style="text-align: center">클러스터롤</td>
+      <td style="text-align: right">클러스터롤바인딩</td>
+    </tr>
+    <tr>
+      <td>특정 네임스페이스의 네임스페이스로 지정된 리소스 (여러 네임스페이스에 동일한 클러스터롤 재사용)</td>
+      <td style="text-align: center">클러스터롤</td>
+      <td style="text-align: right">바인딩</td>
+    </tr>
+    <tr>
+      <td>특정 네임스페이스의 네임스페이스로 지정된 리소스 (각 네임스페이스에 롤을 정의)</td>
+      <td style="text-align: center">롤</td>
+      <td style="text-align: right">롤바인딩</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="디폴트-클러스터롤과-클러스터롤바인딩의-이해">디폴트 클러스터롤과 클러스터롤바인딩의 이해</h3>
+<p>쿠버네티스는 API 서버가 시작될 때 업데이트되는 클러스터롤과 클러스터롤바인딩의 디폴스 세트를 제공</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><table style="margin: 0px"><tbody><tr><td class="gutter"><pre>1<br/>2<br/>3<br/>4<br/>5<br/>6<br/>7<br/>8<br/>9<br/>10<br/>11<br/>12<br/>13<br/>14<br/>15<br/>16<br/>17<br/>18<br/>19<br/>20<br/>21<br/>22<br/>23<br/>24<br/>25<br/>26<br/>27<br/>28<br/>29<br/>30<br/>31<br/>32<br/>33<br/>34<br/>35<br/>36<br/>37<br/>38<br/>39<br/>40<br/>41<br/>42<br/>43<br/>44<br/>45<br/>46<br/>47<br/>48<br/>49<br/>50<br/>51<br/>52<br/>53<br/>54<br/>55<br/>56<br/>57<br/>58<br/>59<br/>60<br/>61<br/>62<br/>63<br/>64<br/>65<br/>66<br/>67<br/>68<br/>69<br/>70<br/>71<br/>72<br/>73<br/>74<br/>75<br/>76<br/>77<br/>78<br/>79<br/>80<br/>81<br/>82<br/>83<br/>84<br/>85<br/>86<br/>87<br/>88<br/>89<br/>90<br/>91</pre></td><td class="code"><pre class="highlight"><code><span class="nv">$ </span>kubectl get clusterrolebindings
+NAME                                                   AGE
+cilium                                                 67d
+cilium-operator                                        67d
+cluster-admin                                          67d
+csi-attacher-binding                                   67d
+csi-nodeplugin-binding                                 67d
+csi-provisioner-binding                                67d
+csi-resizer-binding                                    67d
+csi-snapshotter-binding                                67d
+...
+system:controller:attachdetach-controller              67d
+system:controller:certificate-controller               67d
+system:controller:clusterrole-aggregation-controller   67d
+system:controller:cronjob-controller                   67d
+system:controller:daemon-set-controller                67d
+system:controller:deployment-controller                67d
+system:controller:disruption-controller                67d
+system:controller:pv-protection-controller             67d
+system:controller:pvc-protection-controller            67d
+system:controller:replicaset-controller                67d
+system:controller:replication-controller               67d
+system:controller:resourcequota-controller             67d
+system:controller:route-controller                     67d
+system:controller:service-account-controller           67d
+system:controller:service-controller                   67d
+system:controller:statefulset-controller               67d
+system:controller:ttl-controller                       67d
+system:coredns                                         67d
+system:discovery                                       67d
+system:dns-autoscaler                                  67d
+system:kube-controller-manager                         67d
+system:kube-dns                                        67d
+system:kube-scheduler                                  67d
+system:node                                            67d
+system:node-proxier                                    67d
+system:node-webhook                                    67d
+system:public-info-viewer                              67d
+system:volume-scheduler                                67d
+
+<span class="nv">$ </span>kubectl get clusterroles
+NAME                                                                   AGE
+admin                                                                  67d
+cilium                                                                 67d
+cilium-operator                                                        67d
+cluster-admin                                                          67d
+csi-attacher-role                                                      67d
+csi-nodeplugin-role                                                    67d
+csi-provisioner-role                                                   67d
+csi-resizer-role                                                       67d
+csi-snapshotter-role                                                   67d
+edit                                                                   67d
+...
+pv-reader                                                              16h
+snapshot-controller-runner                                             67d
+system:aggregate-to-admin                                              67d
+system:aggregate-to-edit                                               67d
+system:aggregate-to-view                                               67d
+system:auth-delegator                                                  67d
+system:basic-user                                                      67d
+system:controller:node-controller                                      67d
+system:controller:persistent-volume-binder                             67d
+system:controller:pod-garbage-collector                                67d
+system:controller:pv-protection-controller                             67d
+system:controller:pvc-protection-controller                            67d
+system:controller:replicaset-controller                                67d
+system:controller:replication-controller                               67d
+system:controller:resourcequota-controller                             67d
+system:controller:route-controller                                     67d
+system:controller:service-account-controller                           67d
+system:controller:service-controller                                   67d
+system:controller:statefulset-controller                               67d
+system:controller:ttl-controller                                       67d
+system:coredns                                                         67d
+system:discovery                                                       67d
+system:dns-autoscaler                                                  67d
+system:heapster                                                        67d
+system:kube-aggregator                                                 67d
+system:kube-controller-manager                                         67d
+system:kube-dns                                                        67d
+system:kube-scheduler                                                  67d
+system:kubelet-api-admin                                               67d
+system:node                                                            67d
+system:node-bootstrapper                                               67d
+system:node-problem-detector                                           67d
+system:node-proxier                                                    67d
+system:node-webhook                                                    67d
+system:persistent-volume-provisioner                                   67d
+system:public-info-viewer                                              67d
+system:volume-scheduler                                                67d
+view                                                                   67d
+</code></pre></td></tr></tbody></table></div></div>
+
+<h3 id="view-클러스터롤을-사용해-리소스에-읽기-전용-액세스-허용">view 클러스터롤을 사용해 리소스에 읽기 전용 액세스 허용</h3>
+<p>디폴트 view 클러스터롤을 사용하면 롤, 롤바인딩과 시크릿을 제외한 네임스페이스 내의 거의 모든 리소스를 읽을 수 있다. 시크릿은 읽을수 없는데 그 이유는 시크릿 중 view 클러스터롤에 정의된 것보다 더 큰 권한을 갖는 인증토큰이 포함될 수 있고 사용자가 다른 사용자로 가장해 추가 권한을 얻을 수 있기 때문.</p>
+
+<h3 id="edit-클러스터롤을-사용해-리소스에-변경-허용">edit 클러스터롤을 사용해 리소스에 변경 허용</h3>
+<p>edit 클러스터롤은 네임스페이스 내의 리소스와 시크릿을 읽고 수정할 수 있다. 그러나 롤, 롤바인딩을 보거나 수정하지는 못한다.</p>
+
+<h3 id="admin-클러스터롤을-사용해-네임스페이스에-제어-권한-허용">admin 클러스터롤을 사용해 네임스페이스에 제어 권한 허용</h3>
+<p>네임스페이스에 있는 리소스에 관한 완전한 제어 권한이 admin 클러스터롤에 부여된다. 이 롤을 가진 주체는 리소스 쿼터와 네임스페이스 리소스 자체를 제외한 네임스페이스 내의 모든 리소스를 읽고 수정할 수 있다.</p>
+
+<h3 id="cluster-admin-클러스터롤을-사용해-완전한-제어-허용">cluster-admin 클러스터롤을 사용해 완전한 제어 허용</h3>
+<p>쿠버네티스 클러스터를 완전히 제어하기 위해선 cluster-admin 클러스터롤을 주체에 할당하면 된다. admin 클러스터롤에선 사용자가 네임스페이스의 리소스쿼터 개체 또는 네임스페이스 리소스 자체를 수정할 수 없다. 이 작업을 허용하려면 cluster-admin 클러스터롤을 참조하는 롤바인딩을 생성.</p>
+
+<h3 id="1226-인가-권한을-현명하게-부여">12.2.6 인가 권한을 현명하게 부여</h3>
+<p>기본적으로 네임스페이스의 디폴트 서비스 어카운트에는 인증되지 않은 사용자의 권한 이외에는 어떤 권한도 없다. 모든 서비스어카운트에 cluster-admin 클러스터롤을 부여하는것 보단 적절한 권한만 부여하고 한가지 이상의 권한을 주지 않는 것이 좋다.</p>
+
+<h3 id="각-파드에-특정-서비스어카운트-생성">각 파드에 특정 서비스어카운트 생성</h3>
+<p>각 파드를 위한 특정 서비스어카운트를 생성한 다음 롤바인딩으로 맞춤형 롤과 연계하는 것이 바람직한 접근 방법이다. 파드중 하나는 읽은 권한을 부여하고 하나는 수정하는 권한을 부여하는 식으로 서도 다른 서비스어카운트를 생성하고 각 파드 펙의 serviceAccountName 속성에 서비스어카운트를 설정해 사용하는것을 권장한다. 
+양쪽 파드에 모든 권한을 네임스페이스의 디폴트 서비스어카운트에 추가하는것은 권장하지 않는다.</p>
+
+<h3 id="어플리케이션이-탈취될-가능성을-염두">어플리케이션이 탈취될 가능성을 염두</h3>
+<p>어플리케이션이 탈취당해 서비스어카운트의 인증토큰이 유출될 가능성을 예상하며 실제로 피해를 입지 않도록 서비스어카운트 생성에 제한을 둬야한다.</p>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            
+            <a href="/tag/#/kubernetes" rel="tag"># kubernetes</a>
+          
+        </div>
+      
+
+      
+      
+      
+      
+      
+
+      
+      
+        <div class="post-nav" id="post-nav-id">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/dev/2021/05/31/k8s-in-action11/" rel="prev" title="쿠버네티스 인 액션 - 11장 쿠버네티스 내부 이해">
+                쿠버네티스 인 액션 - 11장 쿠버네티스 내부 이해 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+      
+
+      
+    </footer>
+  </article>
+
+  <div class="post-spread">
+    
+  </div>
+</div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        
+        
+        
+
+
+
+
+
+
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            목차
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            흝어보기
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/assets/images/avatar.gif"
+               alt="DongChul Lee" />
+          <p class="site-author-name" itemprop="name">DongChul Lee</p>
+           
+              <p class="site-description motion-element" itemprop="description">사내 공유, 개인의 경험을 기록하는 블로그입니다.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">44</span>
+                <span class="site-state-item-name">포스트</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">카테고리</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">태그</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+        
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              
+              
+              <span class="links-of-author-item">
+                <a href="https://github.com/sah3122" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+
+
+
+
+
+
+
+            
+              <div class="post-toc-content">
+    <ol class=nav>
+      <li class="nav-item nav-level-2"> <a class="nav-link" href="#121-인증-이해"> <span class="nav-number">1</span> <span class="nav-text">12.1 인증 이해</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#1211-사용자와-그룹"> <span class="nav-number">1.1</span> <span class="nav-text">12.1.1 사용자와 그룹</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#사용자"> <span class="nav-number">1.2</span> <span class="nav-text">사용자</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#그룹"> <span class="nav-number">1.3</span> <span class="nav-text">그룹</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#1212-서비스-어카운트-소개"> <span class="nav-number">1.4</span> <span class="nav-text">12.1.2 서비스 어카운트 소개</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#서비스-어카운트-리소스"> <span class="nav-number">1.5</span> <span class="nav-text">서비스 어카운트 리소스</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#서비스어카운트가-인가와-어떻게-밀접하게-연계되어-있는지-이해"> <span class="nav-number">1.6</span> <span class="nav-text">서비스어카운트가 인가와 어떻게 밀접하게 연계되어 있는지 이해</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#1213-서비스-어카운트-생성"> <span class="nav-number">1.7</span> <span class="nav-text">12.1.3 서비스 어카운트 생성</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#서비스-어카운트-생성"> <span class="nav-number">1.8</span> <span class="nav-text">서비스 어카운트 생성</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#서비스어카운트의-마운트-가능한-시크릿-이해"> <span class="nav-number">1.9</span> <span class="nav-text">서비스어카운트의 마운트 가능한 시크릿 이해</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#서비스어카운트의-이미지-풀-시크릿-이해"> <span class="nav-number">1.10</span> <span class="nav-text">서비스어카운트의 이미지 풀 시크릿 이해</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#1214-파드에-서비스-어카운트-할당"> <span class="nav-number">1.11</span> <span class="nav-text">12.1.4 파드에 서비스 어카운트 할당</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#사용자-정의-서비스-어카운트를-사용하는-파드-생성"> <span class="nav-number">1.12</span> <span class="nav-text">사용자 정의 서비스 어카운트를 사용하는 파드 생성</span> </a> </li> </ol> </li> <li class="nav-item nav-level-2"> <a class="nav-link" href="#122-역할-기반-액세스-제어로-클러스터-보안"> <span class="nav-number">2</span> <span class="nav-text">12.2 역할 기반 액세스 제어로 클러스터 보안</span> </a> <ol class="nav-child"> <li class="nav-item nav-level-3"> <a class="nav-link" href="#1221-rbac-인가-플러그인-소개"> <span class="nav-number">2.1</span> <span class="nav-text">12.2.1 RBAC 인가 플러그인 소개</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#액션-이해하기"> <span class="nav-number">2.2</span> <span class="nav-text">액션 이해하기</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#rbac-플러그인-이해"> <span class="nav-number">2.3</span> <span class="nav-text">RBAC 플러그인 이해</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#1222-rbac-리소스-소개"> <span class="nav-number">2.4</span> <span class="nav-text">12.2.2 RBAC 리소스 소개</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#네임스페이스-생성과-파드-실행"> <span class="nav-number">2.5</span> <span class="nav-text">네임스페이스 생성과 파드 실행</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#파드에서-서비스-목록-나열하기"> <span class="nav-number">2.6</span> <span class="nav-text">파드에서 서비스 목록 나열하기</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#1223-롤과-롤바인딩-사용"> <span class="nav-number">2.7</span> <span class="nav-text">12.2.3 롤과 롤바인딩 사용</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#서비스어카운트에-롤을-바인딩하기"> <span class="nav-number">2.8</span> <span class="nav-text">서비스어카운트에 롤을 바인딩하기</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#롤바인딩에서-다른-네임스페이스의-서비스어카운트-포함하기"> <span class="nav-number">2.9</span> <span class="nav-text">롤바인딩에서 다른 네임스페이스의 서비스어카운트 포함하기</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#1224-클러스터롤과-클러스터롤바인딩-사용하기"> <span class="nav-number">2.10</span> <span class="nav-text">12.2.4 클러스터롤과 클러스터롤바인딩 사용하기</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#클러스터-수준-리소스에-액세스-허용"> <span class="nav-number">2.11</span> <span class="nav-text">클러스터 수준 리소스에 액세스 허용</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#리소스가-아닌-url에-액세스-허용하기"> <span class="nav-number">2.12</span> <span class="nav-text">리소스가 아닌 URL에 액세스 허용하기</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#특정-네임스페이스의-리소스에-액세스-권한을-부여하기-위해-클러스터롤-사용"> <span class="nav-number">2.13</span> <span class="nav-text">특정 네임스페이스의 리소스에 액세스 권한을 부여하기 위해 클러스터롤 사용</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#롤-클러스터롤-롤바인딩과-클러스터롤바인딩-조합에-관한-요약"> <span class="nav-number">2.14</span> <span class="nav-text">롤, 클러스터롤, 롤바인딩과 클러스터롤바인딩 조합에 관한 요약</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#디폴트-클러스터롤과-클러스터롤바인딩의-이해"> <span class="nav-number">2.15</span> <span class="nav-text">디폴트 클러스터롤과 클러스터롤바인딩의 이해</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#view-클러스터롤을-사용해-리소스에-읽기-전용-액세스-허용"> <span class="nav-number">2.16</span> <span class="nav-text">view 클러스터롤을 사용해 리소스에 읽기 전용 액세스 허용</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#edit-클러스터롤을-사용해-리소스에-변경-허용"> <span class="nav-number">2.17</span> <span class="nav-text">edit 클러스터롤을 사용해 리소스에 변경 허용</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#admin-클러스터롤을-사용해-네임스페이스에-제어-권한-허용"> <span class="nav-number">2.18</span> <span class="nav-text">admin 클러스터롤을 사용해 네임스페이스에 제어 권한 허용</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#cluster-admin-클러스터롤을-사용해-완전한-제어-허용"> <span class="nav-number">2.19</span> <span class="nav-text">cluster-admin 클러스터롤을 사용해 완전한 제어 허용</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#1226-인가-권한을-현명하게-부여"> <span class="nav-number">2.20</span> <span class="nav-text">12.2.6 인가 권한을 현명하게 부여</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#각-파드에-특정-서비스어카운트-생성"> <span class="nav-number">2.21</span> <span class="nav-text">각 파드에 특정 서비스어카운트 생성</span> </a> </li> <li class="nav-item nav-level-3"> <a class="nav-link" href="#어플리케이션이-탈취될-가능성을-염두"> <span class="nav-number">2.22</span> <span class="nav-text">어플리케이션이 탈취될 가능성을 염두</span> </a> </li> </ol> </li>
+    </ol>
+  </div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+        
+        
+      <div id="disqus_thread"></div>
+      <script>
+
+      /**
+      *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+      *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+      /*
+      var disqus_config = function () {
+      this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+      };
+      */
+      (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://sah3122.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+      })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+          
+      </div>
+    </main>       
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DongChul Lee</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://jekyllrb.com">Jekyll</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/simpleyyt/jekyll-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+   
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  
+  
+  
+  
+  <script type="text/javascript" src="/assets/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/assets/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/assets/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/assets/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/assets/js/src/post-details.js?v=5.1.1"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/assets/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+    
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+  
+  <script type="text/javascript" src="/assets/js/src/js.cookie.js?v=5.1.1"></script>
+  <script type="text/javascript" src="/assets/js/src/scroll-cookie.js?v=5.1.1"></script>
+
+
+  
+
+</body>
+</html>
+
